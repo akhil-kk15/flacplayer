@@ -1,0 +1,9 @@
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/flacplayer.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/edit_cache.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/rebuild_cache.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/list_install_components.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/install.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/install/local.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/install/strip.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/flacplayer_autogen_timestamp_deps.dir
+/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/flacplayer_autogen.dir
