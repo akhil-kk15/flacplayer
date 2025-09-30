@@ -45,7 +45,6 @@ set(OLD_GLOB
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/mocs_compilation.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/main.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp"
-  "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow_debug.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
@@ -66,9 +65,7 @@ file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/akhilkk/projects/flacpl
 set(OLD_GLOB
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/include/ui_mainwindow.h"
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/moc_predefs.h"
-  "/home/akhilkk/projects/flacplayer/flacplayer/build/ui_mainwindow.h"
   "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h"
-  "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow_debug.h"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

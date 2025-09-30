@@ -35,7 +35,7 @@ void MainWindow::initializeWindow()
     qDebug() << "Initializing window...";
     
     // Set window properties
-    setWindowTitle("FLAC Player v1.0 - Learning Qt");
+    setWindowTitle("FLAC Player v1.0 ");
     setMinimumSize(600, 400);
     resize(800, 500);
     
@@ -59,14 +59,14 @@ void MainWindow::setupBasicUI()
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
     
     // Add a welcome label
-    QLabel *welcomeLabel = new QLabel("Welcome to Qt Development!", this);
+    QLabel *welcomeLabel = new QLabel("Select Your Audio file", this);
     welcomeLabel->setStyleSheet("font-size: 16px; font-weight: bold; margin: 10px; color: blue;");
     layout->addWidget(welcomeLabel);
     
     // Add buttons
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     
-    m_testButton = new QPushButton("Click Me!", this);
+    m_testButton = new QPushButton("Button Check", this);
     m_debugButton = new QPushButton("Show Debug Info", this);
     
     buttonLayout->addWidget(m_testButton);

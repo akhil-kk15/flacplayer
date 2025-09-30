@@ -2,6 +2,9 @@
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureOnOpen": false,
     "files.associations": {
-        "*.ui": "xml"
-    }
+        "*.ui": "xml",
+        "*.ts": "xml"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.intelliSenseEngine": "default"
 }
