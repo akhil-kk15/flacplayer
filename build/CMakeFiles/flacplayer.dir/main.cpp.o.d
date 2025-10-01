@@ -266,4 +266,9 @@ CMakeFiles/flacplayer.dir/main.cpp.o: \
  /usr/include/qt/QtCore/QTranslator /usr/include/qt/QtCore/qtranslator.h \
  /usr/include/qt/QtCore/QDebug /usr/include/qt/QtCore/qdebug.h \
  /usr/include/qt/QtCore/qtextstream.h /usr/include/qt/QtCore/qset.h \
- /usr/include/qt/QtCore/qcontiguouscache.h
+ /usr/include/qt/QtCore/qcontiguouscache.h \
+ /usr/include/qt/QtMultimedia/QAudioFormat \
+ /usr/include/qt/QtMultimedia/qaudioformat.h \
+ /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
+ /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+ /usr/include/qt/QtMultimedia/qmultimedia.h

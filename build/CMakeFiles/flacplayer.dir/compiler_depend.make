@@ -400,6 +400,20 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake \
   /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsConfigVersion.cmake \
   /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsMacros.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfig.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfigVersion.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_CameraBinServicePlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QAlsaPlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerAudioDecoderServicePlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerCaptureServicePlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerPlayerServicePlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QM3uPlaylistPlugin.cmake \
+  /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake \
+  /usr/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake \
+  /usr/lib/cmake/Qt5Network/Qt5NetworkConfigVersion.cmake \
+  /usr/lib/cmake/Qt5Network/Qt5Network_QConnmanEnginePlugin.cmake \
+  /usr/lib/cmake/Qt5Network/Qt5Network_QGenericEnginePlugin.cmake \
+  /usr/lib/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake \
   /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake \
   /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake \
   /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake \
@@ -408,88 +422,25 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h \
-  /usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in \
-  /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp \
   /usr/share/cmake/Modules/CMakeCXXInformation.cmake \
   /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake \
-  /usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake \
-  /usr/share/cmake/Modules/CMakeDetermineSystem.cmake \
-  /usr/share/cmake/Modules/CMakeFindBinUtils.cmake \
   /usr/share/cmake/Modules/CMakeGenericSystem.cmake \
   /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake \
   /usr/share/cmake/Modules/CMakeLanguageInformation.cmake \
   /usr/share/cmake/Modules/CMakeParseArguments.cmake \
-  /usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake \
-  /usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake \
-  /usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake \
-  /usr/share/cmake/Modules/CMakeSystem.cmake.in \
   /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake \
   /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake \
-  /usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake \
-  /usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake \
-  /usr/share/cmake/Modules/CMakeUnixFindMake.cmake \
-  /usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
-  /usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Diab-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake \
-  /usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake \
   /usr/share/cmake/Modules/Compiler/GNU.cmake \
-  /usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
-  /usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Renesas-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
-  /usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
   /usr/share/cmake/Modules/GNUInstallDirs.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake \
   /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake \
-  /usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake \
-  /usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake \
-  /usr/share/cmake/Modules/Internal/FeatureTesting.cmake \
   /usr/share/cmake/Modules/Linker/GNU-CXX.cmake \
   /usr/share/cmake/Modules/Linker/GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linker/GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake \
-  /usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake \
   /usr/share/cmake/Modules/Platform/Linux-GNU.cmake \
   /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake \
@@ -1193,6 +1144,11 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/qt/QtGui/qtguiglobal.h \
   /usr/include/qt/QtGui/qtransform.h \
   /usr/include/qt/QtGui/qwindowdefs.h \
+  /usr/include/qt/QtMultimedia/QAudioFormat \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/qt/QtWidgets/QApplication \
   /usr/include/qt/QtWidgets/QLabel \
   /usr/include/qt/QtWidgets/QMainWindow \
@@ -1630,59 +1586,130 @@ flacplayer: /usr/lib/Scrt1.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a \
   /usr/lib/ld-linux-x86-64.so.2 \
+  /usr/lib/libFLAC.so.14 \
   /usr/lib/libGL.so.1 \
   /usr/lib/libGLX.so.0 \
   /usr/lib/libGLdispatch.so.0 \
   /usr/lib/libQt5Core.so.5.15.17 \
   /usr/lib/libQt5Gui.so.5.15.17 \
+  /usr/lib/libQt5Multimedia.so.5.15.17 \
+  /usr/lib/libQt5Network.so.5.15.17 \
   /usr/lib/libQt5Widgets.so.5.15.17 \
   /usr/lib/libX11.so.6 \
   /usr/lib/libXau.so.6 \
   /usr/lib/libXdmcp.so.6 \
+  /usr/lib/libasyncns.so.0 \
+  /usr/lib/libblkid.so.1 \
   /usr/lib/libbrotlicommon.so.1 \
   /usr/lib/libbrotlidec.so.1 \
   /usr/lib/libbz2.so.1.0 \
   /usr/lib/libc.so.6 \
   /usr/lib/libc_nonshared.a \
   /usr/lib/libcap.so.2 \
+  /usr/lib/libcom_err.so.2 \
+  /usr/lib/libcrypto.so.3 \
+  /usr/lib/libcurl.so.4 \
+  /usr/lib/libdbus-1.so.3 \
   /usr/lib/libdouble-conversion.so.3 \
+  /usr/lib/libduktape.so.207 \
+  /usr/lib/libffi.so.8 \
   /usr/lib/libfreetype.so.6 \
+  /usr/lib/libgio-2.0.so.0 \
   /usr/lib/libglib-2.0.so.0 \
+  /usr/lib/libgmodule-2.0.so.0 \
+  /usr/lib/libgobject-2.0.so.0 \
   /usr/lib/libgraphite2.so.3 \
+  /usr/lib/libgssapi_krb5.so.2 \
   /usr/lib/libharfbuzz.so.0 \
   /usr/lib/libicudata.so.76 \
   /usr/lib/libicui18n.so.76 \
   /usr/lib/libicuuc.so.76 \
+  /usr/lib/libidn2.so.0 \
+  /usr/lib/libk5crypto.so.3 \
+  /usr/lib/libkeyutils.so.1 \
+  /usr/lib/libkrb5.so.3 \
+  /usr/lib/libkrb5support.so.0 \
   /usr/lib/libm.so.6 \
   /usr/lib/libmd4c.so.0 \
+  /usr/lib/libmount.so.1 \
+  /usr/lib/libmp3lame.so.0 \
+  /usr/lib/libmpg123.so.0 \
   /usr/lib/libmvec.so.1 \
+  /usr/lib/libnghttp2.so.14 \
+  /usr/lib/libnghttp3.so.9 \
+  /usr/lib/libogg.so.0 \
+  /usr/lib/libopus.so.0 \
   /usr/lib/libpcre2-16.so.0 \
   /usr/lib/libpcre2-8.so.0 \
   /usr/lib/libpng16.so.16 \
+  /usr/lib/libproxy.so.1 \
+  /usr/lib/libproxy/libpxbackend-1.0.so \
+  /usr/lib/libpsl.so.5 \
+  /usr/lib/libpulse.so.0 \
+  /usr/lib/libresolv.so.2 \
+  /usr/lib/libsndfile.so.1 \
+  /usr/lib/libssh2.so.1 \
+  /usr/lib/libssl.so.3 \
   /usr/lib/libsystemd.so.0 \
+  /usr/lib/libunistring.so.5 \
+  /usr/lib/libvorbis.so.0 \
+  /usr/lib/libvorbisenc.so.2 \
   /usr/lib/libxcb.so.1 \
   /usr/lib/libz.so.1 \
   /usr/lib/libzstd.so.1 \
+  /usr/lib/pulseaudio/libpulsecommon-17.0.so \
+  /usr/lib32/libFLAC.so.14 \
   /usr/lib32/libGL.so.1 \
   /usr/lib32/libGLX.so.0 \
   /usr/lib32/libGLdispatch.so.0 \
   /usr/lib32/libX11.so.6 \
   /usr/lib32/libXau.so.6 \
   /usr/lib32/libXdmcp.so.6 \
+  /usr/lib32/libasyncns.so.0 \
+  /usr/lib32/libblkid.so.1 \
   /usr/lib32/libbrotlicommon.so.1 \
   /usr/lib32/libbrotlidec.so.1 \
   /usr/lib32/libbz2.so.1.0 \
   /usr/lib32/libcap.so.2 \
+  /usr/lib32/libcom_err.so.2 \
+  /usr/lib32/libcrypto.so.3 \
+  /usr/lib32/libcurl.so.4 \
+  /usr/lib32/libdbus-1.so.3 \
+  /usr/lib32/libffi.so.8 \
   /usr/lib32/libfreetype.so.6 \
+  /usr/lib32/libgio-2.0.so.0 \
   /usr/lib32/libglib-2.0.so.0 \
+  /usr/lib32/libgmodule-2.0.so.0 \
+  /usr/lib32/libgobject-2.0.so.0 \
+  /usr/lib32/libgssapi_krb5.so.2 \
   /usr/lib32/libharfbuzz.so.0 \
   /usr/lib32/libicudata.so.76 \
   /usr/lib32/libicui18n.so.76 \
   /usr/lib32/libicuuc.so.76 \
+  /usr/lib32/libidn2.so.0 \
+  /usr/lib32/libk5crypto.so.3 \
+  /usr/lib32/libkeyutils.so.1 \
+  /usr/lib32/libkrb5.so.3 \
+  /usr/lib32/libkrb5support.so.0 \
+  /usr/lib32/libmount.so.1 \
+  /usr/lib32/libmpg123.so.0 \
+  /usr/lib32/libnghttp2.so.14 \
+  /usr/lib32/libnghttp3.so.9 \
+  /usr/lib32/libogg.so.0 \
+  /usr/lib32/libopus.so.0 \
   /usr/lib32/libpcre2-16.so.0 \
   /usr/lib32/libpcre2-8.so.0 \
   /usr/lib32/libpng16.so.16 \
+  /usr/lib32/libpsl.so.5 \
+  /usr/lib32/libpulse.so.0 \
+  /usr/lib32/libresolv.so.2 \
+  /usr/lib32/libsndfile.so.1 \
+  /usr/lib32/libssh2.so.1 \
+  /usr/lib32/libssl.so.3 \
   /usr/lib32/libsystemd.so.0 \
+  /usr/lib32/libunistring.so.5 \
+  /usr/lib32/libvorbis.so.0 \
+  /usr/lib32/libvorbisenc.so.2 \
   /usr/lib32/libxcb.so.1 \
   /usr/lib32/libz.so.1 \
   /usr/lib32/libzstd.so.1 \
@@ -1701,21 +1728,57 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib32/libxcb.so.1:
 
+/usr/lib32/libunistring.so.5:
+
+/usr/lib32/libssh2.so.1:
+
+/usr/lib32/libsndfile.so.1:
+
+/usr/lib32/libpsl.so.5:
+
+/usr/lib32/libpng16.so.16:
+
 /usr/lib32/libpcre2-8.so.0:
 
 /usr/lib32/libpcre2-16.so.0:
 
+/usr/lib32/libopus.so.0:
+
+/usr/lib32/libogg.so.0:
+
+/usr/lib32/libnghttp3.so.9:
+
+/usr/lib32/libmount.so.1:
+
+/usr/lib32/libkrb5.so.3:
+
+/usr/lib32/libkeyutils.so.1:
+
+/usr/lib32/libk5crypto.so.3:
+
 /usr/lib32/libicuuc.so.76:
 
-/usr/lib32/libicudata.so.76:
+/usr/lib32/libgssapi_krb5.so.2:
+
+/usr/lib32/libgobject-2.0.so.0:
 
 /usr/lib32/libglib-2.0.so.0:
 
+/usr/lib32/libgio-2.0.so.0:
+
 /usr/lib32/libfreetype.so.6:
+
+/usr/lib32/libdbus-1.so.3:
+
+/usr/lib32/libcurl.so.4:
+
+/usr/lib32/libcom_err.so.2:
 
 /usr/lib32/libcap.so.2:
 
 /usr/lib32/libbrotlicommon.so.1:
+
+/usr/lib32/libblkid.so.1:
 
 /usr/lib32/libXdmcp.so.6:
 
@@ -1723,19 +1786,55 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib32/libX11.so.6:
 
+/usr/lib32/libidn2.so.0:
+
 /usr/lib32/libGLdispatch.so.0:
 
+/usr/lib32/libGLX.so.0:
+
+/usr/lib32/libFLAC.so.14:
+
+/usr/lib/pulseaudio/libpulsecommon-17.0.so:
+
 /usr/lib/libxcb.so.1:
+
+/usr/lib/libvorbisenc.so.2:
+
+/usr/lib/libvorbis.so.0:
 
 CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libsystemd.so.0:
 
+/usr/lib/libssh2.so.1:
+
+/usr/lib/libsndfile.so.1:
+
+/usr/lib/libpulse.so.0:
+
+/usr/lib/libproxy/libpxbackend-1.0.so:
+
+/usr/lib/libproxy.so.1:
+
 /usr/lib/libpng16.so.16:
 
 /usr/lib/libpcre2-8.so.0:
 
+/usr/lib/libogg.so.0:
+
+/usr/lib/libnghttp3.so.9:
+
+/usr/lib/libnghttp2.so.14:
+
+/usr/lib/libmpg123.so.0:
+
+/usr/lib/libmp3lame.so.0:
+
 /usr/lib/libm.so.6:
+
+/usr/lib/libkrb5.so.3:
+
+/usr/lib/libidn2.so.0:
 
 /usr/lib/libicuuc.so.76:
 
@@ -1745,9 +1844,17 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libharfbuzz.so.0:
 
+/usr/lib/libgssapi_krb5.so.2:
+
 /usr/lib/libglib-2.0.so.0:
 
 /usr/lib/libfreetype.so.6:
+
+/usr/lib/libduktape.so.207:
+
+/usr/lib/libcurl.so.4:
+
+/usr/lib/libcrypto.so.3:
 
 /usr/lib/libcap.so.2:
 
@@ -1755,7 +1862,9 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libbz2.so.1.0:
 
-/usr/lib/libbrotlidec.so.1:
+/usr/lib/libblkid.so.1:
+
+/usr/lib/libasyncns.so.0:
 
 /usr/lib32/libGL.so.1:
 
@@ -1768,6 +1877,8 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 /usr/lib/libQt5Widgets.so.5.15.17:
 
 /usr/lib/libQt5Core.so.5.15.17:
+
+/usr/lib/libffi.so.8:
 
 /usr/lib/libGL.so.1:
 
@@ -1783,51 +1894,13 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libm.so:
 
+/usr/lib/libcom_err.so.2:
+
+/usr/lib/libFLAC.so.14:
+
 /usr/lib/libgcc_s.so.1:
 
-/usr/lib/libgcc_s.so:
-
-/usr/lib/Scrt1.o:
-
-/usr/include/qt/QtWidgets/qstatusbar.h:
-
-/usr/include/qt/QtWidgets/qmessagebox.h:
-
-/usr/include/qt/QtWidgets/qmenubar.h:
-
-/usr/include/qt/QtWidgets/qmenu.h:
-
-/usr/include/qt/QtWidgets/qlayoutitem.h:
-
-/usr/include/qt/QtWidgets/qlayout.h:
-
-/usr/include/qt/QtWidgets/qboxlayout.h:
-
-flacplayer_autogen/include/ui_mainwindow.h:
-
-/usr/include/qt/QtWidgets/qapplication.h:
-
-/usr/include/qt/QtWidgets/QApplication:
-
-/usr/include/qt/QtGui/qguiapplication.h:
-
-/usr/include/qt/QtCore/qvariant.h:
-
-/usr/include/qt/QtCore/qmap.h:
-
-/usr/lib/crti.o:
-
-/usr/include/qt/QtCore/qeventloop.h:
-
-/usr/include/qt/QtCore/QDebug:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
-
 /usr/include/c++/15.2.1/bits/stl_uninitialized.h:
-
-/usr/include/qt/QtWidgets/qdialog.h:
-
-/usr/include/c++/15.2.1/bits/stl_algo.h:
 
 /usr/lib/libmvec.so.1:
 
@@ -1837,11 +1910,15 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/linux/errno.h:
 
+/usr/include/qt/QtWidgets/QApplication:
+
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
 
-/usr/include/qt/QtWidgets/qaction.h:
+/usr/include/qt/QtMultimedia/qtmultimediaglobal.h:
 
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
+
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_CameraBinServicePlugin.cmake:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
 
@@ -1854,6 +1931,8 @@ flacplayer_autogen/include/ui_mainwindow.h:
 /usr/include/c++/15.2.1/bits/exception_defines.h:
 
 /usr/include/c++/15.2.1/stdexcept:
+
+/usr/lib/libpsl.so.5:
 
 /usr/include/c++/15.2.1/pstl/glue_numeric_defs.h:
 
@@ -1869,11 +1948,15 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/asm-generic/errno-base.h:
 
+/usr/lib/libdbus-1.so.3:
+
 /usr/include/c++/15.2.1/iosfwd:
 
 /usr/include/c++/15.2.1/bits/atomic_lockfree_defines.h:
 
 /usr/include/c++/15.2.1/ext/type_traits.h:
+
+/usr/lib32/libresolv.so.2:
 
 /usr/include/bits/getopt_core.h:
 
@@ -1885,15 +1968,15 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/ext/alloc_traits.h:
 
-/usr/include/qt/QtWidgets/qactiongroup.h:
-
-/usr/include/c++/15.2.1/ext/aligned_buffer.h:
-
 /usr/include/c++/15.2.1/cstdlib:
 
 /usr/include/c++/15.2.1/cstdint:
 
 /usr/include/c++/15.2.1/cstddef:
+
+/usr/lib/libgcc_s.so:
+
+/usr/include/c++/15.2.1/concepts:
 
 /usr/include/c++/15.2.1/bits/version.h:
 
@@ -1907,29 +1990,27 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/bits/uses_allocator_args.h:
 
+/usr/lib/libgmodule-2.0.so.0:
+
 /usr/include/c++/15.2.1/bits/uses_allocator.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:
 
 /usr/include/qt/QtCore/qshareddata.h:
 
-/usr/lib32/libpng16.so.16:
-
-/usr/share/cmake/Modules/Compiler/Diab-DetermineCompiler.cmake:
-
 /usr/include/c++/15.2.1/utility:
-
-/usr/include/qt/QtCore/qcoreevent.h:
-
-/usr/include/c++/15.2.1/bits/unique_ptr.h:
 
 CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
-/usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake:
+/usr/include/c++/15.2.1/cwchar:
 
 /usr/lib/libpcre2-16.so.0:
 
 /usr/include/locale.h:
+
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
+
+/usr/include/qt/QtWidgets/qaction.h:
 
 /usr/include/c++/15.2.1/bits/streambuf_iterator.h:
 
@@ -1939,19 +2020,7 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/getopt_posix.h:
 
-/usr/include/c++/15.2.1/exception:
-
-/usr/include/qt/QtCore/QLocale:
-
-/usr/include/c++/15.2.1/bits/stl_heap.h:
-
 /usr/include/c++/15.2.1/bits/ranges_util.h:
-
-/usr/lib/libc.so:
-
-/usr/include/c++/15.2.1/bits/basic_string.h:
-
-/usr/include/asm-generic/types.h:
 
 /usr/include/asm-generic/bitsperlong.h:
 
@@ -1973,8 +2042,6 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/qt/QtCore/qbasicatomic.h:
 
-/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:
-
 /usr/include/c++/15.2.1/bits/stl_map.h:
 
 /usr/include/asm-generic/posix_types.h:
@@ -1987,13 +2054,11 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/std_function.h:
 
+/usr/lib/libgio-2.0.so.0:
+
 /usr/include/gnu/stubs-64.h:
 
 /usr/include/c++/15.2.1/bits/std_abs.h:
-
-/usr/include/qt/QtCore/QTranslator:
-
-/usr/include/c++/15.2.1/bits/iterator_concepts.h:
 
 /usr/include/bits/unistd_ext.h:
 
@@ -2011,13 +2076,17 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/sat_arith.h:
 
+/usr/lib/Scrt1.o:
+
 /usr/include/c++/15.2.1/initializer_list:
 
 /usr/include/qt/QtCore/qbytearray.h:
 
 /usr/include/c++/15.2.1/numbers:
 
-/usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake:
+/usr/include/c++/15.2.1/variant:
+
+/usr/include/qt/QtWidgets/qmenu.h:
 
 /usr/include/c++/15.2.1/bits/ranges_base.h:
 
@@ -2031,7 +2100,11 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/postypes.h:
 
+/usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfigVersion.cmake:
+
 /usr/include/qt/QtCore/qstring.h:
+
+/usr/lib/libkeyutils.so.1:
 
 /usr/include/c++/15.2.1/bits/ostream_insert.h:
 
@@ -2063,14 +2136,6 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSEmulatorIntegrationPlugin.cmake:
 
-/usr/include/qt/QtCore/qtextstream.h:
-
-/usr/include/bits/typesizes.h:
-
-/usr/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake:
-
-/usr/share/cmake/Modules/CMakeFindBinUtils.cmake:
-
 /usr/include/bits/types/clockid_t.h:
 
 /usr/include/qt/QtCore/qsystemdetection.h:
@@ -2084,6 +2149,10 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 /usr/include/c++/15.2.1/bits/out_ptr.h:
 
 CMakeFiles/4.1.1/CMakeSystem.cmake:
+
+/usr/lib32/libicudata.so.76:
+
+/usr/lib/cmake/Qt5Network/Qt5NetworkConfigVersion.cmake:
 
 /usr/include/bits/types/__locale_t.h:
 
@@ -2099,9 +2168,9 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/asm/posix_types.h:
 
-/usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake:
-
 /usr/include/bits/types/__fpos64_t.h:
+
+/usr/lib32/libvorbisenc.so.2:
 
 /usr/include/c++/15.2.1/compare:
 
@@ -2117,13 +2186,11 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/sys/syscall.h:
 
-/usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake:
-
 /usr/include/c++/15.2.1/clocale:
 
-/home/akhilkk/projects/flacplayer/flacplayer/main.cpp:
+/usr/include/c++/15.2.1/bits/stl_list.h:
 
-/usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake:
+/home/akhilkk/projects/flacplayer/flacplayer/main.cpp:
 
 /usr/include/c++/15.2.1/bits/stl_relops.h:
 
@@ -2143,10 +2210,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/pthreadtypes-arch.h:
 
-/usr/include/qt/QtWidgets/qgridlayout.h:
-
-/usr/include/qt/QtCore/qrect.h:
-
 /usr/include/bits/time64.h:
 
 /usr/include/bits/pthread_stack_min-dynamic.h:
@@ -2158,8 +2221,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/qt/QtCore/qline.h:
 
 /usr/include/asm/errno.h:
-
-/usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake:
 
 /usr/include/bits/stdint-uintn.h:
 
@@ -2175,15 +2236,17 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/posix_opt.h:
 
+/usr/include/bits/syscall.h:
+
 /usr/include/qt/QtCore/qconfig.h:
 
 /usr/include/bits/locale.h:
 
-/usr/include/qt/QtCore/qcoreapplication.h:
+/usr/include/c++/15.2.1/type_traits:
 
-/usr/include/c++/15.2.1/new:
+/usr/include/c++/15.2.1/exception:
 
-/usr/include/c++/15.2.1/map:
+/usr/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake:
 
 /usr/include/c++/15.2.1/debug/debug.h:
 
@@ -2213,17 +2276,11 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/floatn.h:
 
-/usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake:
-
 /usr/include/c++/15.2.1/atomic:
 
 /usr/bin/cmake:
 
 /usr/include/c++/15.2.1/bits/stringfwd.h:
-
-/usr/include/bits/syscall.h:
-
-/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:
 
 /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake:
 
@@ -2235,6 +2292,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp:
 
+/usr/lib/libunistring.so.5:
+
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h:
 
 /usr/include/c++/15.2.1/bits/parse_numbers.h:
@@ -2243,7 +2302,13 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/endianness.h:
 
+/usr/include/c++/15.2.1/stdlib.h:
+
+/usr/include/c++/15.2.1/bit:
+
 /usr/include/bits/types/time_t.h:
+
+/usr/lib32/libkrb5support.so.0:
 
 /usr/include/bits/confname.h:
 
@@ -2253,6 +2318,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/wchar.h:
 
+/usr/lib32/libpulse.so.0:
+
 /usr/include/bits/waitstatus.h:
 
 /usr/include/c++/15.2.1/bits/stl_multimap.h:
@@ -2261,7 +2328,11 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/c++/15.2.1/bits/exception_ptr.h:
 
+/usr/include/c++/15.2.1/bits/atomic_wait.h:
+
 /usr/include/bits/libc-header-start.h:
+
+/usr/include/qt/QtGui/qbrush.h:
 
 /usr/include/c++/15.2.1/typeinfo:
 
@@ -2279,6 +2350,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtGui/qpixmap.h:
 
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerPlayerServicePlugin.cmake:
+
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake:
 
 /usr/include/asm-generic/int-ll64.h:
@@ -2294,8 +2367,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/c++/15.2.1/ctime:
 
 /usr/include/bits/errno.h:
-
-/usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake:
 
 /usr/include/bits/long-double.h:
 
@@ -2323,6 +2394,12 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/cctype:
 
+/usr/lib/libmount.so.1:
+
+/usr/lib/libGLdispatch.so.0:
+
+/usr/include/c++/15.2.1/backward/binders.h:
+
 /usr/include/c++/15.2.1/bits/hash_bytes.h:
 
 /usr/include/bits/types/struct_FILE.h:
@@ -2339,7 +2416,9 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/bits/predefined_ops.h:
 
-/usr/include/c++/15.2.1/bits/list.tcc:
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QAlsaPlugin.cmake:
+
+/usr/include/c++/15.2.1/bits/functexcept.h:
 
 /usr/include/qt/QtCore/qsharedpointer_impl.h:
 
@@ -2356,6 +2435,8 @@ flacplayer_autogen/moc_predefs.h:
 /usr/include/c++/15.2.1/ext/atomicity.h:
 
 /usr/include/qt/QtCore/qatomic.h:
+
+/usr/include/qt/QtCore/QDebug:
 
 /usr/include/c++/15.2.1/bits/new_allocator.h:
 
@@ -2377,25 +2458,17 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/bits/char_traits.h:
 
-/usr/include/qt/QtWidgets/QStatusBar:
-
-/usr/include/c++/15.2.1/climits:
-
-/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:
-
 /usr/include/bits/types/timer_t.h:
 
 /usr/share/cmake/Modules/Linker/GNU-CXX.cmake:
-
-/usr/include/qt/QtWidgets/QWidget:
-
-/usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
 
 /usr/include/features.h:
 
 /usr/include/c++/15.2.1/chrono:
 
 /usr/include/c++/15.2.1/bits/ios_base.h:
+
+/usr/lib/libopus.so.0:
 
 /usr/include/c++/15.2.1/bits/stl_bvector.h:
 
@@ -2407,9 +2480,7 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/array:
 
-/usr/include/qt/QtCore/qtranslator.h:
-
-/usr/include/c++/15.2.1/bits/erase_if.h:
+/usr/lib/cmake/Qt5Network/Qt5Network_QGenericEnginePlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSKmsGbmIntegrationPlugin.cmake:
 
@@ -2425,13 +2496,9 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/asm/bitsperlong.h:
 
-/usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake:
-
 /usr/include/c++/15.2.1/bits/alloc_traits.h:
 
 /usr/include/c++/15.2.1/bits/localefwd.h:
-
-/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:
 
 /usr/include/c++/15.2.1/bits/requires_hosted.h:
 
@@ -2459,15 +2526,17 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/bits/wordsize.h:
 
+/usr/lib/libQt5Multimedia.so.5.15.17:
+
 /usr/include/stdio.h:
 
 /usr/include/c++/15.2.1/bits/exception.h:
 
 /usr/include/qt/QtGui/qfontmetrics.h:
 
-/usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake:
-
 /usr/include/bits/uio_lim.h:
+
+/usr/include/qt/QtWidgets/qstatusbar.h:
 
 /usr/include/linux/types.h:
 
@@ -2482,6 +2551,12 @@ flacplayer_autogen/moc_predefs.h:
 /usr/include/c++/15.2.1/bits/locale_facets.h:
 
 /usr/include/bits/pthreadtypes.h:
+
+/usr/include/c++/15.2.1/bits/basic_string.h:
+
+/usr/include/asm-generic/types.h:
+
+/usr/lib/libc.so:
 
 /usr/include/bits/endian.h:
 
@@ -2499,7 +2574,11 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/bits/locale_classes.h:
 
+/usr/lib/libresolv.so.2:
+
 /usr/include/alloca.h:
+
+/usr/lib32/libffi.so.8:
 
 /usr/include/bits/types/wint_t.h:
 
@@ -2514,6 +2593,8 @@ flacplayer_autogen/moc_predefs.h:
 /usr/include/c++/15.2.1/bits/algorithmfwd.h:
 
 /usr/include/c++/15.2.1/bits/memoryfwd.h:
+
+/usr/lib/libssl.so.3:
 
 /usr/include/c++/15.2.1/bits/ranges_algo.h:
 
@@ -2531,9 +2612,7 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/bits/monostate.h:
 
-/usr/include/qt/QtWidgets/QVBoxLayout:
-
-/usr/include/c++/15.2.1/bits/move_only_function.h:
+/usr/include/c++/15.2.1/functional:
 
 /usr/include/bits/stdint-least.h:
 
@@ -2551,13 +2630,13 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtGui/qcolor.h:
 
-/usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake:
-
 /usr/include/qt/QtCore/qflags.h:
 
 /usr/include/c++/15.2.1/bits/stl_iterator.h:
 
 /usr/include/qt/QtCore/qgenericatomic.h:
+
+/usr/lib/libgobject-2.0.so.0:
 
 /usr/include/qt/QtWidgets/qlabel.h:
 
@@ -2569,14 +2648,6 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtCore/qhash.h:
 
-/usr/lib/libz.so.1:
-
-/usr/include/qt/QtCore/qset.h:
-
-/usr/include/c++/15.2.1/bits/shared_ptr_base.h:
-
-/usr/include/qt/QtCore/qhashfunctions.h:
-
 /usr/include/qt/QtCore/qiterator.h:
 
 /usr/share/cmake/Modules/GNUInstallDirs.cmake:
@@ -2585,15 +2656,11 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtCore/qlist.h:
 
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerCaptureServicePlugin.cmake:
+
+/usr/lib/cmake/Qt5Network/Qt5Network_QConnmanEnginePlugin.cmake:
+
 /usr/include/qt/QtCore/qlogging.h:
-
-/usr/include/c++/15.2.1/type_traits:
-
-/usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/bits/max_size_type.h:
-
-/usr/include/qt/QtCore/qmargins.h:
 
 /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake:
 
@@ -2619,11 +2686,13 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtCore/qrefcount.h:
 
+/usr/include/qt/QtWidgets/qlayoutitem.h:
+
 /usr/include/qt/QtCore/qregexp.h:
 
-/usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake:
-
 /usr/include/qt/QtCore/qscopedpointer.h:
+
+/usr/lib32/libcrypto.so.3:
 
 /usr/include/qt/QtCore/qsharedpointer.h:
 
@@ -2634,10 +2703,6 @@ flacplayer_autogen/moc_predefs.h:
 /usr/include/bits/xopen_lim.h:
 
 /usr/include/qt/QtCore/qstringalgorithms.h:
-
-/usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeSystem.cmake.in:
 
 /usr/include/qt/QtCore/qglobal.h:
 
@@ -2650,6 +2715,8 @@ flacplayer_autogen/moc_predefs.h:
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake:
 
 /usr/include/qt/QtCore/qtcore-config.h:
+
+/usr/lib32/libnghttp2.so.14:
 
 /usr/include/bits/types/__mbstate_t.h:
 
@@ -2667,6 +2734,8 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtGui/qicon.h:
 
+/usr/include/qt/QtWidgets/qmenubar.h:
+
 /usr/include/qt/QtGui/qkeysequence.h:
 
 /usr/include/qt/QtGui/qmatrix.h:
@@ -2677,11 +2746,15 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/qt/QtGui/qrgb.h:
 
+/usr/lib32/libmpg123.so.0:
+
 /usr/share/cmake/Modules/Platform/UnixPaths.cmake:
 
 /usr/include/qt/QtGui/qtgui-config.h:
 
 /usr/include/qt/QtGui/qtransform.h:
+
+/usr/lib32/libasyncns.so.0:
 
 /usr/include/qt/QtWidgets/QPushButton:
 
@@ -2703,11 +2776,9 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/sched.h:
 
+/usr/lib/libk5crypto.so.3:
+
 /usr/include/wctype.h:
-
-/usr/include/c++/15.2.1/concepts:
-
-/usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake:
 
 /usr/include/string.h:
 
@@ -2719,19 +2790,35 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/syscall.h:
 
+/usr/lib/libQt5Network.so.5.15.17:
+
 /usr/include/time.h:
 
 /usr/include/unistd.h:
 
+/usr/include/c++/15.2.1/bits/list.tcc:
+
+/usr/include/qt/QtMultimedia/qtmultimedia-config.h:
+
 /usr/include/wchar.h:
 
-/usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake:
+/usr/lib/libkrb5support.so.0:
 
 /usr/include/qt/QtCore/qpoint.h:
 
 /usr/include/bits/posix1_lim.h:
 
+/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
+
+/usr/lib/cmake/Qt5/Qt5Config.cmake:
+
 /usr/lib/cmake/Qt5Core/Qt5CoreConfig.cmake:
+
+/usr/include/c++/15.2.1/bits/move_only_function.h:
+
+/usr/include/qt/QtWidgets/QVBoxLayout:
+
+/usr/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake:
 
 /usr/lib/cmake/Qt5Core/Qt5CoreMacros.cmake:
 
@@ -2739,11 +2826,23 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:
 
+/usr/lib/libQt5Gui.so.5.15.17:
+
+/usr/include/qt/QtCore/qdatastream.h:
+
+/usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake:
+
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake:
 
 /usr/include/c++/15.2.1/bits/unordered_map.h:
 
+flacplayer_autogen/include/ui_mainwindow.h:
+
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake:
+
+/usr/include/c++/15.2.1/ext/aligned_buffer.h:
+
+/usr/include/qt/QtWidgets/qactiongroup.h:
 
 /usr/include/qt/QtWidgets/QMenuBar:
 
@@ -2763,6 +2862,8 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake:
 
+/usr/lib/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake:
+
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QSvgPlugin.cmake:
@@ -2775,6 +2876,16 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake:
 
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerAudioDecoderServicePlugin.cmake:
+
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QM3uPlaylistPlugin.cmake:
+
+/usr/include/c++/15.2.1/bits/max_size_type.h:
+
+/usr/include/qt/QtCore/qmargins.h:
+
+/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake:
+
 /usr/lib/libdouble-conversion.so.3:
 
 /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:
@@ -2783,7 +2894,13 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/share/cmake/Modules/Platform/Linux-GNU.cmake:
 
+/usr/lib32/libvorbis.so.0:
+
+/usr/lib32/libssl.so.3:
+
 /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake:
+
+/usr/include/qt/QtCore/qvariant.h:
 
 /usr/include/c++/15.2.1/bits/uniform_int_dist.h:
 
@@ -2791,157 +2908,27 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h:
 
-/usr/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake:
-
-/usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp:
-
 /usr/share/cmake/Modules/CMakeCXXInformation.cmake:
-
-/usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake:
-
-/usr/lib/libGLdispatch.so.0:
-
-/usr/include/c++/15.2.1/backward/binders.h:
-
-/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:
-
-/usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake:
-
-/usr/include/c++/15.2.1/stdlib.h:
-
-/usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake:
-
-/usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake:
 
 /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake:
 
 /usr/include/c++/15.2.1/cstdio:
 
-/usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in:
-
-/usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake:
-
-/usr/lib/libQt5Gui.so.5.15.17:
-
-/usr/include/qt/QtCore/qdatastream.h:
-
-/usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake:
-
-/usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake:
-
-/usr/share/cmake/Modules/CMakeUnixFindMake.cmake:
-
-/usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/variant:
-
-/usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/functional:
-
-/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake:
-
 /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake:
-
-/usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake:
-
-/usr/include/sys/select.h:
-
-/usr/include/c++/15.2.1/bits/stl_function.h:
-
-/usr/include/c++/15.2.1/bits/chrono.h:
-
-/usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/bits/atomic_wait.h:
-
-/usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake:
-
-/usr/include/bits/stdlib-float.h:
-
-/usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
-
-/usr/lib/cmake/Qt5/Qt5Config.cmake:
-
-/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake:
-
-/usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/bits/hashtable.h:
-
-/usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
-
-/usr/share/cmake/Modules/Compiler/Renesas-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/bits/stl_list.h:
-
-/usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake:
-
-/usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake:
-
-/usr/include/c++/15.2.1/bits/functexcept.h:
-
-/usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake:
 
 /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake:
 
-/usr/include/qt/QtGui/qbrush.h:
-
-/usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake:
-
-/usr/include/c++/15.2.1/cwchar:
-
-/usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake:
-
-/usr/include/bits/local_lim.h:
-
-/usr/lib32/libGLX.so.0:
-
-/usr/share/cmake/Modules/Internal/FeatureTesting.cmake:
-
-/usr/include/qt/QtWidgets/QHBoxLayout:
+/usr/include/qt/QtMultimedia/QAudioFormat:
 
 /usr/include/qt/QtGui/qtguiglobal.h:
 
+/usr/include/qt/QtWidgets/QHBoxLayout:
+
 /usr/share/cmake/Modules/Platform/Linker/GNU.cmake:
-
-/usr/include/c++/15.2.1/bit:
-
-/usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake:
 
 /usr/include/qt/QtGui/qpaintdevice.h:
 
 /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake:
-
-/usr/include/qt/QtWidgets/QMessageBox:
-
-/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
 
 /usr/share/cmake/Modules/Platform/Linux.cmake:
 
@@ -2951,11 +2938,21 @@ flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
 
 /usr/include/bits/byteswap.h:
 
+/usr/include/bits/local_lim.h:
+
+/usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfig.cmake:
+
 /usr/include/bits/posix2_lim.h:
 
 /usr/include/bits/select.h:
 
 /usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/stdlib-float.h:
+
+/usr/include/c++/15.2.1/bits/erase_if.h:
+
+/usr/include/qt/QtCore/qtranslator.h:
 
 /usr/lib32/libicui18n.so.76:
 
@@ -2965,6 +2962,14 @@ flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
 
 /usr/include/bits/waitflags.h:
 
+/usr/include/sys/select.h:
+
+/usr/include/c++/15.2.1/bits/stl_function.h:
+
+/usr/include/c++/15.2.1/bits/chrono.h:
+
+/usr/include/c++/15.2.1/bits/hashtable.h:
+
 /usr/include/c++/15.2.1/bits/hashtable_policy.h:
 
 /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
@@ -2973,9 +2978,7 @@ flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
 
 /usr/include/endian.h:
 
-/usr/include/qt/QtGui/qinputmethod.h:
-
-/usr/include/stdint.h:
+/usr/lib32/libgmodule-2.0.so.0:
 
 /usr/include/limits.h:
 
@@ -2985,10 +2988,88 @@ flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
 
 /usr/include/linux/limits.h:
 
-/usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake:
-
 /usr/include/linux/sched/types.h:
 
 /usr/lib/cmake/Qt5/Qt5ConfigVersion.cmake:
 
 /usr/include/sys/types.h:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
+
+/usr/include/c++/15.2.1/bits/stl_heap.h:
+
+/usr/include/qt/QtCore/QLocale:
+
+/usr/include/c++/15.2.1/bits/iterator_concepts.h:
+
+/usr/include/qt/QtCore/QTranslator:
+
+/usr/include/c++/15.2.1/new:
+
+/usr/include/c++/15.2.1/map:
+
+/usr/include/qt/QtCore/qcoreapplication.h:
+
+/usr/include/c++/15.2.1/bits/unique_ptr.h:
+
+/usr/include/qt/QtCore/qcoreevent.h:
+
+/usr/include/qt/QtCore/qmap.h:
+
+/usr/lib/libz.so.1:
+
+/usr/include/c++/15.2.1/bits/shared_ptr_base.h:
+
+/usr/include/qt/QtCore/qhashfunctions.h:
+
+/usr/include/qt/QtCore/qset.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake:
+
+/usr/include/qt/QtCore/qtextstream.h:
+
+/usr/include/qt/QtGui/qguiapplication.h:
+
+/usr/include/stdint.h:
+
+/usr/include/qt/QtGui/qinputmethod.h:
+
+/usr/lib/libbrotlidec.so.1:
+
+/usr/include/qt/QtMultimedia/qaudioformat.h:
+
+/usr/include/qt/QtMultimedia/qmultimedia.h:
+
+/usr/include/qt/QtWidgets/qapplication.h:
+
+/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
+
+/usr/include/qt/QtWidgets/QMessageBox:
+
+/usr/include/c++/15.2.1/climits:
+
+/usr/include/qt/QtWidgets/QStatusBar:
+
+/usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
+
+/usr/include/qt/QtWidgets/QWidget:
+
+/usr/include/qt/QtWidgets/qboxlayout.h:
+
+/usr/include/c++/15.2.1/bits/stl_algo.h:
+
+/usr/include/qt/QtWidgets/qdialog.h:
+
+/usr/include/qt/QtCore/qrect.h:
+
+/usr/include/qt/QtWidgets/qgridlayout.h:
+
+/usr/include/qt/QtWidgets/qlayout.h:
+
+/usr/include/qt/QtWidgets/qmessagebox.h:
+
+/usr/include/qt/QtCore/qeventloop.h:
+
+/usr/lib/crti.o:

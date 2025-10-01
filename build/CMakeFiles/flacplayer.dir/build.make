@@ -136,7 +136,9 @@ flacplayer: CMakeFiles/flacplayer.dir/mainwindow.cpp.o
 flacplayer: CMakeFiles/flacplayer.dir/build.make
 flacplayer: CMakeFiles/flacplayer.dir/compiler_depend.ts
 flacplayer: /usr/lib/libQt5Widgets.so.5.15.17
+flacplayer: /usr/lib/libQt5Multimedia.so.5.15.17
 flacplayer: /usr/lib/libQt5Gui.so.5.15.17
+flacplayer: /usr/lib/libQt5Network.so.5.15.17
 flacplayer: /usr/lib/libQt5Core.so.5.15.17
 flacplayer: CMakeFiles/flacplayer.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable flacplayer"

@@ -401,6 +401,20 @@
  /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsConfig.cmake
  /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsConfigVersion.cmake
  /usr/lib/cmake/Qt5LinguistTools/Qt5LinguistToolsMacros.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfig.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5MultimediaConfigVersion.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_CameraBinServicePlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QAlsaPlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerAudioDecoderServicePlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerCaptureServicePlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerPlayerServicePlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QM3uPlaylistPlugin.cmake
+ /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake
+ /usr/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake
+ /usr/lib/cmake/Qt5Network/Qt5NetworkConfigVersion.cmake
+ /usr/lib/cmake/Qt5Network/Qt5Network_QConnmanEnginePlugin.cmake
+ /usr/lib/cmake/Qt5Network/Qt5Network_QGenericEnginePlugin.cmake
+ /usr/lib/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake
  /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake
  /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake
  /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake
@@ -409,88 +423,25 @@
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h
- /usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in
- /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
  /usr/share/cmake/Modules/CMakeCXXInformation.cmake
  /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake
- /usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake
- /usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake
- /usr/share/cmake/Modules/CMakeDetermineCompiler.cmake
- /usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake
- /usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake
- /usr/share/cmake/Modules/CMakeDetermineCompilerSupport.cmake
- /usr/share/cmake/Modules/CMakeDetermineSystem.cmake
- /usr/share/cmake/Modules/CMakeFindBinUtils.cmake
  /usr/share/cmake/Modules/CMakeGenericSystem.cmake
  /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake
  /usr/share/cmake/Modules/CMakeLanguageInformation.cmake
  /usr/share/cmake/Modules/CMakeParseArguments.cmake
- /usr/share/cmake/Modules/CMakeParseImplicitIncludeInfo.cmake
- /usr/share/cmake/Modules/CMakeParseImplicitLinkInfo.cmake
- /usr/share/cmake/Modules/CMakeParseLibraryArchitecture.cmake
- /usr/share/cmake/Modules/CMakeSystem.cmake.in
  /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake
  /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake
- /usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake
- /usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake
- /usr/share/cmake/Modules/CMakeUnixFindMake.cmake
- /usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake
  /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake
- /usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake
- /usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/CrayClang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Diab-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake
  /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake
- /usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake
  /usr/share/cmake/Modules/Compiler/GNU.cmake
- /usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake
- /usr/share/cmake/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/NVHPC-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/OrangeC-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Renesas-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/TIClang-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Tasking-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake
- /usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake
  /usr/share/cmake/Modules/GNUInstallDirs.cmake
  /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake
  /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake
- /usr/share/cmake/Modules/Internal/CMakeDetermineLinkerId.cmake
- /usr/share/cmake/Modules/Internal/CMakeInspectCXXLinker.cmake
- /usr/share/cmake/Modules/Internal/FeatureTesting.cmake
  /usr/share/cmake/Modules/Linker/GNU-CXX.cmake
  /usr/share/cmake/Modules/Linker/GNU.cmake
  /usr/share/cmake/Modules/Platform/Linker/GNU.cmake
  /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake
  /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake
- /usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake
  /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake
  /usr/share/cmake/Modules/Platform/Linux-GNU.cmake
  /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake
@@ -1196,6 +1147,11 @@ CMakeFiles/flacplayer.dir/main.cpp.o
  /usr/include/qt/QtGui/qtguiglobal.h
  /usr/include/qt/QtGui/qtransform.h
  /usr/include/qt/QtGui/qwindowdefs.h
+ /usr/include/qt/QtMultimedia/QAudioFormat
+ /usr/include/qt/QtMultimedia/qaudioformat.h
+ /usr/include/qt/QtMultimedia/qmultimedia.h
+ /usr/include/qt/QtMultimedia/qtmultimedia-config.h
+ /usr/include/qt/QtMultimedia/qtmultimediaglobal.h
  /usr/include/qt/QtWidgets/QApplication
  /usr/include/qt/QtWidgets/QLabel
  /usr/include/qt/QtWidgets/QMainWindow
@@ -1635,59 +1591,130 @@ flacplayer
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a
  /usr/lib/ld-linux-x86-64.so.2
+ /usr/lib/libFLAC.so.14
  /usr/lib/libGL.so.1
  /usr/lib/libGLX.so.0
  /usr/lib/libGLdispatch.so.0
  /usr/lib/libQt5Core.so.5.15.17
  /usr/lib/libQt5Gui.so.5.15.17
+ /usr/lib/libQt5Multimedia.so.5.15.17
+ /usr/lib/libQt5Network.so.5.15.17
  /usr/lib/libQt5Widgets.so.5.15.17
  /usr/lib/libX11.so.6
  /usr/lib/libXau.so.6
  /usr/lib/libXdmcp.so.6
+ /usr/lib/libasyncns.so.0
+ /usr/lib/libblkid.so.1
  /usr/lib/libbrotlicommon.so.1
  /usr/lib/libbrotlidec.so.1
  /usr/lib/libbz2.so.1.0
  /usr/lib/libc.so.6
  /usr/lib/libc_nonshared.a
  /usr/lib/libcap.so.2
+ /usr/lib/libcom_err.so.2
+ /usr/lib/libcrypto.so.3
+ /usr/lib/libcurl.so.4
+ /usr/lib/libdbus-1.so.3
  /usr/lib/libdouble-conversion.so.3
+ /usr/lib/libduktape.so.207
+ /usr/lib/libffi.so.8
  /usr/lib/libfreetype.so.6
+ /usr/lib/libgio-2.0.so.0
  /usr/lib/libglib-2.0.so.0
+ /usr/lib/libgmodule-2.0.so.0
+ /usr/lib/libgobject-2.0.so.0
  /usr/lib/libgraphite2.so.3
+ /usr/lib/libgssapi_krb5.so.2
  /usr/lib/libharfbuzz.so.0
  /usr/lib/libicudata.so.76
  /usr/lib/libicui18n.so.76
  /usr/lib/libicuuc.so.76
+ /usr/lib/libidn2.so.0
+ /usr/lib/libk5crypto.so.3
+ /usr/lib/libkeyutils.so.1
+ /usr/lib/libkrb5.so.3
+ /usr/lib/libkrb5support.so.0
  /usr/lib/libm.so.6
  /usr/lib/libmd4c.so.0
+ /usr/lib/libmount.so.1
+ /usr/lib/libmp3lame.so.0
+ /usr/lib/libmpg123.so.0
  /usr/lib/libmvec.so.1
+ /usr/lib/libnghttp2.so.14
+ /usr/lib/libnghttp3.so.9
+ /usr/lib/libogg.so.0
+ /usr/lib/libopus.so.0
  /usr/lib/libpcre2-16.so.0
  /usr/lib/libpcre2-8.so.0
  /usr/lib/libpng16.so.16
+ /usr/lib/libproxy.so.1
+ /usr/lib/libproxy/libpxbackend-1.0.so
+ /usr/lib/libpsl.so.5
+ /usr/lib/libpulse.so.0
+ /usr/lib/libresolv.so.2
+ /usr/lib/libsndfile.so.1
+ /usr/lib/libssh2.so.1
+ /usr/lib/libssl.so.3
  /usr/lib/libsystemd.so.0
+ /usr/lib/libunistring.so.5
+ /usr/lib/libvorbis.so.0
+ /usr/lib/libvorbisenc.so.2
  /usr/lib/libxcb.so.1
  /usr/lib/libz.so.1
  /usr/lib/libzstd.so.1
+ /usr/lib/pulseaudio/libpulsecommon-17.0.so
+ /usr/lib32/libFLAC.so.14
  /usr/lib32/libGL.so.1
  /usr/lib32/libGLX.so.0
  /usr/lib32/libGLdispatch.so.0
  /usr/lib32/libX11.so.6
  /usr/lib32/libXau.so.6
  /usr/lib32/libXdmcp.so.6
+ /usr/lib32/libasyncns.so.0
+ /usr/lib32/libblkid.so.1
  /usr/lib32/libbrotlicommon.so.1
  /usr/lib32/libbrotlidec.so.1
  /usr/lib32/libbz2.so.1.0
  /usr/lib32/libcap.so.2
+ /usr/lib32/libcom_err.so.2
+ /usr/lib32/libcrypto.so.3
+ /usr/lib32/libcurl.so.4
+ /usr/lib32/libdbus-1.so.3
+ /usr/lib32/libffi.so.8
  /usr/lib32/libfreetype.so.6
+ /usr/lib32/libgio-2.0.so.0
  /usr/lib32/libglib-2.0.so.0
+ /usr/lib32/libgmodule-2.0.so.0
+ /usr/lib32/libgobject-2.0.so.0
+ /usr/lib32/libgssapi_krb5.so.2
  /usr/lib32/libharfbuzz.so.0
  /usr/lib32/libicudata.so.76
  /usr/lib32/libicui18n.so.76
  /usr/lib32/libicuuc.so.76
+ /usr/lib32/libidn2.so.0
+ /usr/lib32/libk5crypto.so.3
+ /usr/lib32/libkeyutils.so.1
+ /usr/lib32/libkrb5.so.3
+ /usr/lib32/libkrb5support.so.0
+ /usr/lib32/libmount.so.1
+ /usr/lib32/libmpg123.so.0
+ /usr/lib32/libnghttp2.so.14
+ /usr/lib32/libnghttp3.so.9
+ /usr/lib32/libogg.so.0
+ /usr/lib32/libopus.so.0
  /usr/lib32/libpcre2-16.so.0
  /usr/lib32/libpcre2-8.so.0
  /usr/lib32/libpng16.so.16
+ /usr/lib32/libpsl.so.5
+ /usr/lib32/libpulse.so.0
+ /usr/lib32/libresolv.so.2
+ /usr/lib32/libsndfile.so.1
+ /usr/lib32/libssh2.so.1
+ /usr/lib32/libssl.so.3
  /usr/lib32/libsystemd.so.0
+ /usr/lib32/libunistring.so.5
+ /usr/lib32/libvorbis.so.0
+ /usr/lib32/libvorbisenc.so.2
  /usr/lib32/libxcb.so.1
  /usr/lib32/libz.so.1
  /usr/lib32/libzstd.so.1

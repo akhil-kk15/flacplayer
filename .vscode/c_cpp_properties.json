@@ -6,22 +6,19 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/build/**",
                 "/usr/include/qt/**",
-                "/usr/include/qt",
                 "/usr/include/qt/QtWidgets",
                 "/usr/include/qt/QtGui", 
                 "/usr/include/qt/QtCore",
-                "/usr/include/qt/QtWidgets/5.15.17",
-                "/usr/include/qt/QtGui/5.15.17", 
-                "/usr/include/qt/QtCore/5.15.17",
+                "/usr/include/qt/QtMultimedia",
                 "/usr/lib/qt/mkspecs/linux-g++"
             ],
             "defines": [
                 "QT_WIDGETS_LIB",
                 "QT_GUI_LIB", 
                 "QT_CORE_LIB",
-                "QT_VERSION_MAJOR=5"
+                "QT_MULTIMEDIA_LIB"
             ],
-            "compilerPath": "/usr/bin/g++",
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64",
