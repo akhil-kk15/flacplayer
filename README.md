@@ -2,37 +2,37 @@
 
 A modern, cross-platform media player specifically designed for lossless audio formats, built with Qt.
 
-## 📋 Overview
+##  Overview
 
 FLAC Player is a desktop application focused on providing the best playback experience for high-quality, lossless audio formats. The player aims to combine simplicity with powerful metadata management capabilities, making it perfect for audiophiles and music enthusiasts who value audio quality.
 
-## ✨ Features (Planned & Current)
+##  Features (Planned & Current)
 
 ### Current Features
-- ✅ Qt-based graphical user interface
-- ✅ Basic media player framework
-- ✅ Cross-platform support (Linux, Windows, macOS)
-- ✅ Modern C++17 codebase
+-  Qt-based graphical user interface
+-  Basic media player framework
+-  Cross-platform support (Linux, Windows, macOS)
+-  Modern C++17 codebase
 
 ### Planned Features
-- 🎯 **Lossless Format Support**: FLAC, ALAC, WAV, APE, and other high-quality audio formats
-- 🎨 **Metadata Management**: 
+-  **Lossless Format Support**: FLAC, ALAC, WAV, APE, and other high-quality audio formats
+-  **Metadata Management**: 
   - Automatic metadata fetching from online databases
   - Album art download and management
   - Manual metadata and album art editing
-- 📚 **Library Management**: Organize and browse your music collection
-- 🎼 **Playlist Support**: Create and manage custom playlists
-- 🎛️ **Audio Controls**: Play, pause, skip, volume, and seek controls
-- 📊 **Audio Visualization**: Real-time visualization of audio playback
+-  **Library Management**: Organize and browse your music collection
+-  **Playlist Support**: Create and manage custom playlists
+-  **Audio Controls**: Play, pause, skip, volume, and seek controls
+-  **Audio Visualization**: Real-time visualization of audio playback
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **UI Framework**: Qt 5/6 (Widgets, Multimedia)
 - **Language**: C++17
 - **Build System**: CMake
 - **Planned Libraries**: Boost (for additional functionality)
 
-## 📦 Installation
+##  Installation
 
 ### Prerequisites
 
@@ -73,7 +73,7 @@ FLAC Player is a desktop application focused on providing the best playback expe
    # .\Release\flacplayer.exe
    ```
 
-## 🚀 Usage
+##  Usage
 
 The application is currently in early development. Upon launching, you will see:
 - A main window with basic UI controls
@@ -82,7 +82,7 @@ The application is currently in early development. Upon launching, you will see:
 
 For detailed Qt development information, see [QT_LEARNING_GUIDE.md](QT_LEARNING_GUIDE.md).
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 flacplayer/
@@ -124,7 +124,7 @@ flacplayer/
 
 See [QT_LEARNING_GUIDE.md](QT_LEARNING_GUIDE.md) for comprehensive Qt development tips.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how you can help:
 
@@ -143,22 +143,22 @@ Contributions are welcome! Here's how you can help:
 - Write tests
 - Improve documentation
 
-## 📝 Project Status
+##  Project Status
 
 **Current Version**: 0.1 (Early Development)
 
 This project is in its **early development phase**. The current focus is on establishing the basic Qt framework and UI structure. Core audio playback and metadata features are planned for upcoming releases.
 
-## 📄 License
+##  License
 
 This project is open source. Please add a LICENSE file to specify the terms of use.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Built with [Qt Framework](https://www.qt.io/)
 - Inspired by the need for a dedicated lossless audio player
 
-## 📞 Contact
+##  Contact
 
 For questions, suggestions, or issues, please open an issue on GitHub.
 
