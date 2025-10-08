@@ -3,7 +3,14 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QDebug>
-#include <QAudioFormat>
+#include <QAudioFormat> 
+#include <filesystem>   //for file system operations
+#include <thread>       //this is for multithreading
+// Note: Removed QNetworkAccessManager and boost includes that may cause issues
+// Add them back individually when needed
+
+//remove the one you don't need later
+
 
 int main(int argc, char *argv[])
 {
@@ -25,7 +32,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Test QAudioFormat
+    // Test QAudioFormat and frequency
     QAudioFormat format;
     format.setSampleRate(44100);
     format.setChannelCount(2);
@@ -42,6 +49,11 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     qDebug() << "Main window shown, entering event loop...";
+
+    //filesystem operations
+    std::filesystem::path testPath = std::filesystem::current_path();
+    qDebug() << "Current working directory:" << QString::fromStdString(testPath.string());
+
 
     return a.exec();
 }
