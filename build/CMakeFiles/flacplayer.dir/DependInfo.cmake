@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "" "flacplayer_autogen/timestamp" "custom" "flacplayer_autogen/deps"
+  "/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp" "CMakeFiles/flacplayer.dir/audiomanager.cpp.o" "gcc" "CMakeFiles/flacplayer.dir/audiomanager.cpp.o.d"
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/mocs_compilation.cpp" "CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o.d"
   "/home/akhilkk/projects/flacplayer/flacplayer/main.cpp" "CMakeFiles/flacplayer.dir/main.cpp.o" "gcc" "CMakeFiles/flacplayer.dir/main.cpp.o.d"
   "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp" "CMakeFiles/flacplayer.dir/mainwindow.cpp.o" "gcc" "CMakeFiles/flacplayer.dir/mainwindow.cpp.o.d"

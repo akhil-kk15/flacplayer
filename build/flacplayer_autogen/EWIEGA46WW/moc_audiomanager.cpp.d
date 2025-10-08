@@ -1,6 +1,5 @@
-/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp: /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h \
+/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/EWIEGA46WW/moc_audiomanager.cpp: /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
   /home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/moc_predefs.h \
-  /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -332,7 +331,6 @@
   /usr/include/qt/QtCore/qcontainerfwd.h \
   /usr/include/qt/QtCore/qcontainertools_impl.h \
   /usr/include/qt/QtCore/qcontiguouscache.h \
-  /usr/include/qt/QtCore/qdatastream.h \
   /usr/include/qt/QtCore/qdebug.h \
   /usr/include/qt/QtCore/qflags.h \
   /usr/include/qt/QtCore/qgenericatomic.h \
@@ -342,12 +340,10 @@
   /usr/include/qt/QtCore/qhashfunctions.h \
   /usr/include/qt/QtCore/qiodevice.h \
   /usr/include/qt/QtCore/qiterator.h \
-  /usr/include/qt/QtCore/qline.h \
   /usr/include/qt/QtCore/qlist.h \
   /usr/include/qt/QtCore/qlocale.h \
   /usr/include/qt/QtCore/qlogging.h \
   /usr/include/qt/QtCore/qmap.h \
-  /usr/include/qt/QtCore/qmargins.h \
   /usr/include/qt/QtCore/qmetatype.h \
   /usr/include/qt/QtCore/qnamespace.h \
   /usr/include/qt/QtCore/qnumeric.h \
@@ -356,9 +352,7 @@
   /usr/include/qt/QtCore/qobjectdefs.h \
   /usr/include/qt/QtCore/qobjectdefs_impl.h \
   /usr/include/qt/QtCore/qpair.h \
-  /usr/include/qt/QtCore/qpoint.h \
   /usr/include/qt/QtCore/qprocessordetection.h \
-  /usr/include/qt/QtCore/qrect.h \
   /usr/include/qt/QtCore/qrefcount.h \
   /usr/include/qt/QtCore/qregexp.h \
   /usr/include/qt/QtCore/qscopedpointer.h \
@@ -366,7 +360,6 @@
   /usr/include/qt/QtCore/qshareddata.h \
   /usr/include/qt/QtCore/qsharedpointer.h \
   /usr/include/qt/QtCore/qsharedpointer_impl.h \
-  /usr/include/qt/QtCore/qsize.h \
   /usr/include/qt/QtCore/qstring.h \
   /usr/include/qt/QtCore/qstringalgorithms.h \
   /usr/include/qt/QtCore/qstringlist.h \
@@ -382,41 +375,6 @@
   /usr/include/qt/QtCore/qvarlengtharray.h \
   /usr/include/qt/QtCore/qvector.h \
   /usr/include/qt/QtCore/qversiontagging.h \
-  /usr/include/qt/QtGui/qbrush.h \
-  /usr/include/qt/QtGui/qcolor.h \
-  /usr/include/qt/QtGui/qcursor.h \
-  /usr/include/qt/QtGui/qfont.h \
-  /usr/include/qt/QtGui/qfontinfo.h \
-  /usr/include/qt/QtGui/qfontmetrics.h \
-  /usr/include/qt/QtGui/qicon.h \
-  /usr/include/qt/QtGui/qimage.h \
-  /usr/include/qt/QtGui/qkeysequence.h \
-  /usr/include/qt/QtGui/qmatrix.h \
-  /usr/include/qt/QtGui/qpaintdevice.h \
-  /usr/include/qt/QtGui/qpalette.h \
-  /usr/include/qt/QtGui/qpixelformat.h \
-  /usr/include/qt/QtGui/qpixmap.h \
-  /usr/include/qt/QtGui/qpolygon.h \
-  /usr/include/qt/QtGui/qregion.h \
-  /usr/include/qt/QtGui/qrgb.h \
-  /usr/include/qt/QtGui/qrgba64.h \
-  /usr/include/qt/QtGui/qtgui-config.h \
-  /usr/include/qt/QtGui/qtguiglobal.h \
-  /usr/include/qt/QtGui/qtransform.h \
-  /usr/include/qt/QtGui/qwindowdefs.h \
-  /usr/include/qt/QtWidgets/QLabel \
-  /usr/include/qt/QtWidgets/QMainWindow \
-  /usr/include/qt/QtWidgets/QPushButton \
-  /usr/include/qt/QtWidgets/qabstractbutton.h \
-  /usr/include/qt/QtWidgets/qframe.h \
-  /usr/include/qt/QtWidgets/qlabel.h \
-  /usr/include/qt/QtWidgets/qmainwindow.h \
-  /usr/include/qt/QtWidgets/qpushbutton.h \
-  /usr/include/qt/QtWidgets/qsizepolicy.h \
-  /usr/include/qt/QtWidgets/qtabwidget.h \
-  /usr/include/qt/QtWidgets/qtwidgets-config.h \
-  /usr/include/qt/QtWidgets/qtwidgetsglobal.h \
-  /usr/include/qt/QtWidgets/qwidget.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
   /usr/include/stdint.h \

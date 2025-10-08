@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/flacplayer_autogen.dir/AutogenUsed.txt"
   "CMakeFiles/flacplayer_autogen.dir/ParseCache.txt"
   "flacplayer_autogen"
+  "CMakeFiles/flacplayer.dir/audiomanager.cpp.o"
+  "CMakeFiles/flacplayer.dir/audiomanager.cpp.o.d"
   "CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o"
   "CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o.d"
   "CMakeFiles/flacplayer.dir/main.cpp.o"

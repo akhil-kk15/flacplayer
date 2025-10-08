@@ -97,6 +97,9 @@
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerPlayerServicePlugin.cmake",
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QM3uPlaylistPlugin.cmake",
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake",
+		"/usr/share/cmake/Modules/FindPkgConfig.cmake",
+		"/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake",
+		"/usr/share/cmake/Modules/FindPackageMessage.cmake",
 		"/usr/share/cmake/Modules/GNUInstallDirs.cmake"
 	],
 	"CMAKE_SOURCE_DIR" : "/home/akhilkk/projects/flacplayer/flacplayer",
@@ -105,6 +108,12 @@
 	"DEP_FILE_RULE_NAME" : "flacplayer_autogen/timestamp",
 	"HEADERS" : 
 	[
+		[
+			"/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h",
+			"MU",
+			"EWIEGA46WW/moc_audiomanager.cpp",
+			null
+		],
 		[
 			"/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h",
 			"MU",
@@ -139,13 +148,13 @@
 		"/usr/lib/qt/mkspecs/linux-g++",
 		"/usr/include/qt/QtMultimedia",
 		"/usr/include/qt/QtNetwork",
+		"/usr/include",
 		"/usr/include/c++/15.2.1",
 		"/usr/include/c++/15.2.1/x86_64-pc-linux-gnu",
 		"/usr/include/c++/15.2.1/backward",
 		"/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include",
 		"/usr/local/include",
-		"/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include-fixed",
-		"/usr/include"
+		"/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include-fixed"
 	],
 	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE", "Q_NAMESPACE_EXPORT" ],
 	"MOC_OPTIONS" : [],
@@ -172,6 +181,11 @@
 	"SETTINGS_FILE" : "/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/flacplayer_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[
+			"/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp",
+			"MU",
+			null
+		],
 		[ "/home/akhilkk/projects/flacplayer/flacplayer/main.cpp", "MU", null ],
 		[
 			"/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp",

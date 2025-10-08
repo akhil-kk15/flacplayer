@@ -254,21 +254,101 @@ CMakeFiles/flacplayer.dir/main.cpp.o: \
  /usr/include/qt/QtWidgets/qabstractbutton.h \
  /usr/include/qt/QtWidgets/QLabel /usr/include/qt/QtWidgets/qlabel.h \
  /usr/include/qt/QtWidgets/qframe.h \
+ /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
+ /usr/include/qt/QtCore/QObject /usr/include/qt/QtCore/qobject.h \
+ /usr/include/qt/QtCore/QString /usr/include/qt/QtCore/qstring.h \
+ /usr/include/qt/QtCore/QDebug /usr/include/qt/QtCore/qdebug.h \
+ /usr/include/qt/QtCore/qmap.h /usr/include/qt/QtCore/qtextstream.h \
+ /usr/include/qt/QtCore/qlocale.h /usr/include/qt/QtCore/qvariant.h \
+ /usr/include/c++/15.2.1/variant /usr/include/c++/15.2.1/bits/monostate.h \
+ /usr/include/qt/QtCore/qset.h /usr/include/qt/QtCore/qcontiguouscache.h \
+ /usr/include/libavformat/avformat.h /usr/include/libavcodec/codec_par.h \
+ /usr/include/libavutil/avutil.h /usr/include/libavutil/common.h \
+ /usr/include/inttypes.h /usr/include/c++/15.2.1/math.h \
+ /usr/include/c++/15.2.1/cmath /usr/include/math.h \
+ /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
+ /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
+ /usr/include/bits/mathcalls-helper-functions.h \
+ /usr/include/bits/mathcalls.h /usr/include/bits/mathcalls-narrow.h \
+ /usr/include/bits/iscanonical.h /usr/include/c++/15.2.1/bits/specfun.h \
+ /usr/include/c++/15.2.1/tr1/gamma.tcc \
+ /usr/include/c++/15.2.1/tr1/special_function_util.h \
+ /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
+ /usr/include/c++/15.2.1/tr1/beta_function.tcc \
+ /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
+ /usr/include/c++/15.2.1/tr1/exp_integral.tcc \
+ /usr/include/c++/15.2.1/tr1/hypergeometric.tcc \
+ /usr/include/c++/15.2.1/tr1/legendre_function.tcc \
+ /usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc \
+ /usr/include/c++/15.2.1/tr1/poly_hermite.tcc \
+ /usr/include/c++/15.2.1/tr1/poly_laguerre.tcc \
+ /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc \
+ /usr/include/libavutil/attributes.h /usr/include/libavutil/error.h \
+ /usr/include/libavutil/macros.h /usr/include/libavutil/avconfig.h \
+ /usr/include/libavutil/version.h /usr/include/libavutil/mem.h \
+ /usr/include/libavutil/rational.h /usr/include/libavutil/mathematics.h \
+ /usr/include/libavutil/intfloat.h /usr/include/libavutil/log.h \
+ /usr/include/libavutil/pixfmt.h /usr/include/libavutil/channel_layout.h \
+ /usr/include/libavutil/rational.h /usr/include/libavutil/pixfmt.h \
+ /usr/include/libavcodec/codec_id.h /usr/include/libavutil/samplefmt.h \
+ /usr/include/libavcodec/version_major.h /usr/include/libavcodec/defs.h \
+ /usr/include/libavcodec/packet.h /usr/include/libavutil/attributes.h \
+ /usr/include/libavutil/buffer.h /usr/include/libavutil/dict.h \
+ /usr/include/libavutil/version.h /usr/include/libavcodec/version_major.h \
+ /usr/include/libavcodec/defs.h /usr/include/libavcodec/packet.h \
+ /usr/include/libavutil/log.h /usr/include/libavformat/avio.h \
+ /usr/include/libavformat/version_major.h \
+ /usr/include/libavformat/version.h \
+ /usr/include/libavformat/version_major.h /usr/include/libavutil/frame.h \
+ /usr/include/libavutil/avutil.h /usr/include/libavutil/buffer.h \
+ /usr/include/libavutil/channel_layout.h /usr/include/libavutil/dict.h \
+ /usr/include/libavutil/samplefmt.h /usr/include/libavcodec/codec.h \
+ /usr/include/libavutil/hwcontext.h /usr/include/libavutil/frame.h \
+ /usr/include/libavcodec/codec_id.h /usr/include/libavcodec/avcodec.h \
+ /usr/include/libavcodec/codec.h /usr/include/libavcodec/version.h \
+ /usr/include/libavcodec/codec_desc.h /usr/include/libavcodec/codec_par.h \
+ /usr/include/libswresample/swresample.h \
+ /usr/include/libswresample/version_major.h \
+ /usr/include/libswresample/version.h \
+ /usr/include/libswresample/version_major.h \
  /usr/include/qt/QtWidgets/QApplication \
  /usr/include/qt/QtWidgets/qapplication.h \
  /usr/include/qt/QtCore/qcoreapplication.h \
  /usr/include/qt/QtCore/qcoreevent.h /usr/include/qt/QtCore/qeventloop.h \
  /usr/include/qt/QtGui/qguiapplication.h \
- /usr/include/qt/QtGui/qinputmethod.h /usr/include/qt/QtCore/qlocale.h \
- /usr/include/qt/QtCore/qvariant.h /usr/include/qt/QtCore/qmap.h \
- /usr/include/c++/15.2.1/variant /usr/include/c++/15.2.1/bits/monostate.h \
- /usr/include/qt/QtCore/QLocale /usr/include/qt/QtCore/qlocale.h \
- /usr/include/qt/QtCore/QTranslator /usr/include/qt/QtCore/qtranslator.h \
- /usr/include/qt/QtCore/QDebug /usr/include/qt/QtCore/qdebug.h \
- /usr/include/qt/QtCore/qtextstream.h /usr/include/qt/QtCore/qset.h \
- /usr/include/qt/QtCore/qcontiguouscache.h \
+ /usr/include/qt/QtGui/qinputmethod.h /usr/include/qt/QtCore/QLocale \
+ /usr/include/qt/QtCore/qlocale.h /usr/include/qt/QtCore/QTranslator \
+ /usr/include/qt/QtCore/qtranslator.h \
  /usr/include/qt/QtMultimedia/QAudioFormat \
  /usr/include/qt/QtMultimedia/qaudioformat.h \
  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
- /usr/include/qt/QtMultimedia/qmultimedia.h
+ /usr/include/qt/QtMultimedia/qmultimedia.h \
+ /usr/include/c++/15.2.1/filesystem /usr/include/c++/15.2.1/bits/fs_fwd.h \
+ /usr/include/c++/15.2.1/bits/fs_path.h /usr/include/c++/15.2.1/locale \
+ /usr/include/c++/15.2.1/bits/locale_facets.h \
+ /usr/include/c++/15.2.1/cwctype /usr/include/wctype.h \
+ /usr/include/bits/wctype-wchar.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/15.2.1/bits/locale_facets.tcc \
+ /usr/include/c++/15.2.1/bits/locale_facets_nonio.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/time_members.h \
+ /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/15.2.1/bits/codecvt.h \
+ /usr/include/c++/15.2.1/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/15.2.1/bits/locale_conv.h \
+ /usr/include/c++/15.2.1/iomanip \
+ /usr/include/c++/15.2.1/bits/quoted_string.h \
+ /usr/include/c++/15.2.1/sstream /usr/include/c++/15.2.1/istream \
+ /usr/include/c++/15.2.1/ios /usr/include/c++/15.2.1/bits/basic_ios.h \
+ /usr/include/c++/15.2.1/bits/basic_ios.tcc \
+ /usr/include/c++/15.2.1/ostream /usr/include/c++/15.2.1/bits/ostream.h \
+ /usr/include/c++/15.2.1/bits/ostream.tcc \
+ /usr/include/c++/15.2.1/bits/istream.tcc \
+ /usr/include/c++/15.2.1/bits/sstream.tcc /usr/include/c++/15.2.1/codecvt \
+ /usr/include/c++/15.2.1/bits/fs_dir.h \
+ /usr/include/c++/15.2.1/bits/fs_ops.h /usr/include/c++/15.2.1/thread \
+ /usr/include/c++/15.2.1/bits/std_thread.h \
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h

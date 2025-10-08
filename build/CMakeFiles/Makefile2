@@ -88,12 +88,12 @@ CMakeFiles/flacplayer.dir/all: CMakeFiles/flacplayer_autogen_timestamp_deps.dir/
 CMakeFiles/flacplayer.dir/all: CMakeFiles/flacplayer_autogen.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target flacplayer"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target flacplayer"
 .PHONY : CMakeFiles/flacplayer.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/flacplayer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/flacplayer.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles 0
 .PHONY : CMakeFiles/flacplayer.dir/rule
@@ -106,7 +106,7 @@ flacplayer: CMakeFiles/flacplayer.dir/rule
 CMakeFiles/flacplayer.dir/codegen: CMakeFiles/flacplayer_autogen_timestamp_deps.dir/all
 CMakeFiles/flacplayer.dir/codegen: CMakeFiles/flacplayer_autogen.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=1,2,3,4,5 "Finished codegen for target flacplayer"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Finished codegen for target flacplayer"
 .PHONY : CMakeFiles/flacplayer.dir/codegen
 
 # clean rule for target.
@@ -153,7 +153,7 @@ CMakeFiles/flacplayer_autogen_timestamp_deps.dir/clean:
 CMakeFiles/flacplayer_autogen.dir/all: CMakeFiles/flacplayer_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer_autogen.dir/build.make CMakeFiles/flacplayer_autogen.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer_autogen.dir/build.make CMakeFiles/flacplayer_autogen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=6 "Built target flacplayer_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=7 "Built target flacplayer_autogen"
 .PHONY : CMakeFiles/flacplayer_autogen.dir/all
 
 # Build rule for subdir invocation for target.
@@ -170,7 +170,7 @@ flacplayer_autogen: CMakeFiles/flacplayer_autogen.dir/rule
 # codegen rule for target.
 CMakeFiles/flacplayer_autogen.dir/codegen: CMakeFiles/flacplayer_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer_autogen.dir/build.make CMakeFiles/flacplayer_autogen.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=6 "Finished codegen for target flacplayer_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles --progress-num=7 "Finished codegen for target flacplayer_autogen"
 .PHONY : CMakeFiles/flacplayer_autogen.dir/codegen
 
 # clean rule for target.

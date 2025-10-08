@@ -201,6 +201,30 @@ flacplayer_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer_autogen.dir/build.make CMakeFiles/flacplayer_autogen.dir/build
 .PHONY : flacplayer_autogen/fast
 
+audiomanager.o: audiomanager.cpp.o
+.PHONY : audiomanager.o
+
+# target to build an object file
+audiomanager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/audiomanager.cpp.o
+.PHONY : audiomanager.cpp.o
+
+audiomanager.i: audiomanager.cpp.i
+.PHONY : audiomanager.i
+
+# target to preprocess a source file
+audiomanager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/audiomanager.cpp.i
+.PHONY : audiomanager.cpp.i
+
+audiomanager.s: audiomanager.cpp.s
+.PHONY : audiomanager.s
+
+# target to generate assembly for a file
+audiomanager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/flacplayer.dir/build.make CMakeFiles/flacplayer.dir/audiomanager.cpp.s
+.PHONY : audiomanager.cpp.s
+
 flacplayer_autogen/mocs_compilation.o: flacplayer_autogen/mocs_compilation.cpp.o
 .PHONY : flacplayer_autogen/mocs_compilation.o
 
@@ -288,6 +312,9 @@ help:
 	@echo "... flacplayer_autogen"
 	@echo "... flacplayer_autogen_timestamp_deps"
 	@echo "... flacplayer"
+	@echo "... audiomanager.o"
+	@echo "... audiomanager.i"
+	@echo "... audiomanager.s"
 	@echo "... flacplayer_autogen/mocs_compilation.o"
 	@echo "... flacplayer_autogen/mocs_compilation.i"
 	@echo "... flacplayer_autogen/mocs_compilation.s"
