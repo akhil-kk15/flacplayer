@@ -1,0 +1,69 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+
+# Qt generated files
+*.autosave
+*.user
+*.pro.user
+*.pro.user.*
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.qm
+.qmake.stash
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps
+
+# Compiled Object files
+*.o
+*.obj
+*.slo
+*.lo
+*.ko
+
+# Compiled Dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.lib
+*.lai
+*.la
+
+# Executables
+*.exe
+*.out
+*.app
+flacplayer
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+/tmp/
+
+# Qt Creator
+*.autosave
+*.user
+CMakeLists.txt.user*
