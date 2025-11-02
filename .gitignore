@@ -67,3 +67,5 @@ flacplayer
 *.autosave
 *.user
 CMakeLists.txt.user*
+
+flac.cpp

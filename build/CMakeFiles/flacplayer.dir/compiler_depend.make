@@ -239,6 +239,7 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/c++/15.2.1/ext/string_conversions.h \
   /usr/include/c++/15.2.1/ext/type_traits.h \
   /usr/include/c++/15.2.1/functional \
+  /usr/include/c++/15.2.1/future \
   /usr/include/c++/15.2.1/initializer_list \
   /usr/include/c++/15.2.1/ios \
   /usr/include/c++/15.2.1/iosfwd \
@@ -327,14 +328,23 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/locale.h \
   /usr/include/math.h \
   /usr/include/pthread.h \
+  /usr/include/qt/QtCore/QBuffer \
+  /usr/include/qt/QtCore/QByteArray \
   /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QIODevice \
+  /usr/include/qt/QtCore/QMutex \
+  /usr/include/qt/QtCore/QMutexLocker \
   /usr/include/qt/QtCore/QObject \
   /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QThread \
+  /usr/include/qt/QtCore/QTimer \
   /usr/include/qt/QtCore/qalgorithms.h \
   /usr/include/qt/QtCore/qarraydata.h \
   /usr/include/qt/QtCore/qatomic.h \
   /usr/include/qt/QtCore/qatomic_cxx11.h \
   /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
+  /usr/include/qt/QtCore/qbuffer.h \
   /usr/include/qt/QtCore/qbytearray.h \
   /usr/include/qt/QtCore/qbytearraylist.h \
   /usr/include/qt/QtCore/qchar.h \
@@ -344,7 +354,9 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/qt/QtCore/qcontainertools_impl.h \
   /usr/include/qt/QtCore/qcontiguouscache.h \
   /usr/include/qt/QtCore/qdatastream.h \
+  /usr/include/qt/QtCore/qdeadlinetimer.h \
   /usr/include/qt/QtCore/qdebug.h \
+  /usr/include/qt/QtCore/qelapsedtimer.h \
   /usr/include/qt/QtCore/qflags.h \
   /usr/include/qt/QtCore/qgenericatomic.h \
   /usr/include/qt/QtCore/qglobal.h \
@@ -360,6 +372,7 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/qt/QtCore/qmap.h \
   /usr/include/qt/QtCore/qmargins.h \
   /usr/include/qt/QtCore/qmetatype.h \
+  /usr/include/qt/QtCore/qmutex.h \
   /usr/include/qt/QtCore/qnamespace.h \
   /usr/include/qt/QtCore/qnumeric.h \
   /usr/include/qt/QtCore/qobject.h \
@@ -388,6 +401,9 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/qt/QtCore/qsystemdetection.h \
   /usr/include/qt/QtCore/qtcore-config.h \
   /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qthread.h \
+  /usr/include/qt/QtCore/qtimer.h \
+  /usr/include/qt/QtCore/qtsan_impl.h \
   /usr/include/qt/QtCore/qtypeinfo.h \
   /usr/include/qt/QtCore/qvariant.h \
   /usr/include/qt/QtCore/qvarlengtharray.h \
@@ -415,15 +431,28 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/include/qt/QtGui/qtguiglobal.h \
   /usr/include/qt/QtGui/qtransform.h \
   /usr/include/qt/QtGui/qwindowdefs.h \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/qt/QtWidgets/QLabel \
   /usr/include/qt/QtWidgets/QMainWindow \
+  /usr/include/qt/QtWidgets/QProgressBar \
   /usr/include/qt/QtWidgets/QPushButton \
+  /usr/include/qt/QtWidgets/QSlider \
   /usr/include/qt/QtWidgets/qabstractbutton.h \
+  /usr/include/qt/QtWidgets/qabstractslider.h \
   /usr/include/qt/QtWidgets/qframe.h \
   /usr/include/qt/QtWidgets/qlabel.h \
   /usr/include/qt/QtWidgets/qmainwindow.h \
+  /usr/include/qt/QtWidgets/qprogressbar.h \
   /usr/include/qt/QtWidgets/qpushbutton.h \
   /usr/include/qt/QtWidgets/qsizepolicy.h \
+  /usr/include/qt/QtWidgets/qslider.h \
   /usr/include/qt/QtWidgets/qtabwidget.h \
   /usr/include/qt/QtWidgets/qtwidgets-config.h \
   /usr/include/qt/QtWidgets/qtwidgetsglobal.h \
@@ -535,8 +564,435 @@ flacplayer_autogen/timestamp: /home/akhilkk/projects/flacplayer/flacplayer/CMake
   /usr/share/cmake/Modules/Platform/Linux.cmake \
   /usr/share/cmake/Modules/Platform/UnixPaths.cmake
 
+CMakeFiles/flacplayer.dir/audiomanager.cpp.o: /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp \
+  /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
+  /usr/include/alloca.h \
+  /usr/include/asm-generic/bitsperlong.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/int-ll64.h \
+  /usr/include/asm-generic/posix_types.h \
+  /usr/include/asm-generic/types.h \
+  /usr/include/asm/bitsperlong.h \
+  /usr/include/asm/errno.h \
+  /usr/include/asm/posix_types.h \
+  /usr/include/asm/posix_types_64.h \
+  /usr/include/asm/types.h \
+  /usr/include/assert.h \
+  /usr/include/bits/atomic_wide_counter.h \
+  /usr/include/bits/byteswap.h \
+  /usr/include/bits/cpu-set.h \
+  /usr/include/bits/endian.h \
+  /usr/include/bits/endianness.h \
+  /usr/include/bits/errno.h \
+  /usr/include/bits/floatn-common.h \
+  /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/iscanonical.h \
+  /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
+  /usr/include/bits/local_lim.h \
+  /usr/include/bits/locale.h \
+  /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
+  /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/posix2_lim.h \
+  /usr/include/bits/pthread_stack_min-dynamic.h \
+  /usr/include/bits/pthreadtypes-arch.h \
+  /usr/include/bits/pthreadtypes.h \
+  /usr/include/bits/sched.h \
+  /usr/include/bits/select.h \
+  /usr/include/bits/setjmp.h \
+  /usr/include/bits/stdint-intn.h \
+  /usr/include/bits/stdint-least.h \
+  /usr/include/bits/stdint-uintn.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/stdlib-float.h \
+  /usr/include/bits/struct_mutex.h \
+  /usr/include/bits/struct_rwlock.h \
+  /usr/include/bits/thread-shared-types.h \
+  /usr/include/bits/time.h \
+  /usr/include/bits/time64.h \
+  /usr/include/bits/timesize.h \
+  /usr/include/bits/timex.h \
+  /usr/include/bits/types.h \
+  /usr/include/bits/types/FILE.h \
+  /usr/include/bits/types/__FILE.h \
+  /usr/include/bits/types/__fpos64_t.h \
+  /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
+  /usr/include/bits/types/__mbstate_t.h \
+  /usr/include/bits/types/__sigset_t.h \
+  /usr/include/bits/types/clock_t.h \
+  /usr/include/bits/types/clockid_t.h \
+  /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/error_t.h \
+  /usr/include/bits/types/locale_t.h \
+  /usr/include/bits/types/mbstate_t.h \
+  /usr/include/bits/types/sigset_t.h \
+  /usr/include/bits/types/struct_FILE.h \
+  /usr/include/bits/types/struct___jmp_buf_tag.h \
+  /usr/include/bits/types/struct_itimerspec.h \
+  /usr/include/bits/types/struct_sched_param.h \
+  /usr/include/bits/types/struct_timespec.h \
+  /usr/include/bits/types/struct_timeval.h \
+  /usr/include/bits/types/struct_tm.h \
+  /usr/include/bits/types/time_t.h \
+  /usr/include/bits/types/timer_t.h \
+  /usr/include/bits/types/wint_t.h \
+  /usr/include/bits/typesizes.h \
+  /usr/include/bits/uintn-identity.h \
+  /usr/include/bits/uio_lim.h \
+  /usr/include/bits/waitflags.h \
+  /usr/include/bits/waitstatus.h \
+  /usr/include/bits/wchar.h \
+  /usr/include/bits/wordsize.h \
+  /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/15.2.1/algorithm \
+  /usr/include/c++/15.2.1/array \
+  /usr/include/c++/15.2.1/atomic \
+  /usr/include/c++/15.2.1/backward/auto_ptr.h \
+  /usr/include/c++/15.2.1/backward/binders.h \
+  /usr/include/c++/15.2.1/bit \
+  /usr/include/c++/15.2.1/bits/algorithmfwd.h \
+  /usr/include/c++/15.2.1/bits/align.h \
+  /usr/include/c++/15.2.1/bits/alloc_traits.h \
+  /usr/include/c++/15.2.1/bits/allocated_ptr.h \
+  /usr/include/c++/15.2.1/bits/allocator.h \
+  /usr/include/c++/15.2.1/bits/atomic_base.h \
+  /usr/include/c++/15.2.1/bits/atomic_futex.h \
+  /usr/include/c++/15.2.1/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/15.2.1/bits/basic_string.h \
+  /usr/include/c++/15.2.1/bits/basic_string.tcc \
+  /usr/include/c++/15.2.1/bits/char_traits.h \
+  /usr/include/c++/15.2.1/bits/charconv.h \
+  /usr/include/c++/15.2.1/bits/chrono.h \
+  /usr/include/c++/15.2.1/bits/concept_check.h \
+  /usr/include/c++/15.2.1/bits/cpp_type_traits.h \
+  /usr/include/c++/15.2.1/bits/cxxabi_forced.h \
+  /usr/include/c++/15.2.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/15.2.1/bits/enable_special_members.h \
+  /usr/include/c++/15.2.1/bits/erase_if.h \
+  /usr/include/c++/15.2.1/bits/exception.h \
+  /usr/include/c++/15.2.1/bits/exception_defines.h \
+  /usr/include/c++/15.2.1/bits/exception_ptr.h \
+  /usr/include/c++/15.2.1/bits/functexcept.h \
+  /usr/include/c++/15.2.1/bits/functional_hash.h \
+  /usr/include/c++/15.2.1/bits/hash_bytes.h \
+  /usr/include/c++/15.2.1/bits/hashtable.h \
+  /usr/include/c++/15.2.1/bits/hashtable_policy.h \
+  /usr/include/c++/15.2.1/bits/invoke.h \
+  /usr/include/c++/15.2.1/bits/ios_base.h \
+  /usr/include/c++/15.2.1/bits/list.tcc \
+  /usr/include/c++/15.2.1/bits/locale_classes.h \
+  /usr/include/c++/15.2.1/bits/locale_classes.tcc \
+  /usr/include/c++/15.2.1/bits/localefwd.h \
+  /usr/include/c++/15.2.1/bits/memory_resource.h \
+  /usr/include/c++/15.2.1/bits/memoryfwd.h \
+  /usr/include/c++/15.2.1/bits/monostate.h \
+  /usr/include/c++/15.2.1/bits/move.h \
+  /usr/include/c++/15.2.1/bits/nested_exception.h \
+  /usr/include/c++/15.2.1/bits/new_allocator.h \
+  /usr/include/c++/15.2.1/bits/node_handle.h \
+  /usr/include/c++/15.2.1/bits/ostream_insert.h \
+  /usr/include/c++/15.2.1/bits/parse_numbers.h \
+  /usr/include/c++/15.2.1/bits/postypes.h \
+  /usr/include/c++/15.2.1/bits/predefined_ops.h \
+  /usr/include/c++/15.2.1/bits/ptr_traits.h \
+  /usr/include/c++/15.2.1/bits/range_access.h \
+  /usr/include/c++/15.2.1/bits/refwrap.h \
+  /usr/include/c++/15.2.1/bits/requires_hosted.h \
+  /usr/include/c++/15.2.1/bits/shared_ptr.h \
+  /usr/include/c++/15.2.1/bits/shared_ptr_atomic.h \
+  /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/15.2.1/bits/specfun.h \
+  /usr/include/c++/15.2.1/bits/std_abs.h \
+  /usr/include/c++/15.2.1/bits/std_function.h \
+  /usr/include/c++/15.2.1/bits/std_mutex.h \
+  /usr/include/c++/15.2.1/bits/std_thread.h \
+  /usr/include/c++/15.2.1/bits/stl_algo.h \
+  /usr/include/c++/15.2.1/bits/stl_algobase.h \
+  /usr/include/c++/15.2.1/bits/stl_bvector.h \
+  /usr/include/c++/15.2.1/bits/stl_construct.h \
+  /usr/include/c++/15.2.1/bits/stl_function.h \
+  /usr/include/c++/15.2.1/bits/stl_heap.h \
+  /usr/include/c++/15.2.1/bits/stl_iterator.h \
+  /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.2.1/bits/stl_list.h \
+  /usr/include/c++/15.2.1/bits/stl_map.h \
+  /usr/include/c++/15.2.1/bits/stl_multimap.h \
+  /usr/include/c++/15.2.1/bits/stl_numeric.h \
+  /usr/include/c++/15.2.1/bits/stl_pair.h \
+  /usr/include/c++/15.2.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/15.2.1/bits/stl_relops.h \
+  /usr/include/c++/15.2.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.2.1/bits/stl_tree.h \
+  /usr/include/c++/15.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/15.2.1/bits/stl_vector.h \
+  /usr/include/c++/15.2.1/bits/stream_iterator.h \
+  /usr/include/c++/15.2.1/bits/streambuf.tcc \
+  /usr/include/c++/15.2.1/bits/streambuf_iterator.h \
+  /usr/include/c++/15.2.1/bits/string_view.tcc \
+  /usr/include/c++/15.2.1/bits/stringfwd.h \
+  /usr/include/c++/15.2.1/bits/uniform_int_dist.h \
+  /usr/include/c++/15.2.1/bits/unique_lock.h \
+  /usr/include/c++/15.2.1/bits/unique_ptr.h \
+  /usr/include/c++/15.2.1/bits/unordered_map.h \
+  /usr/include/c++/15.2.1/bits/uses_allocator.h \
+  /usr/include/c++/15.2.1/bits/uses_allocator_args.h \
+  /usr/include/c++/15.2.1/bits/utility.h \
+  /usr/include/c++/15.2.1/bits/vector.tcc \
+  /usr/include/c++/15.2.1/bits/version.h \
+  /usr/include/c++/15.2.1/cctype \
+  /usr/include/c++/15.2.1/cerrno \
+  /usr/include/c++/15.2.1/chrono \
+  /usr/include/c++/15.2.1/clocale \
+  /usr/include/c++/15.2.1/cmath \
+  /usr/include/c++/15.2.1/compare \
+  /usr/include/c++/15.2.1/concepts \
+  /usr/include/c++/15.2.1/condition_variable \
+  /usr/include/c++/15.2.1/cstddef \
+  /usr/include/c++/15.2.1/cstdint \
+  /usr/include/c++/15.2.1/cstdio \
+  /usr/include/c++/15.2.1/cstdlib \
+  /usr/include/c++/15.2.1/ctime \
+  /usr/include/c++/15.2.1/cwchar \
+  /usr/include/c++/15.2.1/debug/assertions.h \
+  /usr/include/c++/15.2.1/debug/debug.h \
+  /usr/include/c++/15.2.1/exception \
+  /usr/include/c++/15.2.1/ext/aligned_buffer.h \
+  /usr/include/c++/15.2.1/ext/alloc_traits.h \
+  /usr/include/c++/15.2.1/ext/atomicity.h \
+  /usr/include/c++/15.2.1/ext/concurrence.h \
+  /usr/include/c++/15.2.1/ext/numeric_traits.h \
+  /usr/include/c++/15.2.1/ext/string_conversions.h \
+  /usr/include/c++/15.2.1/ext/type_traits.h \
+  /usr/include/c++/15.2.1/functional \
+  /usr/include/c++/15.2.1/future \
+  /usr/include/c++/15.2.1/initializer_list \
+  /usr/include/c++/15.2.1/iosfwd \
+  /usr/include/c++/15.2.1/iterator \
+  /usr/include/c++/15.2.1/limits \
+  /usr/include/c++/15.2.1/list \
+  /usr/include/c++/15.2.1/map \
+  /usr/include/c++/15.2.1/math.h \
+  /usr/include/c++/15.2.1/memory \
+  /usr/include/c++/15.2.1/mutex \
+  /usr/include/c++/15.2.1/new \
+  /usr/include/c++/15.2.1/numeric \
+  /usr/include/c++/15.2.1/pstl/execution_defs.h \
+  /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/15.2.1/pstl/glue_memory_defs.h \
+  /usr/include/c++/15.2.1/pstl/glue_numeric_defs.h \
+  /usr/include/c++/15.2.1/pstl/pstl_config.h \
+  /usr/include/c++/15.2.1/ratio \
+  /usr/include/c++/15.2.1/stdexcept \
+  /usr/include/c++/15.2.1/stdlib.h \
+  /usr/include/c++/15.2.1/streambuf \
+  /usr/include/c++/15.2.1/string \
+  /usr/include/c++/15.2.1/string_view \
+  /usr/include/c++/15.2.1/system_error \
+  /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/15.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/gamma.tcc \
+  /usr/include/c++/15.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/15.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/15.2.1/tr1/special_function_util.h \
+  /usr/include/c++/15.2.1/tuple \
+  /usr/include/c++/15.2.1/type_traits \
+  /usr/include/c++/15.2.1/typeinfo \
+  /usr/include/c++/15.2.1/unordered_map \
+  /usr/include/c++/15.2.1/utility \
+  /usr/include/c++/15.2.1/variant \
+  /usr/include/c++/15.2.1/vector \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
+  /usr/include/ctype.h \
+  /usr/include/endian.h \
+  /usr/include/errno.h \
+  /usr/include/features-time64.h \
+  /usr/include/features.h \
+  /usr/include/gnu/stubs-64.h \
+  /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/libavcodec/avcodec.h \
+  /usr/include/libavcodec/codec.h \
+  /usr/include/libavcodec/codec_desc.h \
+  /usr/include/libavcodec/codec_id.h \
+  /usr/include/libavcodec/codec_par.h \
+  /usr/include/libavcodec/defs.h \
+  /usr/include/libavcodec/packet.h \
+  /usr/include/libavcodec/version.h \
+  /usr/include/libavcodec/version_major.h \
+  /usr/include/libavformat/avformat.h \
+  /usr/include/libavformat/avio.h \
+  /usr/include/libavformat/version.h \
+  /usr/include/libavformat/version_major.h \
+  /usr/include/libavutil/attributes.h \
+  /usr/include/libavutil/avconfig.h \
+  /usr/include/libavutil/avutil.h \
+  /usr/include/libavutil/buffer.h \
+  /usr/include/libavutil/channel_layout.h \
+  /usr/include/libavutil/common.h \
+  /usr/include/libavutil/dict.h \
+  /usr/include/libavutil/error.h \
+  /usr/include/libavutil/frame.h \
+  /usr/include/libavutil/hwcontext.h \
+  /usr/include/libavutil/intfloat.h \
+  /usr/include/libavutil/log.h \
+  /usr/include/libavutil/macros.h \
+  /usr/include/libavutil/mathematics.h \
+  /usr/include/libavutil/mem.h \
+  /usr/include/libavutil/pixfmt.h \
+  /usr/include/libavutil/rational.h \
+  /usr/include/libavutil/samplefmt.h \
+  /usr/include/libavutil/version.h \
+  /usr/include/libswresample/swresample.h \
+  /usr/include/libswresample/version.h \
+  /usr/include/libswresample/version_major.h \
+  /usr/include/limits.h \
+  /usr/include/linux/errno.h \
+  /usr/include/linux/limits.h \
+  /usr/include/linux/posix_types.h \
+  /usr/include/linux/sched/types.h \
+  /usr/include/linux/stddef.h \
+  /usr/include/linux/types.h \
+  /usr/include/locale.h \
+  /usr/include/math.h \
+  /usr/include/pthread.h \
+  /usr/include/qt/QtCore/QBuffer \
+  /usr/include/qt/QtCore/QByteArray \
+  /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QFileInfo \
+  /usr/include/qt/QtCore/QIODevice \
+  /usr/include/qt/QtCore/QMutex \
+  /usr/include/qt/QtCore/QMutexLocker \
+  /usr/include/qt/QtCore/QObject \
+  /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QThread \
+  /usr/include/qt/QtCore/QTimer \
+  /usr/include/qt/QtCore/qalgorithms.h \
+  /usr/include/qt/QtCore/qarraydata.h \
+  /usr/include/qt/QtCore/qatomic.h \
+  /usr/include/qt/QtCore/qatomic_cxx11.h \
+  /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
+  /usr/include/qt/QtCore/qbuffer.h \
+  /usr/include/qt/QtCore/qbytearray.h \
+  /usr/include/qt/QtCore/qbytearraylist.h \
+  /usr/include/qt/QtCore/qchar.h \
+  /usr/include/qt/QtCore/qcompilerdetection.h \
+  /usr/include/qt/QtCore/qconfig.h \
+  /usr/include/qt/QtCore/qcontainerfwd.h \
+  /usr/include/qt/QtCore/qcontainertools_impl.h \
+  /usr/include/qt/QtCore/qcontiguouscache.h \
+  /usr/include/qt/QtCore/qdeadlinetimer.h \
+  /usr/include/qt/QtCore/qdebug.h \
+  /usr/include/qt/QtCore/qelapsedtimer.h \
+  /usr/include/qt/QtCore/qfile.h \
+  /usr/include/qt/QtCore/qfiledevice.h \
+  /usr/include/qt/QtCore/qfileinfo.h \
+  /usr/include/qt/QtCore/qflags.h \
+  /usr/include/qt/QtCore/qgenericatomic.h \
+  /usr/include/qt/QtCore/qglobal.h \
+  /usr/include/qt/QtCore/qglobalstatic.h \
+  /usr/include/qt/QtCore/qhash.h \
+  /usr/include/qt/QtCore/qhashfunctions.h \
+  /usr/include/qt/QtCore/qiodevice.h \
+  /usr/include/qt/QtCore/qiterator.h \
+  /usr/include/qt/QtCore/qlist.h \
+  /usr/include/qt/QtCore/qlocale.h \
+  /usr/include/qt/QtCore/qlogging.h \
+  /usr/include/qt/QtCore/qmap.h \
+  /usr/include/qt/QtCore/qmetatype.h \
+  /usr/include/qt/QtCore/qmutex.h \
+  /usr/include/qt/QtCore/qnamespace.h \
+  /usr/include/qt/QtCore/qnumeric.h \
+  /usr/include/qt/QtCore/qobject.h \
+  /usr/include/qt/QtCore/qobject_impl.h \
+  /usr/include/qt/QtCore/qobjectdefs.h \
+  /usr/include/qt/QtCore/qobjectdefs_impl.h \
+  /usr/include/qt/QtCore/qpair.h \
+  /usr/include/qt/QtCore/qprocessordetection.h \
+  /usr/include/qt/QtCore/qrefcount.h \
+  /usr/include/qt/QtCore/qregexp.h \
+  /usr/include/qt/QtCore/qscopedpointer.h \
+  /usr/include/qt/QtCore/qset.h \
+  /usr/include/qt/QtCore/qshareddata.h \
+  /usr/include/qt/QtCore/qsharedpointer.h \
+  /usr/include/qt/QtCore/qsharedpointer_impl.h \
+  /usr/include/qt/QtCore/qstring.h \
+  /usr/include/qt/QtCore/qstringalgorithms.h \
+  /usr/include/qt/QtCore/qstringlist.h \
+  /usr/include/qt/QtCore/qstringliteral.h \
+  /usr/include/qt/QtCore/qstringmatcher.h \
+  /usr/include/qt/QtCore/qstringview.h \
+  /usr/include/qt/QtCore/qsysinfo.h \
+  /usr/include/qt/QtCore/qsystemdetection.h \
+  /usr/include/qt/QtCore/qtcore-config.h \
+  /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qthread.h \
+  /usr/include/qt/QtCore/qtimer.h \
+  /usr/include/qt/QtCore/qtsan_impl.h \
+  /usr/include/qt/QtCore/qtypeinfo.h \
+  /usr/include/qt/QtCore/qvariant.h \
+  /usr/include/qt/QtCore/qvarlengtharray.h \
+  /usr/include/qt/QtCore/qvector.h \
+  /usr/include/qt/QtCore/qversiontagging.h \
+  /usr/include/qt/QtGui/qtgui-config.h \
+  /usr/include/qt/QtGui/qtguiglobal.h \
+  /usr/include/qt/QtMultimedia/QAudioFormat \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
+  /usr/include/sched.h \
+  /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
+  /usr/include/stdio.h \
+  /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/sys/cdefs.h \
+  /usr/include/sys/select.h \
+  /usr/include/sys/single_threaded.h \
+  /usr/include/sys/types.h \
+  /usr/include/time.h \
+  /usr/include/wchar.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h
+
 CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_autogen/mocs_compilation.cpp \
+  /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
   /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h \
+  flacplayer_autogen/EWIEGA46WW/moc_audiomanager.cpp \
   flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -559,10 +1015,20 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/bits/errno.h \
   /usr/include/bits/floatn-common.h \
   /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/iscanonical.h \
   /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
   /usr/include/bits/local_lim.h \
   /usr/include/bits/locale.h \
   /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
   /usr/include/bits/posix1_lim.h \
   /usr/include/bits/posix2_lim.h \
   /usr/include/bits/pthread_stack_min-dynamic.h \
@@ -656,6 +1122,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/c++/15.2.1/bits/localefwd.h \
   /usr/include/c++/15.2.1/bits/memory_resource.h \
   /usr/include/c++/15.2.1/bits/memoryfwd.h \
+  /usr/include/c++/15.2.1/bits/monostate.h \
   /usr/include/c++/15.2.1/bits/move.h \
   /usr/include/c++/15.2.1/bits/nested_exception.h \
   /usr/include/c++/15.2.1/bits/new_allocator.h \
@@ -671,6 +1138,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/c++/15.2.1/bits/shared_ptr.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/15.2.1/bits/specfun.h \
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/std_function.h \
   /usr/include/c++/15.2.1/bits/stl_algo.h \
@@ -710,6 +1178,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/c++/15.2.1/cerrno \
   /usr/include/c++/15.2.1/chrono \
   /usr/include/c++/15.2.1/clocale \
+  /usr/include/c++/15.2.1/cmath \
   /usr/include/c++/15.2.1/compare \
   /usr/include/c++/15.2.1/concepts \
   /usr/include/c++/15.2.1/cstddef \
@@ -735,6 +1204,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/c++/15.2.1/limits \
   /usr/include/c++/15.2.1/list \
   /usr/include/c++/15.2.1/map \
+  /usr/include/c++/15.2.1/math.h \
   /usr/include/c++/15.2.1/memory \
   /usr/include/c++/15.2.1/new \
   /usr/include/c++/15.2.1/numeric \
@@ -750,11 +1220,24 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/c++/15.2.1/string \
   /usr/include/c++/15.2.1/string_view \
   /usr/include/c++/15.2.1/system_error \
+  /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/15.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/gamma.tcc \
+  /usr/include/c++/15.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/15.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/15.2.1/tr1/special_function_util.h \
   /usr/include/c++/15.2.1/tuple \
   /usr/include/c++/15.2.1/type_traits \
   /usr/include/c++/15.2.1/typeinfo \
   /usr/include/c++/15.2.1/unordered_map \
   /usr/include/c++/15.2.1/utility \
+  /usr/include/c++/15.2.1/variant \
   /usr/include/c++/15.2.1/vector \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
@@ -772,6 +1255,42 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/features.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/libavcodec/avcodec.h \
+  /usr/include/libavcodec/codec.h \
+  /usr/include/libavcodec/codec_desc.h \
+  /usr/include/libavcodec/codec_id.h \
+  /usr/include/libavcodec/codec_par.h \
+  /usr/include/libavcodec/defs.h \
+  /usr/include/libavcodec/packet.h \
+  /usr/include/libavcodec/version.h \
+  /usr/include/libavcodec/version_major.h \
+  /usr/include/libavformat/avformat.h \
+  /usr/include/libavformat/avio.h \
+  /usr/include/libavformat/version.h \
+  /usr/include/libavformat/version_major.h \
+  /usr/include/libavutil/attributes.h \
+  /usr/include/libavutil/avconfig.h \
+  /usr/include/libavutil/avutil.h \
+  /usr/include/libavutil/buffer.h \
+  /usr/include/libavutil/channel_layout.h \
+  /usr/include/libavutil/common.h \
+  /usr/include/libavutil/dict.h \
+  /usr/include/libavutil/error.h \
+  /usr/include/libavutil/frame.h \
+  /usr/include/libavutil/hwcontext.h \
+  /usr/include/libavutil/intfloat.h \
+  /usr/include/libavutil/log.h \
+  /usr/include/libavutil/macros.h \
+  /usr/include/libavutil/mathematics.h \
+  /usr/include/libavutil/mem.h \
+  /usr/include/libavutil/pixfmt.h \
+  /usr/include/libavutil/rational.h \
+  /usr/include/libavutil/samplefmt.h \
+  /usr/include/libavutil/version.h \
+  /usr/include/libswresample/swresample.h \
+  /usr/include/libswresample/version.h \
+  /usr/include/libswresample/version_major.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
@@ -780,12 +1299,19 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/linux/stddef.h \
   /usr/include/linux/types.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
   /usr/include/pthread.h \
+  /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QIODevice \
+  /usr/include/qt/QtCore/QObject \
+  /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QTimer \
   /usr/include/qt/QtCore/qalgorithms.h \
   /usr/include/qt/QtCore/qarraydata.h \
   /usr/include/qt/QtCore/qatomic.h \
   /usr/include/qt/QtCore/qatomic_cxx11.h \
   /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
   /usr/include/qt/QtCore/qbytearray.h \
   /usr/include/qt/QtCore/qbytearraylist.h \
   /usr/include/qt/QtCore/qchar.h \
@@ -793,7 +1319,9 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/qt/QtCore/qconfig.h \
   /usr/include/qt/QtCore/qcontainerfwd.h \
   /usr/include/qt/QtCore/qcontainertools_impl.h \
+  /usr/include/qt/QtCore/qcontiguouscache.h \
   /usr/include/qt/QtCore/qdatastream.h \
+  /usr/include/qt/QtCore/qdebug.h \
   /usr/include/qt/QtCore/qflags.h \
   /usr/include/qt/QtCore/qgenericatomic.h \
   /usr/include/qt/QtCore/qglobal.h \
@@ -804,7 +1332,9 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/qt/QtCore/qiterator.h \
   /usr/include/qt/QtCore/qline.h \
   /usr/include/qt/QtCore/qlist.h \
+  /usr/include/qt/QtCore/qlocale.h \
   /usr/include/qt/QtCore/qlogging.h \
+  /usr/include/qt/QtCore/qmap.h \
   /usr/include/qt/QtCore/qmargins.h \
   /usr/include/qt/QtCore/qmetatype.h \
   /usr/include/qt/QtCore/qnamespace.h \
@@ -820,6 +1350,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/qt/QtCore/qrefcount.h \
   /usr/include/qt/QtCore/qregexp.h \
   /usr/include/qt/QtCore/qscopedpointer.h \
+  /usr/include/qt/QtCore/qset.h \
   /usr/include/qt/QtCore/qshareddata.h \
   /usr/include/qt/QtCore/qsharedpointer.h \
   /usr/include/qt/QtCore/qsharedpointer_impl.h \
@@ -833,7 +1364,10 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/qt/QtCore/qsysinfo.h \
   /usr/include/qt/QtCore/qsystemdetection.h \
   /usr/include/qt/QtCore/qtcore-config.h \
+  /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qtimer.h \
   /usr/include/qt/QtCore/qtypeinfo.h \
+  /usr/include/qt/QtCore/qvariant.h \
   /usr/include/qt/QtCore/qvarlengtharray.h \
   /usr/include/qt/QtCore/qvector.h \
   /usr/include/qt/QtCore/qversiontagging.h \
@@ -859,15 +1393,28 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/include/qt/QtGui/qtguiglobal.h \
   /usr/include/qt/QtGui/qtransform.h \
   /usr/include/qt/QtGui/qwindowdefs.h \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/qt/QtWidgets/QLabel \
   /usr/include/qt/QtWidgets/QMainWindow \
+  /usr/include/qt/QtWidgets/QProgressBar \
   /usr/include/qt/QtWidgets/QPushButton \
+  /usr/include/qt/QtWidgets/QSlider \
   /usr/include/qt/QtWidgets/qabstractbutton.h \
+  /usr/include/qt/QtWidgets/qabstractslider.h \
   /usr/include/qt/QtWidgets/qframe.h \
   /usr/include/qt/QtWidgets/qlabel.h \
   /usr/include/qt/QtWidgets/qmainwindow.h \
+  /usr/include/qt/QtWidgets/qprogressbar.h \
   /usr/include/qt/QtWidgets/qpushbutton.h \
   /usr/include/qt/QtWidgets/qsizepolicy.h \
+  /usr/include/qt/QtWidgets/qslider.h \
   /usr/include/qt/QtWidgets/qtabwidget.h \
   /usr/include/qt/QtWidgets/qtwidgets-config.h \
   /usr/include/qt/QtWidgets/qtwidgetsglobal.h \
@@ -892,6 +1439,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: flacplayer_
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h
 
 CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplayer/main.cpp \
+  /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
   /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -914,10 +1462,20 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/bits/errno.h \
   /usr/include/bits/floatn-common.h \
   /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/iscanonical.h \
   /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
   /usr/include/bits/local_lim.h \
   /usr/include/bits/locale.h \
   /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
   /usr/include/bits/posix1_lim.h \
   /usr/include/bits/posix2_lim.h \
   /usr/include/bits/pthread_stack_min-dynamic.h \
@@ -1044,6 +1602,7 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/c++/15.2.1/bits/shared_ptr.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/15.2.1/bits/specfun.h \
   /usr/include/c++/15.2.1/bits/sstream.tcc \
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/std_function.h \
@@ -1086,6 +1645,7 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/c++/15.2.1/cerrno \
   /usr/include/c++/15.2.1/chrono \
   /usr/include/c++/15.2.1/clocale \
+  /usr/include/c++/15.2.1/cmath \
   /usr/include/c++/15.2.1/codecvt \
   /usr/include/c++/15.2.1/compare \
   /usr/include/c++/15.2.1/concepts \
@@ -1118,6 +1678,7 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/c++/15.2.1/list \
   /usr/include/c++/15.2.1/locale \
   /usr/include/c++/15.2.1/map \
+  /usr/include/c++/15.2.1/math.h \
   /usr/include/c++/15.2.1/memory \
   /usr/include/c++/15.2.1/new \
   /usr/include/c++/15.2.1/numeric \
@@ -1136,6 +1697,18 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/c++/15.2.1/string_view \
   /usr/include/c++/15.2.1/system_error \
   /usr/include/c++/15.2.1/thread \
+  /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/15.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/gamma.tcc \
+  /usr/include/c++/15.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/15.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/15.2.1/tr1/special_function_util.h \
   /usr/include/c++/15.2.1/tuple \
   /usr/include/c++/15.2.1/type_traits \
   /usr/include/c++/15.2.1/typeinfo \
@@ -1163,7 +1736,43 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/features.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/libavcodec/avcodec.h \
+  /usr/include/libavcodec/codec.h \
+  /usr/include/libavcodec/codec_desc.h \
+  /usr/include/libavcodec/codec_id.h \
+  /usr/include/libavcodec/codec_par.h \
+  /usr/include/libavcodec/defs.h \
+  /usr/include/libavcodec/packet.h \
+  /usr/include/libavcodec/version.h \
+  /usr/include/libavcodec/version_major.h \
+  /usr/include/libavformat/avformat.h \
+  /usr/include/libavformat/avio.h \
+  /usr/include/libavformat/version.h \
+  /usr/include/libavformat/version_major.h \
+  /usr/include/libavutil/attributes.h \
+  /usr/include/libavutil/avconfig.h \
+  /usr/include/libavutil/avutil.h \
+  /usr/include/libavutil/buffer.h \
+  /usr/include/libavutil/channel_layout.h \
+  /usr/include/libavutil/common.h \
+  /usr/include/libavutil/dict.h \
+  /usr/include/libavutil/error.h \
+  /usr/include/libavutil/frame.h \
+  /usr/include/libavutil/hwcontext.h \
+  /usr/include/libavutil/intfloat.h \
+  /usr/include/libavutil/log.h \
+  /usr/include/libavutil/macros.h \
+  /usr/include/libavutil/mathematics.h \
+  /usr/include/libavutil/mem.h \
+  /usr/include/libavutil/pixfmt.h \
+  /usr/include/libavutil/rational.h \
+  /usr/include/libavutil/samplefmt.h \
+  /usr/include/libavutil/version.h \
   /usr/include/libintl.h \
+  /usr/include/libswresample/swresample.h \
+  /usr/include/libswresample/version.h \
+  /usr/include/libswresample/version_major.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
@@ -1172,15 +1781,21 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/linux/stddef.h \
   /usr/include/linux/types.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
   /usr/include/pthread.h \
   /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QIODevice \
   /usr/include/qt/QtCore/QLocale \
+  /usr/include/qt/QtCore/QObject \
+  /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QTimer \
   /usr/include/qt/QtCore/QTranslator \
   /usr/include/qt/QtCore/qalgorithms.h \
   /usr/include/qt/QtCore/qarraydata.h \
   /usr/include/qt/QtCore/qatomic.h \
   /usr/include/qt/QtCore/qatomic_cxx11.h \
   /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
   /usr/include/qt/QtCore/qbytearray.h \
   /usr/include/qt/QtCore/qbytearraylist.h \
   /usr/include/qt/QtCore/qchar.h \
@@ -1237,6 +1852,7 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/qt/QtCore/qsystemdetection.h \
   /usr/include/qt/QtCore/qtcore-config.h \
   /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qtimer.h \
   /usr/include/qt/QtCore/qtranslator.h \
   /usr/include/qt/QtCore/qtypeinfo.h \
   /usr/include/qt/QtCore/qvariant.h \
@@ -1268,21 +1884,30 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/include/qt/QtGui/qtransform.h \
   /usr/include/qt/QtGui/qwindowdefs.h \
   /usr/include/qt/QtMultimedia/QAudioFormat \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
   /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
   /usr/include/qt/QtMultimedia/qmultimedia.h \
   /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
   /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/qt/QtWidgets/QApplication \
   /usr/include/qt/QtWidgets/QLabel \
   /usr/include/qt/QtWidgets/QMainWindow \
+  /usr/include/qt/QtWidgets/QProgressBar \
   /usr/include/qt/QtWidgets/QPushButton \
+  /usr/include/qt/QtWidgets/QSlider \
   /usr/include/qt/QtWidgets/qabstractbutton.h \
+  /usr/include/qt/QtWidgets/qabstractslider.h \
   /usr/include/qt/QtWidgets/qapplication.h \
   /usr/include/qt/QtWidgets/qframe.h \
   /usr/include/qt/QtWidgets/qlabel.h \
   /usr/include/qt/QtWidgets/qmainwindow.h \
+  /usr/include/qt/QtWidgets/qprogressbar.h \
   /usr/include/qt/QtWidgets/qpushbutton.h \
   /usr/include/qt/QtWidgets/qsizepolicy.h \
+  /usr/include/qt/QtWidgets/qslider.h \
   /usr/include/qt/QtWidgets/qtabwidget.h \
   /usr/include/qt/QtWidgets/qtwidgets-config.h \
   /usr/include/qt/QtWidgets/qtwidgetsglobal.h \
@@ -1308,6 +1933,7 @@ CMakeFiles/flacplayer.dir/main.cpp.o: /home/akhilkk/projects/flacplayer/flacplay
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h
 
 CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp \
+  /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h \
   flacplayer_autogen/include/ui_mainwindow.h \
   /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h \
   /usr/include/alloca.h \
@@ -1331,10 +1957,20 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/bits/errno.h \
   /usr/include/bits/floatn-common.h \
   /usr/include/bits/floatn.h \
+  /usr/include/bits/flt-eval-method.h \
+  /usr/include/bits/fp-fast.h \
+  /usr/include/bits/fp-logb.h \
+  /usr/include/bits/iscanonical.h \
   /usr/include/bits/libc-header-start.h \
+  /usr/include/bits/libm-simd-decl-stubs.h \
   /usr/include/bits/local_lim.h \
   /usr/include/bits/locale.h \
   /usr/include/bits/long-double.h \
+  /usr/include/bits/math-vector.h \
+  /usr/include/bits/mathcalls-helper-functions.h \
+  /usr/include/bits/mathcalls-macros.h \
+  /usr/include/bits/mathcalls-narrow.h \
+  /usr/include/bits/mathcalls.h \
   /usr/include/bits/posix1_lim.h \
   /usr/include/bits/posix2_lim.h \
   /usr/include/bits/pthread_stack_min-dynamic.h \
@@ -1444,6 +2080,7 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/c++/15.2.1/bits/shared_ptr.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.2.1/bits/shared_ptr_base.h \
+  /usr/include/c++/15.2.1/bits/specfun.h \
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/std_function.h \
   /usr/include/c++/15.2.1/bits/stl_algo.h \
@@ -1483,6 +2120,7 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/c++/15.2.1/cerrno \
   /usr/include/c++/15.2.1/chrono \
   /usr/include/c++/15.2.1/clocale \
+  /usr/include/c++/15.2.1/cmath \
   /usr/include/c++/15.2.1/compare \
   /usr/include/c++/15.2.1/concepts \
   /usr/include/c++/15.2.1/cstddef \
@@ -1508,6 +2146,7 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/c++/15.2.1/limits \
   /usr/include/c++/15.2.1/list \
   /usr/include/c++/15.2.1/map \
+  /usr/include/c++/15.2.1/math.h \
   /usr/include/c++/15.2.1/memory \
   /usr/include/c++/15.2.1/new \
   /usr/include/c++/15.2.1/numeric \
@@ -1523,6 +2162,18 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/c++/15.2.1/string \
   /usr/include/c++/15.2.1/string_view \
   /usr/include/c++/15.2.1/system_error \
+  /usr/include/c++/15.2.1/tr1/bessel_function.tcc \
+  /usr/include/c++/15.2.1/tr1/beta_function.tcc \
+  /usr/include/c++/15.2.1/tr1/ell_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/exp_integral.tcc \
+  /usr/include/c++/15.2.1/tr1/gamma.tcc \
+  /usr/include/c++/15.2.1/tr1/hypergeometric.tcc \
+  /usr/include/c++/15.2.1/tr1/legendre_function.tcc \
+  /usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_hermite.tcc \
+  /usr/include/c++/15.2.1/tr1/poly_laguerre.tcc \
+  /usr/include/c++/15.2.1/tr1/riemann_zeta.tcc \
+  /usr/include/c++/15.2.1/tr1/special_function_util.h \
   /usr/include/c++/15.2.1/tuple \
   /usr/include/c++/15.2.1/type_traits \
   /usr/include/c++/15.2.1/typeinfo \
@@ -1546,6 +2197,42 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/features.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
+  /usr/include/inttypes.h \
+  /usr/include/libavcodec/avcodec.h \
+  /usr/include/libavcodec/codec.h \
+  /usr/include/libavcodec/codec_desc.h \
+  /usr/include/libavcodec/codec_id.h \
+  /usr/include/libavcodec/codec_par.h \
+  /usr/include/libavcodec/defs.h \
+  /usr/include/libavcodec/packet.h \
+  /usr/include/libavcodec/version.h \
+  /usr/include/libavcodec/version_major.h \
+  /usr/include/libavformat/avformat.h \
+  /usr/include/libavformat/avio.h \
+  /usr/include/libavformat/version.h \
+  /usr/include/libavformat/version_major.h \
+  /usr/include/libavutil/attributes.h \
+  /usr/include/libavutil/avconfig.h \
+  /usr/include/libavutil/avutil.h \
+  /usr/include/libavutil/buffer.h \
+  /usr/include/libavutil/channel_layout.h \
+  /usr/include/libavutil/common.h \
+  /usr/include/libavutil/dict.h \
+  /usr/include/libavutil/error.h \
+  /usr/include/libavutil/frame.h \
+  /usr/include/libavutil/hwcontext.h \
+  /usr/include/libavutil/intfloat.h \
+  /usr/include/libavutil/log.h \
+  /usr/include/libavutil/macros.h \
+  /usr/include/libavutil/mathematics.h \
+  /usr/include/libavutil/mem.h \
+  /usr/include/libavutil/pixfmt.h \
+  /usr/include/libavutil/rational.h \
+  /usr/include/libavutil/samplefmt.h \
+  /usr/include/libavutil/version.h \
+  /usr/include/libswresample/swresample.h \
+  /usr/include/libswresample/version.h \
+  /usr/include/libswresample/version_major.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
@@ -1554,14 +2241,21 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/linux/stddef.h \
   /usr/include/linux/types.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
   /usr/include/pthread.h \
   /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QIODevice \
+  /usr/include/qt/QtCore/QObject \
+  /usr/include/qt/QtCore/QStandardPaths \
+  /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QTimer \
   /usr/include/qt/QtCore/QVariant \
   /usr/include/qt/QtCore/qalgorithms.h \
   /usr/include/qt/QtCore/qarraydata.h \
   /usr/include/qt/QtCore/qatomic.h \
   /usr/include/qt/QtCore/qatomic_cxx11.h \
   /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
   /usr/include/qt/QtCore/qbytearray.h \
   /usr/include/qt/QtCore/qbytearraylist.h \
   /usr/include/qt/QtCore/qchar.h \
@@ -1574,7 +2268,11 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/qt/QtCore/qcoreevent.h \
   /usr/include/qt/QtCore/qdatastream.h \
   /usr/include/qt/QtCore/qdebug.h \
+  /usr/include/qt/QtCore/qdir.h \
   /usr/include/qt/QtCore/qeventloop.h \
+  /usr/include/qt/QtCore/qfile.h \
+  /usr/include/qt/QtCore/qfiledevice.h \
+  /usr/include/qt/QtCore/qfileinfo.h \
   /usr/include/qt/QtCore/qflags.h \
   /usr/include/qt/QtCore/qgenericatomic.h \
   /usr/include/qt/QtCore/qglobal.h \
@@ -1608,6 +2306,7 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/qt/QtCore/qsharedpointer.h \
   /usr/include/qt/QtCore/qsharedpointer_impl.h \
   /usr/include/qt/QtCore/qsize.h \
+  /usr/include/qt/QtCore/qstandardpaths.h \
   /usr/include/qt/QtCore/qstring.h \
   /usr/include/qt/QtCore/qstringalgorithms.h \
   /usr/include/qt/QtCore/qstringlist.h \
@@ -1618,7 +2317,9 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/qt/QtCore/qsystemdetection.h \
   /usr/include/qt/QtCore/qtcore-config.h \
   /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qtimer.h \
   /usr/include/qt/QtCore/qtypeinfo.h \
+  /usr/include/qt/QtCore/qurl.h \
   /usr/include/qt/QtCore/qvariant.h \
   /usr/include/qt/QtCore/qvarlengtharray.h \
   /usr/include/qt/QtCore/qvector.h \
@@ -1647,22 +2348,35 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/qt/QtGui/qtguiglobal.h \
   /usr/include/qt/QtGui/qtransform.h \
   /usr/include/qt/QtGui/qwindowdefs.h \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/qt/QtWidgets/QApplication \
+  /usr/include/qt/QtWidgets/QFileDialog \
   /usr/include/qt/QtWidgets/QHBoxLayout \
   /usr/include/qt/QtWidgets/QLabel \
   /usr/include/qt/QtWidgets/QMainWindow \
   /usr/include/qt/QtWidgets/QMenuBar \
   /usr/include/qt/QtWidgets/QMessageBox \
+  /usr/include/qt/QtWidgets/QProgressBar \
   /usr/include/qt/QtWidgets/QPushButton \
+  /usr/include/qt/QtWidgets/QSlider \
   /usr/include/qt/QtWidgets/QStatusBar \
   /usr/include/qt/QtWidgets/QVBoxLayout \
   /usr/include/qt/QtWidgets/QWidget \
   /usr/include/qt/QtWidgets/qabstractbutton.h \
+  /usr/include/qt/QtWidgets/qabstractslider.h \
   /usr/include/qt/QtWidgets/qaction.h \
   /usr/include/qt/QtWidgets/qactiongroup.h \
   /usr/include/qt/QtWidgets/qapplication.h \
   /usr/include/qt/QtWidgets/qboxlayout.h \
   /usr/include/qt/QtWidgets/qdialog.h \
+  /usr/include/qt/QtWidgets/qfiledialog.h \
   /usr/include/qt/QtWidgets/qframe.h \
   /usr/include/qt/QtWidgets/qgridlayout.h \
   /usr/include/qt/QtWidgets/qlabel.h \
@@ -1672,8 +2386,10 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o: /home/akhilkk/projects/flacplayer/fl
   /usr/include/qt/QtWidgets/qmenu.h \
   /usr/include/qt/QtWidgets/qmenubar.h \
   /usr/include/qt/QtWidgets/qmessagebox.h \
+  /usr/include/qt/QtWidgets/qprogressbar.h \
   /usr/include/qt/QtWidgets/qpushbutton.h \
   /usr/include/qt/QtWidgets/qsizepolicy.h \
+  /usr/include/qt/QtWidgets/qslider.h \
   /usr/include/qt/QtWidgets/qstatusbar.h \
   /usr/include/qt/QtWidgets/qtabwidget.h \
   /usr/include/qt/QtWidgets/qtwidgets-config.h \
@@ -1714,129 +2430,253 @@ flacplayer: /usr/lib/Scrt1.o \
   /usr/lib/libGL.so.1 \
   /usr/lib/libGLX.so.0 \
   /usr/lib/libGLdispatch.so.0 \
+  /usr/lib/libOpenCL.so.1 \
   /usr/lib/libQt5Core.so.5.15.17 \
   /usr/lib/libQt5Gui.so.5.15.17 \
   /usr/lib/libQt5Multimedia.so.5.15.17 \
   /usr/lib/libQt5Network.so.5.15.17 \
   /usr/lib/libQt5Widgets.so.5.15.17 \
+  /usr/lib/libSvtAv1Enc.so.3 \
+  /usr/lib/libX11-xcb.so.1 \
   /usr/lib/libX11.so.6 \
   /usr/lib/libXau.so.6 \
   /usr/lib/libXdmcp.so.6 \
+  /usr/lib/libXext.so.6 \
+  /usr/lib/libXfixes.so.3 \
+  /usr/lib/libXrender.so.1 \
+  /usr/lib/libaom.so.3 \
   /usr/lib/libasyncns.so.0 \
+  /usr/lib/libavcodec.so \
+  /usr/lib/libavformat.so \
+  /usr/lib/libavutil.so \
   /usr/lib/libblkid.so.1 \
+  /usr/lib/libbluray.so.2 \
   /usr/lib/libbrotlicommon.so.1 \
   /usr/lib/libbrotlidec.so.1 \
+  /usr/lib/libbrotlienc.so.1 \
   /usr/lib/libbz2.so.1.0 \
   /usr/lib/libc.so.6 \
   /usr/lib/libc_nonshared.a \
+  /usr/lib/libcairo.so.2 \
   /usr/lib/libcap.so.2 \
   /usr/lib/libcom_err.so.2 \
   /usr/lib/libcrypto.so.3 \
   /usr/lib/libcurl.so.4 \
+  /usr/lib/libdatrie.so.1 \
+  /usr/lib/libdav1d.so.7 \
   /usr/lib/libdbus-1.so.3 \
+  /usr/lib/libdeflate.so.0 \
   /usr/lib/libdouble-conversion.so.3 \
+  /usr/lib/libdrm.so.2 \
   /usr/lib/libduktape.so.207 \
+  /usr/lib/libdvdnav.so.4 \
+  /usr/lib/libdvdread.so.8 \
+  /usr/lib/libexpat.so.1 \
   /usr/lib/libffi.so.8 \
+  /usr/lib/libfontconfig.so.1 \
   /usr/lib/libfreetype.so.6 \
+  /usr/lib/libfribidi.so.0 \
+  /usr/lib/libgdk_pixbuf-2.0.so.0 \
   /usr/lib/libgio-2.0.so.0 \
   /usr/lib/libglib-2.0.so.0 \
   /usr/lib/libgmodule-2.0.so.0 \
+  /usr/lib/libgmp.so.10 \
+  /usr/lib/libgnutls.so.30 \
   /usr/lib/libgobject-2.0.so.0 \
+  /usr/lib/libgomp.so.1 \
   /usr/lib/libgraphite2.so.3 \
+  /usr/lib/libgsm.so.1 \
   /usr/lib/libgssapi_krb5.so.2 \
   /usr/lib/libharfbuzz.so.0 \
+  /usr/lib/libhogweed.so.6 \
+  /usr/lib/libhwy.so.1 \
   /usr/lib/libicudata.so.76 \
   /usr/lib/libicui18n.so.76 \
   /usr/lib/libicuuc.so.76 \
   /usr/lib/libidn2.so.0 \
+  /usr/lib/libjbig.so.2.1 \
+  /usr/lib/libjpeg.so.8 \
+  /usr/lib/libjxl.so.0.11 \
+  /usr/lib/libjxl_cms.so.0.11 \
+  /usr/lib/libjxl_threads.so.0.11 \
   /usr/lib/libk5crypto.so.3 \
   /usr/lib/libkeyutils.so.1 \
   /usr/lib/libkrb5.so.3 \
   /usr/lib/libkrb5support.so.0 \
+  /usr/lib/libleancrypto.so.1 \
+  /usr/lib/liblzma.so.5 \
   /usr/lib/libm.so.6 \
   /usr/lib/libmd4c.so.0 \
+  /usr/lib/libmodplug.so.1 \
   /usr/lib/libmount.so.1 \
   /usr/lib/libmp3lame.so.0 \
   /usr/lib/libmpg123.so.0 \
   /usr/lib/libmvec.so.1 \
+  /usr/lib/libnettle.so.8 \
   /usr/lib/libnghttp2.so.14 \
   /usr/lib/libnghttp3.so.9 \
   /usr/lib/libogg.so.0 \
+  /usr/lib/libopencore-amrnb.so.0 \
+  /usr/lib/libopencore-amrwb.so.0 \
+  /usr/lib/libopenjp2.so.7 \
+  /usr/lib/libopenmpt.so.0 \
   /usr/lib/libopus.so.0 \
+  /usr/lib/libp11-kit.so.0 \
+  /usr/lib/libpango-1.0.so.0 \
+  /usr/lib/libpangocairo-1.0.so.0 \
+  /usr/lib/libpangoft2-1.0.so.0 \
   /usr/lib/libpcre2-16.so.0 \
   /usr/lib/libpcre2-8.so.0 \
+  /usr/lib/libpgm-5.3.so.0 \
+  /usr/lib/libpixman-1.so.0 \
   /usr/lib/libpng16.so.16 \
   /usr/lib/libproxy.so.1 \
   /usr/lib/libproxy/libpxbackend-1.0.so \
   /usr/lib/libpsl.so.5 \
   /usr/lib/libpulse.so.0 \
+  /usr/lib/librav1e.so.0.7 \
   /usr/lib/libresolv.so.2 \
+  /usr/lib/librsvg-2.so.2 \
+  /usr/lib/libsharpyuv.so.0 \
+  /usr/lib/libsnappy.so.1 \
   /usr/lib/libsndfile.so.1 \
+  /usr/lib/libsodium.so.26 \
+  /usr/lib/libsoxr.so.0 \
+  /usr/lib/libspeex.so.1 \
+  /usr/lib/libsrt.so.1.5 \
+  /usr/lib/libssh.so.4 \
   /usr/lib/libssh2.so.1 \
   /usr/lib/libssl.so.3 \
+  /usr/lib/libswresample.so \
   /usr/lib/libsystemd.so.0 \
+  /usr/lib/libtasn1.so.6 \
+  /usr/lib/libthai.so.0 \
+  /usr/lib/libtheoradec.so.2 \
+  /usr/lib/libtheoraenc.so.2 \
+  /usr/lib/libtiff.so.6 \
   /usr/lib/libunistring.so.5 \
+  /usr/lib/libva-drm.so.2 \
+  /usr/lib/libva-x11.so.2 \
+  /usr/lib/libva.so.2 \
+  /usr/lib/libvdpau.so.1 \
   /usr/lib/libvorbis.so.0 \
   /usr/lib/libvorbisenc.so.2 \
+  /usr/lib/libvorbisfile.so.3 \
+  /usr/lib/libvpl.so.2 \
+  /usr/lib/libvpx.so.9 \
+  /usr/lib/libwebp.so.7 \
+  /usr/lib/libwebpmux.so.3 \
+  /usr/lib/libx264.so.164 \
+  /usr/lib/libx265.so.215 \
+  /usr/lib/libxcb-dri3.so.0 \
+  /usr/lib/libxcb-render.so.0 \
+  /usr/lib/libxcb-shm.so.0 \
   /usr/lib/libxcb.so.1 \
+  /usr/lib/libxml2.so.16 \
+  /usr/lib/libxvidcore.so.4 \
   /usr/lib/libz.so.1 \
+  /usr/lib/libzmq.so.5 \
   /usr/lib/libzstd.so.1 \
   /usr/lib/pulseaudio/libpulsecommon-17.0.so \
   /usr/lib32/libFLAC.so.14 \
   /usr/lib32/libGL.so.1 \
   /usr/lib32/libGLX.so.0 \
   /usr/lib32/libGLdispatch.so.0 \
+  /usr/lib32/libX11-xcb.so.1 \
   /usr/lib32/libX11.so.6 \
   /usr/lib32/libXau.so.6 \
   /usr/lib32/libXdmcp.so.6 \
+  /usr/lib32/libXext.so.6 \
+  /usr/lib32/libXfixes.so.3 \
+  /usr/lib32/libXrender.so.1 \
   /usr/lib32/libasyncns.so.0 \
   /usr/lib32/libblkid.so.1 \
   /usr/lib32/libbrotlicommon.so.1 \
   /usr/lib32/libbrotlidec.so.1 \
+  /usr/lib32/libbrotlienc.so.1 \
   /usr/lib32/libbz2.so.1.0 \
+  /usr/lib32/libcairo.so.2 \
   /usr/lib32/libcap.so.2 \
   /usr/lib32/libcom_err.so.2 \
   /usr/lib32/libcrypto.so.3 \
   /usr/lib32/libcurl.so.4 \
+  /usr/lib32/libdatrie.so.1 \
   /usr/lib32/libdbus-1.so.3 \
+  /usr/lib32/libdrm.so.2 \
+  /usr/lib32/libexpat.so.1 \
   /usr/lib32/libffi.so.8 \
+  /usr/lib32/libfontconfig.so.1 \
   /usr/lib32/libfreetype.so.6 \
+  /usr/lib32/libfribidi.so.0 \
+  /usr/lib32/libgdk_pixbuf-2.0.so.0 \
   /usr/lib32/libgio-2.0.so.0 \
   /usr/lib32/libglib-2.0.so.0 \
   /usr/lib32/libgmodule-2.0.so.0 \
+  /usr/lib32/libgmp.so.10 \
+  /usr/lib32/libgnutls.so.30 \
   /usr/lib32/libgobject-2.0.so.0 \
+  /usr/lib32/libgomp.so.1 \
   /usr/lib32/libgssapi_krb5.so.2 \
   /usr/lib32/libharfbuzz.so.0 \
+  /usr/lib32/libhogweed.so.6 \
   /usr/lib32/libicudata.so.76 \
   /usr/lib32/libicui18n.so.76 \
   /usr/lib32/libicuuc.so.76 \
   /usr/lib32/libidn2.so.0 \
+  /usr/lib32/libjpeg.so.8 \
   /usr/lib32/libk5crypto.so.3 \
   /usr/lib32/libkeyutils.so.1 \
   /usr/lib32/libkrb5.so.3 \
   /usr/lib32/libkrb5support.so.0 \
+  /usr/lib32/liblzma.so.5 \
+  /usr/lib32/libmodplug.so.1 \
   /usr/lib32/libmount.so.1 \
   /usr/lib32/libmpg123.so.0 \
+  /usr/lib32/libnettle.so.8 \
   /usr/lib32/libnghttp2.so.14 \
   /usr/lib32/libnghttp3.so.9 \
   /usr/lib32/libogg.so.0 \
   /usr/lib32/libopus.so.0 \
+  /usr/lib32/libp11-kit.so.0 \
+  /usr/lib32/libpango-1.0.so.0 \
+  /usr/lib32/libpangocairo-1.0.so.0 \
+  /usr/lib32/libpangoft2-1.0.so.0 \
   /usr/lib32/libpcre2-16.so.0 \
   /usr/lib32/libpcre2-8.so.0 \
+  /usr/lib32/libpixman-1.so.0 \
   /usr/lib32/libpng16.so.16 \
   /usr/lib32/libpsl.so.5 \
   /usr/lib32/libpulse.so.0 \
   /usr/lib32/libresolv.so.2 \
+  /usr/lib32/librsvg-2.so.2 \
+  /usr/lib32/libsharpyuv.so.0 \
   /usr/lib32/libsndfile.so.1 \
   /usr/lib32/libssh2.so.1 \
   /usr/lib32/libssl.so.3 \
   /usr/lib32/libsystemd.so.0 \
+  /usr/lib32/libtasn1.so.6 \
+  /usr/lib32/libthai.so.0 \
+  /usr/lib32/libtheoradec.so.2 \
+  /usr/lib32/libtheoraenc.so.2 \
+  /usr/lib32/libtiff.so.6 \
   /usr/lib32/libunistring.so.5 \
+  /usr/lib32/libva-drm.so.2 \
+  /usr/lib32/libva-x11.so.2 \
+  /usr/lib32/libva.so.2 \
+  /usr/lib32/libvdpau.so.1 \
   /usr/lib32/libvorbis.so.0 \
   /usr/lib32/libvorbisenc.so.2 \
+  /usr/lib32/libvorbisfile.so.3 \
+  /usr/lib32/libwebp.so.7 \
+  /usr/lib32/libwebpmux.so.3 \
+  /usr/lib32/libxcb-dri3.so.0 \
+  /usr/lib32/libxcb-render.so.0 \
+  /usr/lib32/libxcb-shm.so.0 \
   /usr/lib32/libxcb.so.1 \
+  /usr/lib32/libxml2.so.16 \
   /usr/lib32/libz.so.1 \
   /usr/lib32/libzstd.so.1 \
+  CMakeFiles/flacplayer.dir/audiomanager.cpp.o \
   CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o \
   CMakeFiles/flacplayer.dir/main.cpp.o \
   CMakeFiles/flacplayer.dir/mainwindow.cpp.o
@@ -1844,27 +2684,55 @@ flacplayer: /usr/lib/Scrt1.o \
 
 CMakeFiles/flacplayer.dir/main.cpp.o:
 
-CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
+CMakeFiles/flacplayer.dir/audiomanager.cpp.o:
 
 /usr/lib32/libzstd.so.1:
 
 /usr/lib32/libz.so.1:
 
+/usr/lib32/libxml2.so.16:
+
 /usr/lib32/libxcb.so.1:
 
+/usr/lib32/libxcb-shm.so.0:
+
+/usr/lib32/libxcb-dri3.so.0:
+
+/usr/lib32/libvorbisfile.so.3:
+
+/usr/lib32/libvdpau.so.1:
+
+/usr/lib32/libva-x11.so.2:
+
+/usr/lib32/libva-drm.so.2:
+
 /usr/lib32/libunistring.so.5:
+
+/usr/lib32/libtiff.so.6:
+
+/usr/lib32/libtheoraenc.so.2:
+
+/usr/lib32/libthai.so.0:
+
+/usr/lib32/libtasn1.so.6:
 
 /usr/lib32/libssh2.so.1:
 
 /usr/lib32/libsndfile.so.1:
 
-/usr/lib32/libpsl.so.5:
-
 /usr/lib32/libpng16.so.16:
+
+/usr/lib32/libpixman-1.so.0:
 
 /usr/lib32/libpcre2-8.so.0:
 
 /usr/lib32/libpcre2-16.so.0:
+
+/usr/lib32/libpangoft2-1.0.so.0:
+
+/usr/lib32/libpsl.so.5:
+
+/usr/lib32/libp11-kit.so.0:
 
 /usr/lib32/libopus.so.0:
 
@@ -1872,23 +2740,35 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib32/libnghttp3.so.9:
 
-/usr/lib32/libmount.so.1:
+/usr/lib32/liblzma.so.5:
 
 /usr/lib32/libkrb5.so.3:
 
 /usr/lib32/libkeyutils.so.1:
 
+/usr/lib32/libjpeg.so.8:
+
 /usr/lib32/libicuuc.so.76:
 
 /usr/lib32/libgssapi_krb5.so.2:
 
+/usr/lib32/libpangocairo-1.0.so.0:
+
+/usr/lib32/libgomp.so.1:
+
 /usr/lib32/libgobject-2.0.so.0:
+
+/usr/lib32/libgmp.so.10:
 
 /usr/lib32/libglib-2.0.so.0:
 
 /usr/lib32/libgio-2.0.so.0:
 
 /usr/lib32/libfreetype.so.6:
+
+/usr/lib32/libmount.so.1:
+
+/usr/lib32/libfontconfig.so.1:
 
 /usr/lib32/libdbus-1.so.3:
 
@@ -1898,9 +2778,11 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib32/libcap.so.2:
 
-/usr/lib32/libbrotlicommon.so.1:
+/usr/lib32/libbrotlienc.so.1:
 
 /usr/lib32/libblkid.so.1:
+
+/usr/lib32/libXfixes.so.3:
 
 /usr/lib32/libXdmcp.so.6:
 
@@ -1908,9 +2790,7 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib32/libX11.so.6:
 
-/usr/lib32/libidn2.so.0:
-
-/usr/lib32/libGLdispatch.so.0:
+/usr/lib32/libX11-xcb.so.1:
 
 /usr/lib32/libGLX.so.0:
 
@@ -1918,19 +2798,47 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
 
 /usr/lib/pulseaudio/libpulsecommon-17.0.so:
 
+/usr/lib/libzmq.so.5:
+
 /usr/lib/libxcb.so.1:
+
+/usr/lib/libxcb-shm.so.0:
+
+/usr/lib/libxcb-render.so.0:
+
+/usr/lib/libxcb-dri3.so.0:
+
+/usr/lib/libwebp.so.7:
+
+/usr/lib/libvpl.so.2:
+
+/usr/lib/libvorbisfile.so.3:
 
 /usr/lib/libvorbisenc.so.2:
 
 /usr/lib/libvorbis.so.0:
 
+/usr/lib/libva.so.2:
+
+/usr/lib/libtheoraenc.so.2:
+
 CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libsystemd.so.0:
 
+/usr/lib/libswresample.so:
+
 /usr/lib/libssh2.so.1:
 
+/usr/lib/libssh.so.4:
+
+/usr/lib/libspeex.so.1:
+
+/usr/lib/libsoxr.so.0:
+
 /usr/lib/libsndfile.so.1:
+
+/usr/lib/librsvg-2.so.2:
 
 /usr/lib/libpulse.so.0:
 
@@ -1940,7 +2848,13 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libpng16.so.16:
 
-/usr/lib/libpcre2-8.so.0:
+/usr/lib/libpixman-1.so.0:
+
+/usr/lib/libpgm-5.3.so.0:
+
+/usr/lib/libopenmpt.so.0:
+
+/usr/lib/libopencore-amrwb.so.0:
 
 /usr/lib/libogg.so.0:
 
@@ -1948,13 +2862,23 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libnghttp2.so.14:
 
+/usr/lib/libnettle.so.8:
+
 /usr/lib/libmpg123.so.0:
 
 /usr/lib/libmp3lame.so.0:
 
+/usr/lib/libmodplug.so.1:
+
 /usr/lib/libm.so.6:
 
+/usr/lib/liblzma.so.5:
+
 /usr/lib/libkrb5.so.3:
+
+/usr/lib/libjxl.so.0.11:
+
+/usr/lib/libjpeg.so.8:
 
 /usr/lib/libidn2.so.0:
 
@@ -1968,19 +2892,43 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libgssapi_krb5.so.2:
 
+/usr/lib/libgnutls.so.30:
+
+/usr/lib/libgmp.so.10:
+
 /usr/lib/libglib-2.0.so.0:
 
+/usr/lib/libgdk_pixbuf-2.0.so.0:
+
 /usr/lib/libfreetype.so.6:
+
+/usr/lib/libfontconfig.so.1:
+
+/usr/lib/libexpat.so.1:
+
+/usr/lib/libdvdread.so.8:
+
+/usr/lib/libdrm.so.2:
+
+/usr/lib/libdav1d.so.7:
+
+/usr/lib/libdatrie.so.1:
 
 /usr/lib/libcrypto.so.3:
 
 /usr/lib/libcap.so.2:
 
-/usr/lib/libbz2.so.1.0:
+/usr/lib/libcairo.so.2:
+
+/usr/lib/libbrotlienc.so.1:
 
 /usr/lib/libblkid.so.1:
 
+/usr/lib/libavcodec.so:
+
 /usr/lib/libasyncns.so.0:
+
+/usr/lib/libaom.so.3:
 
 /usr/lib32/libGL.so.1:
 
@@ -1988,17 +2936,25 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/lib/libX11.so.6:
 
+/usr/lib/libSvtAv1Enc.so.3:
+
 /usr/lib/libQt5Widgets.so.5.15.17:
 
 /usr/lib/libQt5Core.so.5.15.17:
+
+/usr/lib/libOpenCL.so.1:
 
 /usr/lib/libffi.so.8:
 
 /usr/lib/libGL.so.1:
 
+/usr/lib/libtasn1.so.6:
+
 /usr/lib/ld-linux-x86-64.so.2:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o:
+
+/usr/lib/libpangocairo-1.0.so.0:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
 
@@ -2028,25 +2984,33 @@ CMakeFiles/flacplayer.dir/mainwindow.cpp.o:
 
 /usr/include/qt/QtWidgets/qlayoutitem.h:
 
+/usr/lib/libpangoft2-1.0.so.0:
+
 /usr/include/qt/QtWidgets/qlayout.h:
 
 /usr/include/qt/QtWidgets/qboxlayout.h:
 
+/usr/lib/libpcre2-8.so.0:
+
+/usr/include/qt/QtWidgets/QFileDialog:
+
+CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o:
+
+/usr/include/qt/QtCore/qurl.h:
+
+/usr/include/qt/QtCore/qstandardpaths.h:
+
 flacplayer_autogen/include/ui_mainwindow.h:
+
+/usr/lib/libp11-kit.so.0:
 
 /usr/include/qt/QtWidgets/qapplication.h:
 
 /usr/include/qt/QtWidgets/QApplication:
 
-/usr/include/qt/QtMultimedia/qmultimedia.h:
-
-/usr/lib/libbrotlidec.so.1:
-
-/usr/include/qt/QtMultimedia/qaudioformat.h:
-
-/usr/include/qt/QtMultimedia/QAudioFormat:
-
 /usr/include/qt/QtGui/qguiapplication.h:
+
+/usr/lib32/libexpat.so.1:
 
 /usr/lib/crti.o:
 
@@ -2055,10 +3019,6 @@ flacplayer_autogen/include/ui_mainwindow.h:
 /usr/include/libintl.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/time_members.h:
-
-/usr/include/c++/15.2.1/variant:
-
-/usr/include/c++/15.2.1/thread:
 
 /usr/include/c++/15.2.1/ostream:
 
@@ -2080,11 +3040,35 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/bits/codecvt.h:
 
+flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
+
+flacplayer_autogen/EWIEGA46WW/moc_audiomanager.cpp:
+
+flacplayer_autogen/mocs_compilation.cpp:
+
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
 
+/usr/include/qt/QtMultimedia/QAudioFormat:
+
+/usr/include/qt/QtCore/qfiledevice.h:
+
 /usr/include/linux/sched/types.h:
+
+/usr/include/c++/15.2.1/variant:
+
+/usr/include/c++/15.2.1/tr1/poly_laguerre.tcc:
+
+/usr/include/c++/15.2.1/tr1/modified_bessel_func.tcc:
+
+/usr/include/c++/15.2.1/tr1/exp_integral.tcc:
+
+/usr/include/c++/15.2.1/tr1/ell_integral.tcc:
+
+/usr/include/c++/15.2.1/tr1/beta_function.tcc:
+
+/usr/include/c++/15.2.1/tr1/bessel_function.tcc:
 
 /usr/include/c++/15.2.1/system_error:
 
@@ -2092,17 +3076,85 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/lib32/libsystemd.so.0:
 
+/usr/lib/libxml2.so.16:
+
 /usr/include/c++/15.2.1/ratio:
+
+/usr/lib32/libgdk_pixbuf-2.0.so.0:
 
 /usr/include/c++/15.2.1/pstl/pstl_config.h:
 
 /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
 
+/usr/include/c++/15.2.1/mutex:
+
+/usr/include/c++/15.2.1/math.h:
+
 /usr/include/c++/15.2.1/ctime:
 
 /usr/include/c++/15.2.1/cstdio:
 
+/usr/include/c++/15.2.1/condition_variable:
+
+/usr/include/c++/15.2.1/bits/unordered_map.h:
+
+/usr/lib/librav1e.so.0.7:
+
+/usr/include/c++/15.2.1/bits/unique_lock.h:
+
+/usr/include/c++/15.2.1/bits/parse_numbers.h:
+
+/usr/lib/libx264.so.164:
+
+/usr/include/c++/15.2.1/bits/hashtable_policy.h:
+
+/usr/include/c++/15.2.1/bits/fs_fwd.h:
+
+/usr/include/c++/15.2.1/bits/hashtable.h:
+
+/usr/lib32/libbrotlicommon.so.1:
+
+/usr/include/c++/15.2.1/bits/atomic_futex.h:
+
+/usr/lib32/libmpg123.so.0:
+
+/usr/share/cmake/Modules/Platform/UnixPaths.cmake:
+
+/usr/share/cmake/Modules/Platform/Linux.cmake:
+
+/usr/include/qt/QtWidgets/QMessageBox:
+
+/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
+
+/usr/share/cmake/Modules/Platform/Linux-GNU.cmake:
+
+/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake:
+
+/usr/share/cmake/Modules/Linker/GNU.cmake:
+
+/usr/share/cmake/Modules/Linker/GNU-CXX.cmake:
+
+/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake:
+
+/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake:
+
+/usr/share/cmake/Modules/FindPkgConfig.cmake:
+
+/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:
+
+/usr/include/c++/15.2.1/pstl/glue_memory_defs.h:
+
+/usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
+
+/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake:
+
+/usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake:
+
+/usr/lib/libsodium.so.26:
+
 /usr/include/c++/15.2.1/string_view:
+
+/usr/lib/libdeflate.so.0:
 
 /usr/include/c++/15.2.1/stdexcept:
 
@@ -2114,21 +3166,27 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/memory:
 
+/usr/lib/libhwy.so.1:
+
 /usr/include/c++/15.2.1/list:
 
 /usr/include/qt/QtCore/QVariant:
 
 /usr/include/asm-generic/errno-base.h:
 
+/usr/lib/libgsm.so.1:
+
 /usr/lib/libdbus-1.so.3:
 
 /usr/include/c++/15.2.1/iosfwd:
 
-/usr/include/c++/15.2.1/bits/atomic_lockfree_defines.h:
+/usr/include/c++/15.2.1/future:
+
+/usr/lib/libdouble-conversion.so.3:
+
+/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:
 
 /usr/include/c++/15.2.1/ext/type_traits.h:
-
-/usr/include/c++/15.2.1/bits/cxxabi_forced.h:
 
 /usr/include/c++/15.2.1/bits/ranges_cmp.h:
 
@@ -2152,6 +3210,8 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/bits/types/FILE.h:
 
+/usr/lib/libjxl_cms.so.0.11:
+
 /usr/include/linux/posix_types.h:
 
 /usr/lib/libgmodule-2.0.so.0:
@@ -2168,11 +3228,15 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/cwchar:
 
+/usr/include/qt/QtCore/QIODevice:
+
 /usr/include/c++/15.2.1/bits/sstream.tcc:
 
 /usr/include/c++/15.2.1/bits/streambuf_iterator.h:
 
 /usr/include/c++/15.2.1/bits/ranges_util.h:
+
+/usr/lib32/libXext.so.6:
 
 /home/akhilkk/projects/flacplayer/flacplayer/audiomanager.h:
 
@@ -2202,13 +3266,29 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/c++/15.2.1/bits/stl_raw_storage_iter.h:
 
+/usr/lib32/libidn2.so.0:
+
+/usr/lib32/libGLdispatch.so.0:
+
+/usr/include/qt/QtCore/QTimer:
+
+/usr/include/qt/QtWidgets/QHBoxLayout:
+
+/usr/share/cmake/Modules/Platform/Linker/GNU.cmake:
+
+/usr/include/qt/QtGui/qtguiglobal.h:
+
 /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h:
 
 /usr/include/qt/QtGui/qrgba64.h:
 
+/usr/include/qt/QtCore/qdir.h:
+
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake:
 
 /usr/include/c++/15.2.1/bits/std_function.h:
+
+/usr/include/c++/15.2.1/tr1/special_function_util.h:
 
 /usr/include/c++/15.2.1/bits/std_abs.h:
 
@@ -2222,11 +3302,17 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/share/cmake/Modules/CMakeParseArguments.cmake:
 
+/usr/lib/libtheoradec.so.2:
+
 /usr/include/c++/15.2.1/bits/shared_ptr_atomic.h:
 
 /usr/include/c++/15.2.1/bits/locale_classes.tcc:
 
 /usr/include/c++/15.2.1/bits/shared_ptr.h:
+
+/usr/lib32/libxcb-render.so.0:
+
+/usr/include/qt/QtCore/QFileInfo:
 
 /usr/include/c++/15.2.1/bits/sat_arith.h:
 
@@ -2240,10 +3326,6 @@ flacplayer_autogen/include/ui_mainwindow.h:
 
 /usr/include/libavutil/attributes.h:
 
-CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
-
-/usr/include/libavutil/buffer.h:
-
 /usr/include/c++/15.2.1/bits/range_access.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
@@ -2253,6 +3335,8 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 /usr/include/c++/15.2.1/bits/locale_conv.h:
 
 /usr/include/qt/QtCore/qstring.h:
+
+/usr/lib32/libva.so.2:
 
 /usr/lib/libkeyutils.so.1:
 
@@ -2264,13 +3348,9 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/streambuf.tcc:
 
+/usr/lib/libva-drm.so.2:
+
 /usr/include/bits/cpu-set.h:
-
-/usr/include/qt/QtMultimedia/qtmultimediaglobal.h:
-
-/usr/include/c++/15.2.1/sstream:
-
-/usr/include/libavutil/avconfig.h:
 
 /usr/include/c++/15.2.1/bits/refwrap.h:
 
@@ -2278,21 +3358,17 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/node_handle.h:
 
+/usr/lib/libXrender.so.1:
+
 /usr/include/c++/15.2.1/bits/basic_string.tcc:
 
-/usr/include/pthread.h:
-
-/usr/include/qt/QtGui/qfontinfo.h:
-
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSEmulatorIntegrationPlugin.cmake:
+
+/usr/include/qt/QtCore/qfile.h:
 
 /usr/include/c++/15.2.1/bits/new_allocator.h:
 
 /usr/include/qt/QtCore/qsysinfo.h:
-
-/usr/include/c++/15.2.1/bits/stringfwd.h:
-
-/usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake:
 
 /usr/include/c++/15.2.1/bits/nested_exception.h:
 
@@ -2308,7 +3384,7 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/bits/memory_resource.h:
 
-/usr/share/cmake/Modules/FindPkgConfig.cmake:
+/usr/lib/libleancrypto.so.1:
 
 /usr/include/c++/15.2.1/bits/localefwd.h:
 
@@ -2324,19 +3400,19 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/types/struct_itimerspec.h:
 
+/usr/lib/libx265.so.215:
+
 /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QAlsaPlugin.cmake:
 
 /usr/include/c++/15.2.1/bits/locale_facets.h:
+
+/usr/lib/libfribidi.so.0:
 
 /usr/include/c++/15.2.1/bits/locale_classes.h:
 
 /usr/lib/libresolv.so.2:
 
 /usr/include/alloca.h:
-
-/usr/include/qt/QtMultimedia/qtmultimedia-config.h:
-
-/usr/include/c++/15.2.1/bits/list.tcc:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
 
@@ -2347,6 +3423,8 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 /usr/include/qt/QtWidgets/QWidget:
 
 /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
+
+/usr/include/qt/QtCore/QThread:
 
 /usr/include/c++/15.2.1/ext/concurrence.h:
 
@@ -2440,13 +3518,17 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/bits/mathcalls-narrow.h:
 
+/usr/lib32/libsharpyuv.so.0:
+
+/usr/include/qt/QtMultimedia/qmultimedia.h:
+
+/usr/lib/libpango-1.0.so.0:
+
 /usr/include/qt/QtWidgets/QStatusBar:
 
 /usr/include/c++/15.2.1/climits:
 
 /usr/include/bits/types/timer_t.h:
-
-/usr/share/cmake/Modules/Linker/GNU-CXX.cmake:
 
 /usr/include/bits/types/time_t.h:
 
@@ -2455,6 +3537,8 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 /usr/include/libavcodec/avcodec.h:
 
 /usr/include/qt/QtWidgets/qtwidgetsglobal.h:
+
+/usr/lib32/libpango-1.0.so.0:
 
 /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake:
 
@@ -2470,6 +3554,8 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/include/c++/15.2.1/array:
 
+/usr/lib32/libfribidi.so.0:
+
 /usr/include/c++/15.2.1/bits/std_mutex.h:
 
 /usr/include/bits/endianness.h:
@@ -2480,7 +3566,13 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake:
 
+/usr/lib32/librsvg-2.so.2:
+
 /usr/include/c++/15.2.1/bit:
+
+/usr/include/qt/QtMultimedia/QAudioOutput:
+
+/usr/lib/libopenjp2.so.7:
 
 /usr/include/bits/uintn-identity.h:
 
@@ -2489,6 +3581,12 @@ CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
 /usr/include/asm/types.h:
 
 /usr/include/bits/types/struct_FILE.h:
+
+CMakeFiles/4.1.1/CMakeCXXCompiler.cmake:
+
+/usr/include/libavutil/buffer.h:
+
+/usr/include/qt/QtCore/qmutex.h:
 
 /usr/include/sched.h:
 
@@ -2501,6 +3599,10 @@ flacplayer_autogen/moc_predefs.h:
 /usr/include/libswresample/version_major.h:
 
 /usr/include/bits/uio_lim.h:
+
+/usr/lib32/libmodplug.so.1:
+
+/usr/lib/libwebpmux.so.3:
 
 /usr/include/c++/15.2.1/bits/exception.h:
 
@@ -2516,7 +3618,11 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/ext/atomicity.h:
 
+/usr/include/c++/15.2.1/tr1/hypergeometric.tcc:
+
 /usr/include/bits/types/struct_timespec.h:
+
+/usr/lib32/libwebp.so.7:
 
 /usr/include/c++/15.2.1/bits/char_traits.h:
 
@@ -2538,6 +3644,14 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/c++/15.2.1/debug/debug.h:
 
+/usr/lib/libbz2.so.1.0:
+
+/usr/lib/libavutil.so:
+
+/usr/include/qt/QtWidgets/qabstractslider.h:
+
+/usr/lib/libsrt.so.1.5:
+
 /usr/lib/libopus.so.0:
 
 /usr/include/c++/15.2.1/bits/stl_bvector.h:
@@ -2546,9 +3660,9 @@ flacplayer_autogen/moc_predefs.h:
 
 /usr/include/bits/floatn.h:
 
-/usr/include/c++/15.2.1/atomic:
+/usr/lib/libgomp.so.1:
 
-/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp:
+/usr/include/c++/15.2.1/atomic:
 
 /usr/include/qt/QtGui/qicon.h:
 
@@ -2556,11 +3670,15 @@ flacplayer_autogen/moc_predefs.h:
 
 /home/akhilkk/projects/flacplayer/flacplayer/mainwindow.h:
 
+/usr/lib/libdvdnav.so.4:
+
 /usr/include/c++/15.2.1/bits/out_ptr.h:
 
 CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/lib32/libicudata.so.76:
+
+/usr/lib/libhogweed.so.6:
 
 /usr/lib/cmake/Qt5Network/Qt5NetworkConfigVersion.cmake:
 
@@ -2616,10 +3734,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/thread-shared-types.h:
 
-/usr/include/c++/15.2.1/text_encoding:
-
-/usr/include/c++/15.2.1/bits/invoke.h:
-
 /usr/include/math.h:
 
 /usr/lib/cmake/Qt5/Qt5ModuleLocation.cmake:
@@ -2641,6 +3755,10 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/bits/time.h:
 
 /usr/lib32/libvorbisenc.so.2:
+
+/usr/lib/libthai.so.0:
+
+/usr/lib/libjxl_threads.so.0.11:
 
 /usr/include/c++/15.2.1/compare:
 
@@ -2684,13 +3802,19 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/types/__fpos_t.h:
 
+/usr/lib/libva-x11.so.2:
+
 /usr/include/assert.h:
 
 /usr/include/bits/byteswap.h:
 
+/usr/include/qt/QtCore/QBuffer:
+
 /usr/include/bits/select.h:
 
 /usr/include/bits/setjmp.h:
+
+/usr/lib/libbluray.so.2:
 
 /usr/include/bits/types/struct___jmp_buf_tag.h:
 
@@ -2725,6 +3849,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/bits/flt-eval-method.h:
 
 /usr/include/qt/QtCore/qvarlengtharray.h:
+
+/usr/lib32/libcairo.so.2:
 
 /usr/include/c++/15.2.1/bits/fs_dir.h:
 
@@ -2776,6 +3902,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qbasicatomic.h:
 
+/usr/lib/libopencore-amrnb.so.0:
+
 /usr/include/bits/waitflags.h:
 
 /usr/lib/libssl.so.3:
@@ -2818,6 +3946,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/bits/timesize.h:
 
+/usr/include/qt/QtCore/qfileinfo.h:
+
 /usr/include/qt/QtCore/qline.h:
 
 /usr/include/bits/wordsize.h:
@@ -2838,9 +3968,9 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qsharedpointer.h:
 
-/usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake:
-
 /usr/include/c++/15.2.1/algorithm:
+
+/usr/lib32/libtheoradec.so.2:
 
 /usr/include/bits/types/__FILE.h:
 
@@ -2861,6 +3991,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/c++/15.2.1/bits/alloc_traits.h:
 
 /usr/share/cmake/Modules/CMakeLanguageInformation.cmake:
+
+/usr/lib/libvpx.so.9:
 
 /usr/include/libavformat/avio.h:
 
@@ -2886,11 +4018,25 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/libavutil/samplefmt.h:
 
+/usr/lib32/libdrm.so.2:
+
+/usr/include/c++/15.2.1/bits/invoke.h:
+
+/usr/include/c++/15.2.1/text_encoding:
+
+/usr/include/c++/15.2.1/bits/istream.tcc:
+
+/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake:
+
+/usr/include/qt/QtGui/qpaintdevice.h:
+
 /usr/include/c++/15.2.1/type_traits:
 
 /usr/include/c++/15.2.1/exception:
 
 /usr/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake:
+
+/usr/include/c++/15.2.1/bits/specfun.h:
 
 /usr/include/c++/15.2.1/typeinfo:
 
@@ -2903,8 +4049,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/lib/libunistring.so.5:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h:
-
-/usr/include/c++/15.2.1/bits/parse_numbers.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
 
@@ -2920,13 +4064,23 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/libavutil/error.h:
 
+/usr/lib/libXext.so.6:
+
 /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_CameraBinServicePlugin.cmake:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
 
+/usr/include/c++/15.2.1/sstream:
+
+/usr/include/libavutil/avconfig.h:
+
+/usr/include/qt/QtMultimedia/qtmultimediaglobal.h:
+
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
+
+/usr/lib/libtiff.so.6:
 
 /usr/include/qt/QtCore/qdebug.h:
 
@@ -2962,9 +4116,9 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/libavcodec/codec.h:
 
-/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake:
-
 /usr/include/libavcodec/codec_par.h:
+
+/usr/lib/libsnappy.so.1:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QSvgPlugin.cmake:
 
@@ -3002,6 +4156,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h:
 
+/usr/include/qt/QtWidgets/QSlider:
+
 /usr/include/libavutil/mathematics.h:
 
 /usr/include/qt/QtCore/qglobalstatic.h:
@@ -3009,6 +4165,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/share/cmake/Modules/FindPackageMessage.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake:
+
+/usr/lib32/libgnutls.so.30:
 
 /usr/include/libavutil/mem.h:
 
@@ -3019,8 +4177,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/include/libavutil/rational.h:
 
 /usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:
-
-/usr/include/libswresample/version.h:
 
 /usr/lib32/libgmodule-2.0.so.0:
 
@@ -3044,13 +4200,41 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/locale.h:
 
+/usr/include/qt/QtCore/QByteArray:
+
 /usr/include/qt/QtCore/QDebug:
 
 /usr/include/qt/QtCore/qatomic.h:
 
+/usr/include/c++/15.2.1/cmath:
+
+/usr/include/c++/15.2.1/bits/stringfwd.h:
+
+/usr/include/qt/QtCore/QMutex:
+
+/usr/lib/libxvidcore.so.4:
+
+/usr/include/strings.h:
+
+/usr/lib32/libnettle.so.8:
+
 /usr/include/qt/QtCore/qarraydata.h:
 
+/usr/include/c++/15.2.1/bits/atomic_lockfree_defines.h:
+
+/usr/include/qt/QtCore/qdeadlinetimer.h:
+
 /usr/include/qt/QtCore/qatomic_cxx11.h:
+
+/usr/lib32/libdatrie.so.1:
+
+/usr/include/c++/15.2.1/tr1/riemann_zeta.tcc:
+
+/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp:
+
+/usr/include/qt/QtCore/qbasictimer.h:
+
+/usr/lib/libvdpau.so.1:
 
 /usr/include/qt/QtCore/qchar.h:
 
@@ -3063,6 +4247,12 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/share/cmake/Modules/Compiler/GNU.cmake:
 
 /usr/include/qt/QtGui/qcolor.h:
+
+/usr/include/pthread.h:
+
+/usr/include/qt/QtGui/qfontinfo.h:
+
+/usr/include/qt/QtCore/qelapsedtimer.h:
 
 /usr/include/c++/15.2.1/bits/stl_iterator.h:
 
@@ -3084,6 +4274,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qset.h:
 
+/usr/include/qt/QtCore/QMutexLocker:
+
 /usr/include/qt/QtCore/qhashfunctions.h:
 
 /usr/lib/crtn.o:
@@ -3092,6 +4284,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qiodevice.h:
 
+/usr/lib/libavformat.so:
+
 /usr/include/qt/QtCore/qiterator.h:
 
 /usr/share/cmake/Modules/GNUInstallDirs.cmake:
@@ -3099,6 +4293,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake:
 
 /usr/include/qt/QtCore/qlist.h:
+
+/usr/lib32/libhogweed.so.6:
 
 /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerCaptureServicePlugin.cmake:
 
@@ -3124,13 +4320,17 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qobjectdefs.h:
 
+/usr/lib/libsharpyuv.so.0:
+
 /usr/include/qt/QtCore/qstringmatcher.h:
 
-/usr/share/cmake/Modules/Linker/GNU.cmake:
+/usr/lib32/libwebpmux.so.3:
 
 /usr/include/bits/types/clock_t.h:
 
 /usr/include/qt/QtCore/qpair.h:
+
+/usr/include/c++/15.2.1/tr1/legendre_function.tcc:
 
 /usr/include/qt/QtCore/qprocessordetection.h:
 
@@ -3142,11 +4342,17 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtCore/qstringalgorithms.h:
 
+/usr/include/qt/QtWidgets/qfiledialog.h:
+
 /usr/include/qt/QtCore/qglobal.h:
 
 /usr/include/qt/QtCore/qstringlist.h:
 
+/usr/include/c++/15.2.1/tr1/gamma.tcc:
+
 /usr/include/qt/QtCore/qstringliteral.h:
+
+/usr/include/c++/15.2.1/tr1/poly_hermite.tcc:
 
 /usr/include/qt/QtCore/qstringview.h:
 
@@ -3160,6 +4366,18 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake:
 
+/usr/include/qt/QtCore/qthread.h:
+
+/usr/lib/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake:
+
+/usr/include/qt/QtCore/qtimer.h:
+
+/usr/include/libswresample/version.h:
+
+/usr/include/qt/QtCore/qtsan_impl.h:
+
+/usr/include/qt/QtWidgets/QProgressBar:
+
 /usr/include/asm/unistd_64.h:
 
 /usr/include/qt/QtCore/qtypeinfo.h:
@@ -3169,6 +4387,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/lib32/libvorbis.so.0:
 
 /usr/lib32/libssl.so.3:
+
+/usr/lib/libjbig.so.2.1:
 
 /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake:
 
@@ -3184,15 +4404,37 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtGui/qpixelformat.h:
 
+/usr/lib/libX11-xcb.so.1:
+
 /usr/include/qt/QtGui/qrgb.h:
-
-/usr/lib32/libmpg123.so.0:
-
-/usr/share/cmake/Modules/Platform/UnixPaths.cmake:
 
 /usr/include/qt/QtGui/qtgui-config.h:
 
 /usr/include/qt/QtGui/qtransform.h:
+
+/usr/include/c++/15.2.1/bits/chrono.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/c++/15.2.1/bits/stl_function.h:
+
+/usr/include/qt/QtMultimedia/qaudio.h:
+
+/usr/include/qt/QtMultimedia/qaudiodeviceinfo.h:
+
+/usr/lib/libbrotlidec.so.1:
+
+/usr/include/qt/QtMultimedia/qaudioformat.h:
+
+/usr/include/c++/15.2.1/thread:
+
+/usr/include/qt/QtMultimedia/qaudiooutput.h:
+
+/usr/include/c++/15.2.1/bits/list.tcc:
+
+/usr/include/qt/QtMultimedia/qtmultimedia-config.h:
+
+/usr/include/unistd.h:
 
 /usr/lib32/libasyncns.so.0:
 
@@ -3200,9 +4442,15 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/qt/QtWidgets/qmainwindow.h:
 
+/usr/include/qt/QtWidgets/qprogressbar.h:
+
 /usr/include/qt/QtWidgets/qpushbutton.h:
 
 /usr/include/qt/QtWidgets/qsizepolicy.h:
+
+/usr/include/c++/15.2.1/bits/cxxabi_forced.h:
+
+/usr/include/qt/QtWidgets/qslider.h:
 
 /usr/include/c++/15.2.1/iterator:
 
@@ -3212,11 +4460,11 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/string.h:
 
-/usr/include/strings.h:
-
 /usr/lib/libzstd.so.1:
 
 /usr/include/sys/cdefs.h:
+
+/usr/include/qt/QtCore/qbuffer.h:
 
 /usr/lib/cmake/Qt5/Qt5ConfigVersion.cmake:
 
@@ -3228,15 +4476,17 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/include/time.h:
 
-/usr/include/unistd.h:
-
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/gthr.h:
 
 /usr/lib/cmake/Qt5/Qt5Config.cmake:
 
+/usr/include/qt/QtCore/QStandardPaths:
+
 /usr/lib/cmake/Qt5Core/Qt5CoreConfig.cmake:
 
 /usr/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake:
+
+/usr/lib32/libXrender.so.1:
 
 /usr/lib/cmake/Qt5Core/Qt5CoreMacros.cmake:
 
@@ -3249,8 +4499,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake:
-
-/usr/include/c++/15.2.1/bits/unordered_map.h:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake:
 
@@ -3274,6 +4522,8 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake:
 
+/usr/lib/libXfixes.so.3:
+
 /usr/lib/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake:
@@ -3281,8 +4531,6 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QTsLibPlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QVncIntegrationPlugin.cmake:
-
-/usr/lib/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake:
 
 /usr/lib/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake:
 
@@ -3298,60 +4546,10 @@ CMakeFiles/4.1.1/CMakeSystem.cmake:
 
 /usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake:
 
-/usr/lib/libdouble-conversion.so.3:
-
-/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:
-
 /usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake:
-
-/usr/share/cmake/Modules/Platform/Linux-GNU.cmake:
 
 /usr/include/c++/15.2.1/bits/uniform_int_dist.h:
 
 /usr/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake:
 
 /usr/share/cmake/Modules/CMakeCXXInformation.cmake:
-
-/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake:
-
-/usr/include/c++/15.2.1/pstl/glue_memory_defs.h:
-
-/usr/share/cmake/Modules/Compiler/GNU-CXX.cmake:
-
-/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:
-
-/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake:
-
-/usr/include/qt/QtWidgets/QHBoxLayout:
-
-/usr/include/qt/QtGui/qtguiglobal.h:
-
-/usr/share/cmake/Modules/Platform/Linker/GNU.cmake:
-
-/usr/include/c++/15.2.1/bits/istream.tcc:
-
-/usr/include/qt/QtGui/qpaintdevice.h:
-
-/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake:
-
-/usr/include/qt/QtWidgets/QMessageBox:
-
-/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake:
-
-/usr/share/cmake/Modules/Platform/Linux.cmake:
-
-flacplayer_autogen/mocs_compilation.cpp:
-
-flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp:
-
-/usr/include/sys/select.h:
-
-/usr/include/c++/15.2.1/bits/stl_function.h:
-
-/usr/include/c++/15.2.1/bits/chrono.h:
-
-/usr/include/c++/15.2.1/bits/fs_fwd.h:
-
-/usr/include/c++/15.2.1/bits/hashtable.h:
-
-/usr/include/c++/15.2.1/bits/hashtable_policy.h:

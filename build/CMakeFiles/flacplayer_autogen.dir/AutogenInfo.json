@@ -97,6 +97,8 @@
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QGstreamerPlayerServicePlugin.cmake",
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QM3uPlaylistPlugin.cmake",
 		"/usr/lib/cmake/Qt5Multimedia/Qt5Multimedia_QPulseAudioPlugin.cmake",
+		"/usr/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake",
+		"/usr/lib/cmake/Qt5Core/Qt5CoreConfig.cmake",
 		"/usr/share/cmake/Modules/FindPkgConfig.cmake",
 		"/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake",
 		"/usr/share/cmake/Modules/FindPackageMessage.cmake",

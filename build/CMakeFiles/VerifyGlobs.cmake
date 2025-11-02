@@ -42,8 +42,10 @@ file(GLOB_RECURSE NEW_GLOB LIST_DIRECTORIES false "/home/akhilkk/projects/flacpl
 set(OLD_GLOB
   "/home/akhilkk/projects/flacplayer/flacplayer/audiomanager.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/build/CMakeFiles/4.1.1/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+  "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/EWIEGA46WW/moc_audiomanager.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/EWIEGA46WW/moc_mainwindow.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/mocs_compilation.cpp"
+  "/home/akhilkk/projects/flacplayer/flacplayer/flac.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/main.cpp"
   "/home/akhilkk/projects/flacplayer/flacplayer/mainwindow.cpp"
   )

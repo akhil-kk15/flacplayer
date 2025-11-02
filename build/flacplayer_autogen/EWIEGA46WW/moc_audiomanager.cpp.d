@@ -227,6 +227,7 @@
   /usr/include/c++/15.2.1/ext/string_conversions.h \
   /usr/include/c++/15.2.1/ext/type_traits.h \
   /usr/include/c++/15.2.1/functional \
+  /usr/include/c++/15.2.1/future \
   /usr/include/c++/15.2.1/initializer_list \
   /usr/include/c++/15.2.1/ios \
   /usr/include/c++/15.2.1/iosfwd \
@@ -315,14 +316,23 @@
   /usr/include/locale.h \
   /usr/include/math.h \
   /usr/include/pthread.h \
+  /usr/include/qt/QtCore/QBuffer \
+  /usr/include/qt/QtCore/QByteArray \
   /usr/include/qt/QtCore/QDebug \
+  /usr/include/qt/QtCore/QIODevice \
+  /usr/include/qt/QtCore/QMutex \
+  /usr/include/qt/QtCore/QMutexLocker \
   /usr/include/qt/QtCore/QObject \
   /usr/include/qt/QtCore/QString \
+  /usr/include/qt/QtCore/QThread \
+  /usr/include/qt/QtCore/QTimer \
   /usr/include/qt/QtCore/qalgorithms.h \
   /usr/include/qt/QtCore/qarraydata.h \
   /usr/include/qt/QtCore/qatomic.h \
   /usr/include/qt/QtCore/qatomic_cxx11.h \
   /usr/include/qt/QtCore/qbasicatomic.h \
+  /usr/include/qt/QtCore/qbasictimer.h \
+  /usr/include/qt/QtCore/qbuffer.h \
   /usr/include/qt/QtCore/qbytearray.h \
   /usr/include/qt/QtCore/qbytearraylist.h \
   /usr/include/qt/QtCore/qchar.h \
@@ -331,7 +341,9 @@
   /usr/include/qt/QtCore/qcontainerfwd.h \
   /usr/include/qt/QtCore/qcontainertools_impl.h \
   /usr/include/qt/QtCore/qcontiguouscache.h \
+  /usr/include/qt/QtCore/qdeadlinetimer.h \
   /usr/include/qt/QtCore/qdebug.h \
+  /usr/include/qt/QtCore/qelapsedtimer.h \
   /usr/include/qt/QtCore/qflags.h \
   /usr/include/qt/QtCore/qgenericatomic.h \
   /usr/include/qt/QtCore/qglobal.h \
@@ -345,6 +357,7 @@
   /usr/include/qt/QtCore/qlogging.h \
   /usr/include/qt/QtCore/qmap.h \
   /usr/include/qt/QtCore/qmetatype.h \
+  /usr/include/qt/QtCore/qmutex.h \
   /usr/include/qt/QtCore/qnamespace.h \
   /usr/include/qt/QtCore/qnumeric.h \
   /usr/include/qt/QtCore/qobject.h \
@@ -370,11 +383,24 @@
   /usr/include/qt/QtCore/qsystemdetection.h \
   /usr/include/qt/QtCore/qtcore-config.h \
   /usr/include/qt/QtCore/qtextstream.h \
+  /usr/include/qt/QtCore/qthread.h \
+  /usr/include/qt/QtCore/qtimer.h \
+  /usr/include/qt/QtCore/qtsan_impl.h \
   /usr/include/qt/QtCore/qtypeinfo.h \
   /usr/include/qt/QtCore/qvariant.h \
   /usr/include/qt/QtCore/qvarlengtharray.h \
   /usr/include/qt/QtCore/qvector.h \
   /usr/include/qt/QtCore/qversiontagging.h \
+  /usr/include/qt/QtGui/qtgui-config.h \
+  /usr/include/qt/QtGui/qtguiglobal.h \
+  /usr/include/qt/QtMultimedia/QAudioOutput \
+  /usr/include/qt/QtMultimedia/qaudio.h \
+  /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+  /usr/include/qt/QtMultimedia/qaudioformat.h \
+  /usr/include/qt/QtMultimedia/qaudiooutput.h \
+  /usr/include/qt/QtMultimedia/qmultimedia.h \
+  /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+  /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
   /usr/include/stdint.h \

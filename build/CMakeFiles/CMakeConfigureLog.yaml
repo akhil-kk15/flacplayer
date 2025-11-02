@@ -4909,3 +4909,923 @@ events:
       CMAKE_SYSTEM_LIBRARY_PATH:
         - "/usr/lib/X11"
 ...
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGL"
+    candidate_directories:
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libEGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GL"
+    candidate_directories:
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+...
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGL"
+    candidate_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libEGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GL"
+    candidate_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+...
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGL"
+    candidate_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libEGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:67 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_EGL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "EGLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:22 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GL"
+    candidate_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/lib/"
+      - "/usr/X11R6/lib/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/lib/"
+      - "/usr/pkg/"
+      - "/opt/lib/"
+      - "/opt/"
+      - "/usr/lib/X11/"
+    searched_directories:
+      - "/home/akhilkk/.cabal/bin/"
+      - "/home/akhilkk/.ghcup/bin/"
+      - "/home/akhilkk/.config/composer/vendor/bin/"
+      - "/usr/local/bin/"
+      - "/home/akhilkk/.local/bin/"
+      - "/home/akhilkk/.cargo/bin/"
+      - "/usr/bin/"
+      - "/usr/local/sbin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts/"
+      - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+    found: "/usr/lib/libGL.so"
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:50 (find_library)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake:69 (_qt5gui_find_extra_libs)"
+      - "/usr/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake:244 (include)"
+      - "/usr/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake:111 (find_package)"
+      - "/usr/lib/cmake/Qt5/Qt5Config.cmake:28 (find_package)"
+      - "CMakeLists.txt:14 (find_package)"
+    mode: "library"
+    variable: "Qt5Gui_GL_LIBRARY_DEBUG"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "GLd"
+    candidate_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    searched_directories:
+      - "/home/akhilkk/projects/flacplayer/flacplayer/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/home/akhilkk/.cabal/bin"
+        - "/home/akhilkk/.ghcup/bin"
+        - "/home/akhilkk/.config/composer/vendor/bin"
+        - "/usr/local/bin"
+        - "/home/akhilkk/.local/bin"
+        - "/home/akhilkk/.cargo/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/usr/local/sbin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+        - "/home/akhilkk/.vscode/extensions/ms-python.debugpy-2025.10.0-linux-x64/bundled/scripts/noConfigScripts"
+        - "/home/akhilkk/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+...

@@ -238,11 +238,34 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt/QtCore/qcontiguouscache.h \
  /usr/include/qt/QtCore/qsharedpointer.h \
  /usr/include/qt/QtCore/qsharedpointer_impl.h \
- /usr/include/libavformat/avformat.h /usr/include/libavcodec/codec_par.h \
- /usr/include/libavutil/avutil.h /usr/include/libavutil/common.h \
- /usr/include/inttypes.h /usr/include/c++/15.2.1/math.h \
- /usr/include/c++/15.2.1/cmath /usr/include/math.h \
- /usr/include/bits/math-vector.h /usr/include/bits/libm-simd-decl-stubs.h \
+ /usr/include/qt/QtMultimedia/QAudioOutput \
+ /usr/include/qt/QtMultimedia/qaudiooutput.h \
+ /usr/include/qt/QtMultimedia/qtmultimediaglobal.h \
+ /usr/include/qt/QtGui/qtguiglobal.h /usr/include/qt/QtGui/qtgui-config.h \
+ /usr/include/qt/QtMultimedia/qtmultimedia-config.h \
+ /usr/include/qt/QtMultimedia/qmultimedia.h \
+ /usr/include/qt/QtMultimedia/qaudio.h \
+ /usr/include/qt/QtMultimedia/qaudioformat.h \
+ /usr/include/qt/QtMultimedia/qaudiodeviceinfo.h \
+ /usr/include/qt/QtCore/QIODevice /usr/include/qt/QtCore/qiodevice.h \
+ /usr/include/qt/QtCore/QTimer /usr/include/qt/QtCore/qtimer.h \
+ /usr/include/qt/QtCore/qbasictimer.h /usr/include/qt/QtCore/QBuffer \
+ /usr/include/qt/QtCore/qbuffer.h /usr/include/qt/QtCore/QByteArray \
+ /usr/include/qt/QtCore/qbytearray.h /usr/include/qt/QtCore/QThread \
+ /usr/include/qt/QtCore/qthread.h /usr/include/qt/QtCore/qdeadlinetimer.h \
+ /usr/include/qt/QtCore/qelapsedtimer.h /usr/include/c++/15.2.1/future \
+ /usr/include/c++/15.2.1/mutex /usr/include/c++/15.2.1/bits/std_mutex.h \
+ /usr/include/c++/15.2.1/bits/unique_lock.h \
+ /usr/include/c++/15.2.1/condition_variable \
+ /usr/include/c++/15.2.1/bits/atomic_futex.h \
+ /usr/include/c++/15.2.1/bits/std_thread.h /usr/include/qt/QtCore/QMutex \
+ /usr/include/qt/QtCore/qmutex.h /usr/include/qt/QtCore/qtsan_impl.h \
+ /usr/include/qt/QtCore/QMutexLocker /usr/include/libavformat/avformat.h \
+ /usr/include/libavcodec/codec_par.h /usr/include/libavutil/avutil.h \
+ /usr/include/libavutil/common.h /usr/include/inttypes.h \
+ /usr/include/c++/15.2.1/math.h /usr/include/c++/15.2.1/cmath \
+ /usr/include/math.h /usr/include/bits/math-vector.h \
+ /usr/include/bits/libm-simd-decl-stubs.h \
  /usr/include/bits/flt-eval-method.h /usr/include/bits/fp-logb.h \
  /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
  /usr/include/bits/mathcalls-helper-functions.h \
@@ -293,7 +316,6 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt/QtWidgets/QMainWindow \
  /usr/include/qt/QtWidgets/qmainwindow.h \
  /usr/include/qt/QtWidgets/qtwidgetsglobal.h \
- /usr/include/qt/QtGui/qtguiglobal.h /usr/include/qt/QtGui/qtgui-config.h \
  /usr/include/qt/QtWidgets/qtwidgets-config.h \
  /usr/include/qt/QtWidgets/qwidget.h /usr/include/qt/QtGui/qwindowdefs.h \
  /usr/include/qt/QtCore/qmargins.h /usr/include/qt/QtGui/qpaintdevice.h \
@@ -314,5 +336,9 @@ CMakeFiles/flacplayer.dir/flacplayer_autogen/mocs_compilation.cpp.o: \
  /usr/include/qt/QtWidgets/qpushbutton.h \
  /usr/include/qt/QtWidgets/qabstractbutton.h \
  /usr/include/qt/QtWidgets/QLabel /usr/include/qt/QtWidgets/qlabel.h \
- /usr/include/qt/QtWidgets/qframe.h \
+ /usr/include/qt/QtWidgets/qframe.h /usr/include/qt/QtWidgets/QSlider \
+ /usr/include/qt/QtWidgets/qslider.h \
+ /usr/include/qt/QtWidgets/qabstractslider.h \
+ /usr/include/qt/QtWidgets/QProgressBar \
+ /usr/include/qt/QtWidgets/qprogressbar.h \
  /home/akhilkk/projects/flacplayer/flacplayer/build/flacplayer_autogen/EWIEGA46WW/../../../audiomanager.h

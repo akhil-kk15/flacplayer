@@ -1,21 +1,101 @@
 #include "audiomanager.h"
 #include <QFileInfo>
+#include <QAudioFormat>
+#include <QMutex>
+#include <QMutexLocker>
 
+// AudioBuffer implementation
+AudioBuffer::AudioBuffer(QObject *parent)
+    : QIODevice(parent), m_position(0)
+{
+    open(QIODevice::ReadOnly);
+}
+
+AudioBuffer::~AudioBuffer()
+{
+    close();
+}
+
+void AudioBuffer::appendData(const QByteArray &data)
+{
+    QMutexLocker locker(&m_mutex);
+    m_buffer.append(data);
+}
+
+void AudioBuffer::clearBuffer()
+{
+    QMutexLocker locker(&m_mutex);
+    m_buffer.clear();
+    m_position = 0;
+}
+
+bool AudioBuffer::hasData() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_position < m_buffer.size();
+}
+
+qint64 AudioBuffer::readData(char *data, qint64 maxlen)
+{
+    QMutexLocker locker(&m_mutex);
+    
+    qint64 available = m_buffer.size() - m_position;
+    qint64 readSize = qMin(maxlen, available);
+    
+    if (readSize > 0) {
+        memcpy(data, m_buffer.constData() + m_position, readSize);
+        m_position += readSize;
+    }
+    
+    return readSize;
+}
+
+qint64 AudioBuffer::writeData(const char *data, qint64 len)
+{
+    Q_UNUSED(data)
+    Q_UNUSED(len)
+    return -1; // Read-only device
+}
+
+// AudioManager implementation
 AudioManager::AudioManager(QObject *parent)
     : QObject(parent)
     , m_formatContext(nullptr)
     , m_codecContext(nullptr)
     , m_codec(nullptr)
+    , m_swrContext(nullptr)
     , m_audioStreamIndex(-1)
+    , m_audioOutput(nullptr)
+    , m_audioBuffer(nullptr)
+    , m_positionTimer(new QTimer(this))
+    , m_decodeTimer(new QTimer(this))
+    , m_state(StoppedState)
+    , m_currentPosition(0)
+    , m_volume(1.0)
+    , m_frame(nullptr)
+    , m_packet(nullptr)
+    , m_convertedData(nullptr)
+    , m_convertedDataSize(0)
+    , m_shouldDecode(false)
 {
     qDebug() << "=== AudioManager Constructor ===";
     initializeFFmpeg();
+    
+    // Setup position timer
+    connect(m_positionTimer, &QTimer::timeout, this, &AudioManager::updatePosition);
+    m_positionTimer->setInterval(100); // Update every 100ms
+    
+    // Setup decode timer
+    connect(m_decodeTimer, &QTimer::timeout, this, &AudioManager::decodeAudio);
+    m_decodeTimer->setInterval(10); // Decode every 10ms for smooth playback
 }
 
 AudioManager::~AudioManager()
 {
     qDebug() << "=== AudioManager Destructor ===";
+    stop();
     cleanup();
+    cleanupDecoding();
 }
 
 void AudioManager::initializeFFmpeg()
@@ -132,7 +212,14 @@ bool AudioManager::openFile(const QString &filePath)
     qDebug() << "File opened successfully!";
     printFileInfo();
     
+    // Setup audio output for playback
+    setupAudioOutput();
+    
+    // Initialize decoding components
+    initializeDecoding();
+    
     emit fileOpened(fileInfo.fileName());
+    emit durationChanged(getDuration());
     return true;
 }
 
@@ -140,9 +227,146 @@ void AudioManager::closeFile()
 {
     if (isFileOpen()) {
         qDebug() << "=== Closing audio file ===";
+        stop();
         cleanup();
         emit fileClosed();
     }
+}
+
+// Playback control methods
+void AudioManager::play()
+{
+    qDebug() << "=== Play requested ===";
+    
+    if (!isFileOpen()) {
+        qDebug() << "No file is open for playback";
+        return;
+    }
+    
+    if (m_state == PausedState && m_audioOutput) {
+        // Resume from pause
+        qDebug() << "Resuming playback";
+        m_audioOutput->resume();
+        m_state = PlayingState;
+        m_positionTimer->start();
+        m_decodeTimer->start();
+        m_shouldDecode = true;
+        emit stateChanged(m_state);
+        return;
+    }
+    
+    if (m_state == PlayingState) {
+        qDebug() << "Already playing";
+        return;
+    }
+    
+    if (!m_audioOutput || !m_audioBuffer) {
+        qDebug() << "No audio output available";
+        return;
+    }
+    
+    qDebug() << "Starting playback";
+    
+    // Clear any existing buffer data
+    m_audioBuffer->clearBuffer();
+    
+    // Start Qt audio output
+    if (m_audioOutput->state() != QAudio::ActiveState) {
+        m_audioOutput->start(m_audioBuffer);
+    }
+    
+    // Start decoding
+    m_shouldDecode = true;
+    m_state = PlayingState;
+    m_positionTimer->start();
+    m_decodeTimer->start();
+    emit stateChanged(m_state);
+    
+    qDebug() << "Playback started successfully";
+}
+
+void AudioManager::pause()
+{
+    qDebug() << "=== Pause requested ===";
+    
+    if (m_state != PlayingState) {
+        qDebug() << "Not currently playing";
+        return;
+    }
+    
+    m_shouldDecode = false;
+    m_decodeTimer->stop();
+    
+    if (m_audioOutput) {
+        m_audioOutput->suspend();
+    }
+    
+    m_state = PausedState;
+    m_positionTimer->stop();
+    emit stateChanged(m_state);
+}
+
+void AudioManager::stop()
+{
+    qDebug() << "=== Stop requested ===";
+    
+    if (m_state == StoppedState) {
+        return;
+    }
+    
+    m_shouldDecode = false;
+    m_decodeTimer->stop();
+    m_positionTimer->stop();
+    
+    if (m_audioOutput) {
+        m_audioOutput->stop();
+    }
+    
+    if (m_audioBuffer) {
+        m_audioBuffer->clearBuffer();
+    }
+    
+    // Reset to beginning of file
+    if (m_formatContext) {
+        av_seek_frame(m_formatContext, m_audioStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+        if (m_codecContext) {
+            avcodec_flush_buffers(m_codecContext);
+        }
+    }
+    
+    m_currentPosition = 0;
+    m_state = StoppedState;
+    emit stateChanged(m_state);
+    emit positionChanged(m_currentPosition);
+}
+
+void AudioManager::setVolume(qreal volume)
+{
+    qDebug() << "=== Setting volume to:" << volume << "===";
+    
+    m_volume = qBound(0.0, volume, 1.0);
+    
+    if (m_audioOutput) {
+        m_audioOutput->setVolume(m_volume);
+    }
+}
+
+void AudioManager::setPosition(qint64 position)
+{
+    qDebug() << "=== Setting position to:" << position << "microseconds ===";
+    
+    if (!isFileOpen()) {
+        return;
+    }
+    
+    // Clamp position to valid range
+    qint64 duration = getDuration();
+    m_currentPosition = qBound(0LL, position, duration);
+    
+    // Note: For full implementation, you'd need to seek in the FFmpeg stream
+    // This is a simplified version focusing on the UI controls
+    
+    emit positionChanged(m_currentPosition);
 }
 
 bool AudioManager::isFileOpen() const
@@ -182,6 +406,21 @@ int64_t AudioManager::getDuration() const
 {
     if (!m_formatContext) return 0;
     return m_formatContext->duration;
+}
+
+int64_t AudioManager::getPosition() const
+{
+    return m_currentPosition;
+}
+
+AudioManager::PlaybackState AudioManager::getState() const
+{
+    return m_state;
+}
+
+qreal AudioManager::getVolume() const
+{
+    return m_volume;
 }
 
 QString AudioManager::getFormatInfo() const
@@ -225,6 +464,8 @@ void AudioManager::printFileInfo() const
 
 void AudioManager::cleanup()
 {
+    cleanupAudioOutput();
+    
     if (m_codecContext) {
         avcodec_free_context(&m_codecContext);
         m_codecContext = nullptr;
@@ -238,4 +479,268 @@ void AudioManager::cleanup()
     m_codec = nullptr;
     m_audioStreamIndex = -1;
     m_currentFile.clear();
+}
+
+// New helper methods
+void AudioManager::setupAudioOutput()
+{
+    if (!isFileOpen()) {
+        return;
+    }
+    
+    qDebug() << "Setting up audio output...";
+    
+    // Clean up any existing audio output
+    cleanupAudioOutput();
+    
+    // Create Qt audio format from FFmpeg codec context
+    QAudioFormat format;
+    format.setSampleRate(getSampleRate());
+    format.setChannelCount(getChannels());
+    format.setSampleSize(16); // 16-bit samples
+    format.setCodec("audio/pcm");
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setSampleType(QAudioFormat::SignedInt);
+    
+    qDebug() << "Audio format:";
+    qDebug() << "  Sample Rate:" << format.sampleRate();
+    qDebug() << "  Channels:" << format.channelCount();
+    qDebug() << "  Sample Size:" << format.sampleSize();
+    
+    // Create audio output
+    m_audioOutput = new QAudioOutput(format, this);
+    connect(m_audioOutput, &QAudioOutput::stateChanged, this, &AudioManager::onAudioStateChanged);
+    
+    // Create audio buffer
+    m_audioBuffer = new AudioBuffer(this);
+    
+    // Set initial volume
+    m_audioOutput->setVolume(m_volume);
+    
+    qDebug() << "Audio output setup complete";
+}
+
+void AudioManager::cleanupAudioOutput()
+{
+    if (m_audioOutput) {
+        m_audioOutput->stop();
+        m_audioOutput->deleteLater();
+        m_audioOutput = nullptr;
+    }
+    
+    if (m_audioBuffer) {
+        m_audioBuffer->deleteLater();
+        m_audioBuffer = nullptr;
+    }
+}
+
+void AudioManager::updatePosition()
+{
+    if (m_state == PlayingState) {
+        // Calculate position based on audio output progress
+        if (m_audioOutput && m_audioOutput->state() == QAudio::ActiveState) {
+            // Estimate position based on processed bytes (simplified)
+            m_currentPosition += 100000; // Add 100ms in microseconds
+            
+            // Don't exceed duration
+            qint64 duration = getDuration();
+            if (duration > 0 && m_currentPosition >= duration) {
+                m_currentPosition = duration;
+                stop();
+                return;
+            }
+            
+            emit positionChanged(m_currentPosition);
+        }
+    }
+}
+
+void AudioManager::onAudioStateChanged(QAudio::State state)
+{
+    qDebug() << "Qt Audio state changed to:" << state;
+    
+    switch (state) {
+    case QAudio::StoppedState:
+        if (m_state == PlayingState) {
+            // Playback finished or error occurred
+            if (m_audioOutput->error() != QAudio::NoError) {
+                QString error = QString("Audio playback error: %1").arg(m_audioOutput->error());
+                emit errorOccurred(error);
+            }
+            stop();
+        }
+        break;
+    case QAudio::ActiveState:
+        qDebug() << "Audio is active";
+        break;
+    case QAudio::SuspendedState:
+        qDebug() << "Audio is suspended";
+        break;
+    case QAudio::IdleState:
+        qDebug() << "Audio is idle";
+        break;
+    }
+}
+
+// New audio decoding methods
+void AudioManager::initializeDecoding()
+{
+    qDebug() << "Initializing audio decoding...";
+    
+    if (!m_codecContext) {
+        qDebug() << "No codec context available";
+        return;
+    }
+    
+    // Allocate frame and packet
+    m_frame = av_frame_alloc();
+    m_packet = av_packet_alloc();
+    
+    if (!m_frame || !m_packet) {
+        qDebug() << "Failed to allocate frame or packet";
+        return;
+    }
+    
+    // Setup resampler for converting to 16-bit PCM
+    int ret = swr_alloc_set_opts2(
+        &m_swrContext,
+        &m_codecContext->ch_layout,     // Output channel layout
+        AV_SAMPLE_FMT_S16,              // Output sample format (16-bit)
+        getSampleRate(),                // Output sample rate
+        &m_codecContext->ch_layout,     // Input channel layout
+        m_codecContext->sample_fmt,     // Input sample format
+        m_codecContext->sample_rate,    // Input sample rate
+        0, nullptr
+    );
+    
+    if (ret < 0 || swr_init(m_swrContext) < 0) {
+        qDebug() << "Failed to initialize resampler";
+        return;
+    }
+    
+    // Allocate buffer for converted audio
+    m_convertedDataSize = av_samples_get_buffer_size(nullptr, getChannels(), 4096, AV_SAMPLE_FMT_S16, 1);
+    m_convertedData = (uint8_t*)av_malloc(m_convertedDataSize);
+    
+    qDebug() << "Audio decoding initialized successfully";
+}
+
+void AudioManager::cleanupDecoding()
+{
+    if (m_frame) {
+        av_frame_free(&m_frame);
+        m_frame = nullptr;
+    }
+    
+    if (m_packet) {
+        av_packet_free(&m_packet);
+        m_packet = nullptr;
+    }
+    
+    if (m_swrContext) {
+        swr_free(&m_swrContext);
+        m_swrContext = nullptr;
+    }
+    
+    if (m_convertedData) {
+        av_free(m_convertedData);
+        m_convertedData = nullptr;
+    }
+}
+
+void AudioManager::decodeAudio()
+{
+    if (!m_shouldDecode || !m_formatContext || !m_codecContext || !m_audioBuffer) {
+        return;
+    }
+    
+    // Don't decode if buffer is too full
+    if (m_audioBuffer->hasData() && m_audioBuffer->bytesAvailable() > 32768) { // 32KB buffer limit
+        return;
+    }
+    
+    // Try to decode some packets
+    for (int i = 0; i < 5; ++i) { // Decode up to 5 packets per call
+        if (!decodePacket()) {
+            break;
+        }
+    }
+}
+
+bool AudioManager::decodePacket()
+{
+    if (!m_formatContext || !m_codecContext || !m_packet || !m_frame) {
+        return false;
+    }
+    
+    // Read packet from file
+    int ret = av_read_frame(m_formatContext, m_packet);
+    if (ret < 0) {
+        if (ret == AVERROR_EOF) {
+            qDebug() << "End of file reached";
+            // Send flush packet
+            avcodec_send_packet(m_codecContext, nullptr);
+        }
+        return false;
+    }
+    
+    // Skip non-audio packets
+    if (m_packet->stream_index != m_audioStreamIndex) {
+        av_packet_unref(m_packet);
+        return true;
+    }
+    
+    // Send packet to decoder
+    ret = avcodec_send_packet(m_codecContext, m_packet);
+    av_packet_unref(m_packet);
+    
+    if (ret < 0) {
+        qDebug() << "Error sending packet to decoder";
+        return false;
+    }
+    
+    // Receive decoded frames
+    while (ret >= 0) {
+        ret = avcodec_receive_frame(m_codecContext, m_frame);
+        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+            break;
+        } else if (ret < 0) {
+            qDebug() << "Error receiving frame from decoder";
+            return false;
+        }
+        
+        // Convert audio to target format
+        if (m_swrContext && m_convertedData) {
+            int converted_samples = swr_convert(
+                m_swrContext,
+                &m_convertedData, m_convertedDataSize / (getChannels() * 2), // 2 bytes per sample
+                (const uint8_t**)m_frame->data, m_frame->nb_samples
+            );
+            
+            if (converted_samples > 0) {
+                int converted_size = converted_samples * getChannels() * 2; // 2 bytes per sample
+                QByteArray audioData((const char*)m_convertedData, converted_size);
+                m_audioBuffer->appendData(audioData);
+            }
+        }
+        
+        av_frame_unref(m_frame);
+    }
+    
+    return true;
+}
+
+void AudioManager::setDecodingActive(bool active)
+{
+    m_shouldDecode = active;
+    
+    if (active) {
+        qDebug() << "Starting decoding...";
+        if (!m_decodeTimer->isActive()) {
+            m_decodeTimer->start(10); // Decode every 10ms
+        }
+    } else {
+        qDebug() << "Stopping decoding...";
+        m_decodeTimer->stop();
+    }
 }
