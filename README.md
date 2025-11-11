@@ -165,3 +165,21 @@ For questions, suggestions, or issues, please open an issue on GitHub.
 ---
 
 **Note**: This is a work in progress. Features and documentation will be updated as the project evolves.
+
+## Quick build & run
+
+If you already have Qt and CMake installed, this is the shortest way to build and run the app from the repository root:
+
+```bash
+# configure build directory
+cmake -S . -B build
+
+# build
+cmake --build build -j4
+
+# run the built binary
+./build/flacplayer
+```
+
+If you use VS Code, use the local `.vscode/tasks.json` to run the configure/build tasks and `.vscode/launch.json` to debug (both are created locally and ignored by Git).
+
