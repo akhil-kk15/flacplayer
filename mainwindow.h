@@ -57,6 +57,7 @@ private:
     QLabel *m_statusLabel;
     QLabel *m_audioInfoLabel;
     QLabel *m_timeLabel;
+    QLabel *m_totalTimeLabel;
     QSlider *m_volumeSlider;
     QSlider *m_seekSlider;
     QProgressBar *m_progressBar;

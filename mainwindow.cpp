@@ -75,93 +75,101 @@ void MainWindow::setupBasicUI()
     
     // Create layout
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-    
-    // Add a welcome label
-    QLabel *welcomeLabel = new QLabel(" FLAC Player", this);
-    welcomeLabel->setStyleSheet("font-size: 18px; font-weight: bold; margin: 10px; color: #2c3e50;");
-    welcomeLabel->setAlignment(Qt::AlignCenter);
-    layout->addWidget(welcomeLabel);
-    
-    // Add buttons
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    
-    m_openFileButton = new QPushButton(" Open Audio File", this);
-    m_testButton = new QPushButton(" test button", this);
-    m_debugButton = new QPushButton(" Show Debug Info", this);
-    
-    buttonLayout->addWidget(m_openFileButton);
-    buttonLayout->addWidget(m_testButton);
-     buttonLayout->addWidget(m_debugButton);
-    buttonLayout->addStretch(); // This pushes buttons to the left
-    
-    layout->addLayout(buttonLayout);
-    
-    // Add playback controls
-    QHBoxLayout *playbackLayout = new QHBoxLayout();
-    
-    m_playPauseButton = new QPushButton("▶ Play", this);
-    m_stopButton = new QPushButton("⏹ Stop", this);
-    
-    // Volume control
-    QLabel *volumeLabel = new QLabel(" Volume:", this);
+
+    // Top area: album art + track title
+    QLabel *albumArt = new QLabel(this);
+    albumArt->setFixedSize(320, 320);
+    albumArt->setStyleSheet("background-color:#f0f0f0; border:1px solid #bbb;");
+    albumArt->setAlignment(Qt::AlignCenter);
+    albumArt->setText("Album Art");
+
+    m_audioInfoLabel = new QLabel("No audio file loaded", this);
+    m_audioInfoLabel->setWordWrap(true);
+    m_audioInfoLabel->setAlignment(Qt::AlignCenter);
+    m_audioInfoLabel->setStyleSheet("font-weight: bold; margin-top: 8px;");
+
+    QVBoxLayout *topLayout = new QVBoxLayout();
+    topLayout->addWidget(albumArt, 0, Qt::AlignHCenter);
+    topLayout->addWidget(m_audioInfoLabel);
+
+    layout->addLayout(topLayout);
+
+    // Seek bar with time labels
+    QHBoxLayout *seekLayout = new QHBoxLayout();
+    QLabel *elapsedLabel = new QLabel("00:00", this);
+    QLabel *totalLabel = new QLabel("00:00", this);
+
+    m_seekSlider = new QSlider(Qt::Horizontal, this);
+    m_seekSlider->setRange(0, 1000);
+    m_seekSlider->setValue(0);
+
+    seekLayout->addWidget(elapsedLabel);
+    seekLayout->addWidget(m_seekSlider);
+    seekLayout->addWidget(totalLabel);
+
+    layout->addLayout(seekLayout);
+
+    // Keep references to elapsed/total labels for updates
+    m_timeLabel = elapsedLabel;
+    m_totalTimeLabel = totalLabel;
+
+    // Controls bar
+    QHBoxLayout *controlsLayout = new QHBoxLayout();
+
+    QPushButton *prevButton = new QPushButton("⏮", this);
+    m_playPauseButton = new QPushButton("▶", this);
+    m_stopButton = new QPushButton("⏹", this);
+    QPushButton *nextButton = new QPushButton("⏭", this);
+
+    // Volume and open
+    QLabel *volIcon = new QLabel("🔊", this);
     m_volumeSlider = new QSlider(Qt::Horizontal, this);
     m_volumeSlider->setRange(0, 100);
     m_volumeSlider->setValue(100);
     m_volumeSlider->setMaximumWidth(150);
-    
-    playbackLayout->addWidget(m_playPauseButton);
-    playbackLayout->addWidget(m_stopButton);
-    playbackLayout->addStretch();
-    playbackLayout->addWidget(volumeLabel);
-    playbackLayout->addWidget(m_volumeSlider);
-    
-    layout->addLayout(playbackLayout);
-    
-    // Add seek/progress controls
-    QHBoxLayout *progressLayout = new QHBoxLayout();
-    
-    m_timeLabel = new QLabel("00:00 / 00:00", this);
-    m_timeLabel->setMinimumWidth(100);
-    
-    m_seekSlider = new QSlider(Qt::Horizontal, this);
-    m_seekSlider->setRange(0, 1000);
-    m_seekSlider->setValue(0);
-    
-    progressLayout->addWidget(m_timeLabel);
-    progressLayout->addWidget(m_seekSlider);
-    
-    layout->addLayout(progressLayout);
-    
-    // Add status label
-    m_statusLabel = new QLabel("Status: Ready to load audio files!", this);
-    m_statusLabel->setStyleSheet("border: 1px solid gray; color: black; padding: 5px; background-color: lightgray;");
+
+    m_openFileButton = new QPushButton("Open", this);
+    m_debugButton = new QPushButton("Debug", this);
+
+    controlsLayout->addWidget(prevButton);
+    controlsLayout->addWidget(m_playPauseButton);
+    controlsLayout->addWidget(m_stopButton);
+    controlsLayout->addWidget(nextButton);
+    controlsLayout->addStretch();
+    controlsLayout->addWidget(volIcon);
+    controlsLayout->addWidget(m_volumeSlider);
+    controlsLayout->addWidget(m_openFileButton);
+    controlsLayout->addWidget(m_debugButton);
+
+    layout->addLayout(controlsLayout);
+
+    // Status label at bottom
+    m_statusLabel = new QLabel("Status: Ready", this);
+    m_statusLabel->setStyleSheet("color: #444; padding: 6px;");
     layout->addWidget(m_statusLabel);
-    
-    // Add audio info label
-    m_audioInfoLabel = new QLabel("No audio file loaded", this);
-    m_audioInfoLabel->setStyleSheet("border: 1px solid #3498db; color: #2c3e50; padding: 10px; background-color: #ecf0f1; font-family: monospace;");
-    layout->addWidget(m_audioInfoLabel);
-    
-    layout->addStretch(); // This pushes everything to the top
-    
-    // Connect signals to slots (this is how Qt handles events!)
+
+    // Wire up signals
     connect(m_openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFile);
-    connect(m_testButton, &QPushButton::clicked, this, &MainWindow::onButtonClicked);
     connect(m_debugButton, &QPushButton::clicked, this, &MainWindow::onDebugInfo);
-    
-    // Connect playback control signals
+
     connect(m_playPauseButton, &QPushButton::clicked, this, &MainWindow::onPlayPause);
     connect(m_stopButton, &QPushButton::clicked, this, &MainWindow::onStop);
+    connect(prevButton, &QPushButton::clicked, [this]() { /* future: prev track */ });
+    connect(nextButton, &QPushButton::clicked, [this]() { /* future: next track */ });
+
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
-    connect(m_seekSlider, &QSlider::sliderReleased, [this]() { 
+    connect(m_seekSlider, &QSlider::sliderReleased, [this]() {
         m_seekSliderPressed = false;
         onSeekPositionChanged(m_seekSlider->value());
     });
-    
-    // Initialize playback controls state
+
+    // Keep elapsed/total labels in sync with internal time label
+    connect(this, &MainWindow::destroyed, this, []() {}); // placeholder to avoid unused warnings
+
+    // Update initial control states
     updatePlaybackControls();
-    
+
     qDebug() << "Basic UI setup complete";
 }
 
@@ -226,6 +234,9 @@ void MainWindow::onDebugInfo()
 }
 
 // New FFmpeg-related slot functions
+
+
+//file format changes needed 
 void MainWindow::onOpenFile()
 {
     qDebug() << "=== onOpenFile() called ===";
@@ -237,6 +248,8 @@ void MainWindow::onOpenFile()
         "Audio Files (*.flac *.mp3 *.wav *.ogg *.m4a);;FLAC Files (*.flac);;All Files (*)"
     );
     
+
+
     if (!fileName.isEmpty()) {
         qDebug() << "Selected file:" << fileName;
         
@@ -250,6 +263,8 @@ void MainWindow::onOpenFile()
         qDebug() << "No file selected";
     }
 }
+
+
 
 void MainWindow::onFileOpened(const QString &fileName)
 {
@@ -355,15 +370,11 @@ void MainWindow::onAudioStateChanged(AudioManager::PlaybackState state)
 
 void MainWindow::onAudioPositionChanged(qint64 position)
 {
-    // Update time display
-    QString timeText = formatTime(position);
-    if (m_duration > 0) {
-        timeText += " / " + formatTime(m_duration);
-    } else {
-        timeText += " / 00:00";
+    // Update elapsed time display
+    if (m_timeLabel) {
+        m_timeLabel->setText(formatTime(position));
     }
-    m_timeLabel->setText(timeText);
-    
+
     // Update seek slider (only if user is not dragging it)
     if (!m_seekSliderPressed && m_duration > 0) {
         int sliderValue = (int)((position * 1000) / m_duration);
@@ -376,10 +387,14 @@ void MainWindow::onAudioDurationChanged(qint64 duration)
     qDebug() << "=== Duration changed to:" << duration << "microseconds ===";
     m_duration = duration;
     
-    // Update time display
-    QString timeText = formatTime(0) + " / " + formatTime(duration);
-    m_timeLabel->setText(timeText);
-    
+    // Update elapsed / total time labels
+    if (m_timeLabel) {
+        m_timeLabel->setText(formatTime(0));
+    }
+    if (m_totalTimeLabel) {
+        m_totalTimeLabel->setText(formatTime(duration));
+    }
+
     // Reset seek slider
     m_seekSlider->setValue(0);
 }
