@@ -161,13 +161,11 @@ void MainWindow::setupBasicUI()
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
+    connect(m_seekSlider, &QSlider::sliderMoved, this, &MainWindow::onSeekPositionChanged);
     connect(m_seekSlider, &QSlider::sliderReleased, [this]() {
         m_seekSliderPressed = false;
         onSeekPositionChanged(m_seekSlider->value());
     });
-
-    // Keep elapsed/total labels in sync with internal time label
-    connect(this, &MainWindow::destroyed, this, []() {}); // placeholder to avoid unused warnings
 
     // Update initial control states
     updatePlaybackControls();

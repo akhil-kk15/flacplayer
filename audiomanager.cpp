@@ -358,17 +358,38 @@ void AudioManager::setPosition(qint64 position)
 {
     qDebug() << "=== Setting position to:" << position << "microseconds ===";
     
-    if (!isFileOpen()) {
+    if (!isFileOpen() || m_audioStreamIndex < 0) {
         return;
     }
     
     // Clamp position to valid range
     qint64 duration = getDuration();
-    m_currentPosition = qBound(0LL, position, duration);
+    position = qBound(0LL, position, duration);
     
-    // Note: For full implementation, you'd need to seek in the FFmpeg stream
-    // This is a simplified version focusing on the UI controls
+    // Convert microseconds to stream timebase
+    AVStream *stream = m_formatContext->streams[m_audioStreamIndex];
+    int64_t seekTarget = av_rescale_q(position, AV_TIME_BASE_Q, stream->time_base);
     
+    // Seek in the stream
+    if (av_seek_frame(m_formatContext, m_audioStreamIndex, seekTarget, AVSEEK_FLAG_BACKWARD) < 0) {
+        qDebug() << "ERROR: Failed to seek to position:" << position;
+        return;
+    }
+    
+    // Flush codec buffers to discard old packets
+    if (m_codecContext) {
+        avcodec_flush_buffers(m_codecContext);
+    }
+    
+    // Clear audio buffer
+    if (m_audioBuffer) {
+        m_audioBuffer->clearBuffer();
+    }
+    
+    // Update current position
+    m_currentPosition = position;
+    
+    qDebug() << "Seek successful to:" << position << "microseconds";
     emit positionChanged(m_currentPosition);
 }
 
