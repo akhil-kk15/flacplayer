@@ -1,3 +1,26 @@
+# Build artifacts
+build/
+output/
+
+# Qt creator and user files
+.vscode/
+*.user
+*.user.*
+
+# Generated files
+*.o
+*.obj
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+compile_commands.json
+
+# macOS
+.DS_Store
+
+# Backup files
+*~
+.#*
 # Build directories
 build/
 build-*/
