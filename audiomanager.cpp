@@ -218,6 +218,9 @@ bool AudioManager::openFile(const QString &filePath)
     // Initialize decoding components
     initializeDecoding();
     
+    // Extract album art if available
+    extractAlbumArt();
+    
     emit fileOpened(fileInfo.fileName());
     emit durationChanged(getDuration());
     return true;
@@ -421,6 +424,11 @@ AudioManager::PlaybackState AudioManager::getState() const
 qreal AudioManager::getVolume() const
 {
     return m_volume;
+}
+
+QPixmap AudioManager::getAlbumArt() const
+{
+    return m_albumArt;
 }
 
 QString AudioManager::getFormatInfo() const
@@ -743,4 +751,41 @@ void AudioManager::setDecodingActive(bool active)
         qDebug() << "Stopping decoding...";
         m_decodeTimer->stop();
     }
+}
+
+void AudioManager::extractAlbumArt()
+{
+    if (!m_formatContext) {
+        return;
+    }
+    
+    qDebug() << "Extracting album art...";
+    
+    // Clear any existing album art
+    m_albumArt = QPixmap();
+    
+    // Look for attached picture stream (common in FLAC, MP3, etc.)
+    for (unsigned int i = 0; i < m_formatContext->nb_streams; i++) {
+        AVStream *stream = m_formatContext->streams[i];
+        
+        // Check if this is an attached picture (album art)
+        if (stream->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+            AVPacket *pkt = &stream->attached_pic;
+            
+            if (pkt->data && pkt->size > 0) {
+                // Create QImage from raw packet data
+                QImage image = QImage::fromData(pkt->data, pkt->size);
+                
+                if (!image.isNull()) {
+                    // Convert to QPixmap and store
+                    m_albumArt = QPixmap::fromImage(image);
+                    qDebug() << "Album art extracted successfully:" << image.size();
+                    emit albumArtChanged(m_albumArt);
+                    return;
+                }
+            }
+        }
+    }
+    
+    qDebug() << "No album art found in file";
 }

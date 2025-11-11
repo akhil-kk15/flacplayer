@@ -36,6 +36,7 @@ private slots:
     void onAudioStateChanged(AudioManager::PlaybackState state);
     void onAudioPositionChanged(qint64 position);
     void onAudioDurationChanged(qint64 duration);
+    void onAlbumArtChanged(const QPixmap &albumArt);
 
 private:
     void initializeWindow();
@@ -53,6 +54,7 @@ private:
     QPushButton *m_stopButton;
     QLabel *m_statusLabel;
     QLabel *m_audioInfoLabel;
+    QLabel *m_albumArtLabel;
     QLabel *m_timeLabel;
     QLabel *m_totalTimeLabel;
     QSlider *m_volumeSlider;

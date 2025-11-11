@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_audioManager, &AudioManager::stateChanged, this, &MainWindow::onAudioStateChanged);
     connect(m_audioManager, &AudioManager::positionChanged, this, &MainWindow::onAudioPositionChanged);
     connect(m_audioManager, &AudioManager::durationChanged, this, &MainWindow::onAudioDurationChanged);
+    connect(m_audioManager, &AudioManager::albumArtChanged, this, &MainWindow::onAlbumArtChanged);
     
     // Initialize the window
     initializeWindow();
@@ -77,11 +78,12 @@ void MainWindow::setupBasicUI()
     QVBoxLayout *layout = new QVBoxLayout(centralWidget);
 
     // Top area: album art + track title
-    QLabel *albumArt = new QLabel(this);
-    albumArt->setFixedSize(320, 320);
-    albumArt->setStyleSheet("background-color:#f0f0f0; border:1px solid #bbb;");
-    albumArt->setAlignment(Qt::AlignCenter);
-    albumArt->setText("Album Art");
+    m_albumArtLabel = new QLabel(this);
+    m_albumArtLabel->setFixedSize(320, 320);
+    m_albumArtLabel->setStyleSheet("background-color:#f0f0f0; border:1px solid #bbb;");
+    m_albumArtLabel->setAlignment(Qt::AlignCenter);
+    m_albumArtLabel->setText("♪");
+    m_albumArtLabel->setScaledContents(true); // Scale pixmap to fit label
 
     m_audioInfoLabel = new QLabel("No audio file loaded", this);
     m_audioInfoLabel->setWordWrap(true);
@@ -89,7 +91,7 @@ void MainWindow::setupBasicUI()
     m_audioInfoLabel->setStyleSheet("font-weight: bold; margin-top: 8px;");
 
     QVBoxLayout *topLayout = new QVBoxLayout();
-    topLayout->addWidget(albumArt, 0, Qt::AlignHCenter);
+    topLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
     topLayout->addWidget(m_audioInfoLabel);
 
     layout->addLayout(topLayout);
@@ -262,6 +264,12 @@ void MainWindow::onFileClosed()
     m_audioInfoLabel->setText("No audio file loaded");
     statusBar()->showMessage("File closed", 2000);
     
+    // Clear album art
+    if (m_albumArtLabel) {
+        m_albumArtLabel->clear();
+        m_albumArtLabel->setText("♪");
+    }
+    
     // Reset playback controls
     m_duration = 0;
     m_timeLabel->setText("00:00 / 00:00");
@@ -369,6 +377,27 @@ void MainWindow::onAudioDurationChanged(qint64 duration)
 
     // Reset seek slider
     m_seekSlider->setValue(0);
+}
+
+void MainWindow::onAlbumArtChanged(const QPixmap &albumArt)
+{
+    qDebug() << "=== Album art changed ===";
+    
+    if (!albumArt.isNull() && m_albumArtLabel) {
+        // Scale the album art to fit the label while maintaining aspect ratio
+        QPixmap scaled = albumArt.scaled(
+            m_albumArtLabel->size(),
+            Qt::KeepAspectRatio,
+            Qt::SmoothTransformation
+        );
+        m_albumArtLabel->setPixmap(scaled);
+        qDebug() << "Album art displayed:" << albumArt.size();
+    } else if (m_albumArtLabel) {
+        // No album art - show placeholder
+        m_albumArtLabel->clear();
+        m_albumArtLabel->setText("♪");
+        qDebug() << "No album art to display";
+    }
 }
 
 // Helper functions

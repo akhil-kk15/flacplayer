@@ -12,6 +12,8 @@
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QPixmap>
+#include <QImage>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -78,6 +80,7 @@ public:
     QString getFormatInfo() const;
     PlaybackState getState() const;
     qreal getVolume() const;
+    QPixmap getAlbumArt() const;
 
     // Debug information
     void printFileInfo() const;
@@ -89,6 +92,7 @@ signals:
     void stateChanged(PlaybackState state);
     void positionChanged(qint64 position);
     void durationChanged(qint64 duration);
+    void albumArtChanged(const QPixmap &albumArt);
 
 private slots:
     void updatePosition();
@@ -122,6 +126,9 @@ private:
     int m_convertedDataSize;
     bool m_shouldDecode;
     
+    // Album art
+    QPixmap m_albumArt;
+    
     void cleanup();
     void initializeFFmpeg();
     void setupAudioOutput();
@@ -130,6 +137,7 @@ private:
     void cleanupDecoding();
     bool decodePacket();
     void setDecodingActive(bool active);
+    void extractAlbumArt();
 };
 
 #endif // AUDIOMANAGER_H
