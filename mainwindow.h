@@ -5,7 +5,6 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSlider>
-#include <QProgressBar>
 #include "audiomanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -23,7 +22,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void onButtonClicked();
     void onDebugInfo();
     void onOpenFile();
     void onFileOpened(const QString &fileName);
@@ -49,7 +47,6 @@ private:
     Ui::MainWindow *ui;
     
     // UI elements
-    QPushButton *m_testButton;
     QPushButton *m_debugButton;
     QPushButton *m_openFileButton;
     QPushButton *m_playPauseButton;
@@ -60,7 +57,6 @@ private:
     QLabel *m_totalTimeLabel;
     QSlider *m_volumeSlider;
     QSlider *m_seekSlider;
-    QProgressBar *m_progressBar;
     
     // Audio management
     AudioManager *m_audioManager;

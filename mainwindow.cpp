@@ -173,34 +173,6 @@ void MainWindow::setupBasicUI()
     qDebug() << "Basic UI setup complete";
 }
 
-//Add new buttons here, play, pause, stop, repeat, shuffle. 
-
-// void::MainWindow::mybutton(){
-// QPushButton *newButton = new QPushButton("play", this);
-// buttonLayout->addWidget(newButton);
-// connect(newButton, &QPushButton::clicked, this, &MainWindow::mySlot);
-
-// }
-// This is called when the "Button Check" button is pressed
-void MainWindow::onButtonClicked()
-{
-    qDebug() << "=== Test button clicked! ===";
-    
-    static int clickCount = 0;
-    clickCount++;
-    
-    QString message = QString("Button clicked %1 times!").arg(clickCount);
-    m_statusLabel->setText(message);
-    statusBar()->showMessage(message, 2000);
-    
-    qDebug() << "Click count:" << clickCount;
-    
-    if (clickCount == 5) {
-        QMessageBox::information(this, "pop up test!", 
-            "You've clicked the button 5 times, change this later for developer settings");
-    }
-}
-
 // This shows debug information about your application
 void MainWindow::onDebugInfo()
 {
@@ -407,9 +379,9 @@ void MainWindow::updatePlaybackControls()
     
     // Update play/pause button
     if (state == AudioManager::PlayingState) {
-        m_playPauseButton->setText(" Pause");
+        m_playPauseButton->setText("⏸");
     } else {
-        m_playPauseButton->setText(" Play");
+        m_playPauseButton->setText("▶");
     }
     
     // Enable/disable controls based on file availability
