@@ -31,6 +31,8 @@ set(PROJECT_SOURCES
         mainwindow.ui
         audiomanager.cpp
         audiomanager.h
+        playlist.cpp
+        playlist.h
         ${TS_FILES}
 )
 

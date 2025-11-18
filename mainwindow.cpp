@@ -13,6 +13,8 @@
 #include <QStandardPaths>
 #include <QSlider>
 #include <QProgressBar>
+#include <QFileInfo>
+#include <QListWidgetItem>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -35,6 +37,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_audioManager, &AudioManager::positionChanged, this, &MainWindow::onAudioPositionChanged);
     connect(m_audioManager, &AudioManager::durationChanged, this, &MainWindow::onAudioDurationChanged);
     connect(m_audioManager, &AudioManager::albumArtChanged, this, &MainWindow::onAlbumArtChanged);
+    connect(m_audioManager, &AudioManager::trackFinished, this, &MainWindow::onTrackFinished);
+    
+    // Initialize playlist
+    m_playlist = new Playlist(this);
+    connect(m_playlist, &Playlist::playlistChanged, this, &MainWindow::onPlaylistChanged);
+    connect(m_playlist, &Playlist::currentIndexChanged, this, &MainWindow::onCurrentIndexChanged);
+    connect(m_playlist, &Playlist::shuffleChanged, this, &MainWindow::onShuffleChanged);
     
     // Initialize the window
     initializeWindow();
@@ -74,8 +83,11 @@ void MainWindow::setupBasicUI()
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
     
-    // Create layout
-    QVBoxLayout *layout = new QVBoxLayout(centralWidget);
+    // Create main horizontal layout
+    QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget);
+
+    // Left side: Player controls
+    QVBoxLayout *leftLayout = new QVBoxLayout();
 
     // Top area: album art + track title
     m_albumArtLabel = new QLabel(this);
@@ -90,11 +102,8 @@ void MainWindow::setupBasicUI()
     m_audioInfoLabel->setAlignment(Qt::AlignCenter);
     m_audioInfoLabel->setStyleSheet("font-weight: bold; margin-top: 8px;");
 
-    QVBoxLayout *topLayout = new QVBoxLayout();
-    topLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
-    topLayout->addWidget(m_audioInfoLabel);
-
-    layout->addLayout(topLayout);
+    leftLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
+    leftLayout->addWidget(m_audioInfoLabel);
 
     // Seek bar with time labels
     QHBoxLayout *seekLayout = new QHBoxLayout();
@@ -109,7 +118,7 @@ void MainWindow::setupBasicUI()
     seekLayout->addWidget(m_seekSlider);
     seekLayout->addWidget(totalLabel);
 
-    layout->addLayout(seekLayout);
+    leftLayout->addLayout(seekLayout);
 
     // Keep references to elapsed/total labels for updates
     m_timeLabel = elapsedLabel;
@@ -118,10 +127,15 @@ void MainWindow::setupBasicUI()
     // Controls bar
     QHBoxLayout *controlsLayout = new QHBoxLayout();
 
-    QPushButton *prevButton = new QPushButton("⏮", this);
+    m_prevButton = new QPushButton("⏮", this);
     m_playPauseButton = new QPushButton("▶", this);
     m_stopButton = new QPushButton("⏹", this);
-    QPushButton *nextButton = new QPushButton("⏭", this);
+    m_nextButton = new QPushButton("⏭", this);
+    
+    m_shuffleButton = new QPushButton("🔀", this);
+    m_shuffleButton->setCheckable(true);
+    m_shuffleButton->setToolTip("Shuffle");
+    m_shuffleButton->setMaximumWidth(50);
 
     // Volume and open
     QLabel *volIcon = new QLabel("🔊", this);
@@ -133,22 +147,39 @@ void MainWindow::setupBasicUI()
     m_openFileButton = new QPushButton("Open", this);
     m_debugButton = new QPushButton("Debug", this);
 
-    controlsLayout->addWidget(prevButton);
+    controlsLayout->addWidget(m_prevButton);
     controlsLayout->addWidget(m_playPauseButton);
     controlsLayout->addWidget(m_stopButton);
-    controlsLayout->addWidget(nextButton);
+    controlsLayout->addWidget(m_nextButton);
+    controlsLayout->addWidget(m_shuffleButton);
     controlsLayout->addStretch();
     controlsLayout->addWidget(volIcon);
     controlsLayout->addWidget(m_volumeSlider);
     controlsLayout->addWidget(m_openFileButton);
     controlsLayout->addWidget(m_debugButton);
 
-    layout->addLayout(controlsLayout);
+    leftLayout->addLayout(controlsLayout);
 
     // Status label at bottom
     m_statusLabel = new QLabel("Status: Ready", this);
     m_statusLabel->setStyleSheet("color: #444; padding: 6px;");
-    layout->addWidget(m_statusLabel);
+    leftLayout->addWidget(m_statusLabel);
+
+    // Right side: Playlist
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    QLabel *playlistLabel = new QLabel("Playlist", this);
+    playlistLabel->setStyleSheet("font-weight: bold; padding: 4px;");
+    
+    m_playlistWidget = new QListWidget(this);
+    m_playlistWidget->setMinimumWidth(300);
+    m_playlistWidget->setAlternatingRowColors(true);
+    
+    rightLayout->addWidget(playlistLabel);
+    rightLayout->addWidget(m_playlistWidget);
+
+    // Add both sides to main layout
+    mainLayout->addLayout(leftLayout, 1);
+    mainLayout->addLayout(rightLayout, 0);
 
     // Wire up signals
     connect(m_openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFile);
@@ -156,8 +187,10 @@ void MainWindow::setupBasicUI()
 
     connect(m_playPauseButton, &QPushButton::clicked, this, &MainWindow::onPlayPause);
     connect(m_stopButton, &QPushButton::clicked, this, &MainWindow::onStop);
-    connect(prevButton, &QPushButton::clicked, [this]() { /* future: prev track */ });
-    connect(nextButton, &QPushButton::clicked, [this]() { /* future: next track */ });
+    connect(m_prevButton, &QPushButton::clicked, this, &MainWindow::onPrevious);
+    connect(m_nextButton, &QPushButton::clicked, this, &MainWindow::onNext);
+    connect(m_shuffleButton, &QPushButton::toggled, this, &MainWindow::onShuffleToggled);
+    connect(m_playlistWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPlaylistItemDoubleClicked);
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
@@ -213,23 +246,22 @@ void MainWindow::onOpenFile()
 {
     qDebug() << "=== onOpenFile() called ===";
     
-    QString fileName = QFileDialog::getOpenFileName(
+    QStringList fileNames = QFileDialog::getOpenFileNames(
         this,
-        "Open Audio File",
+        "Open Audio File(s)",
         QStandardPaths::writableLocation(QStandardPaths::MusicLocation),
         "Audio Files (*.flac *.mp3 *.wav *.ogg *.m4a);;FLAC Files (*.flac);;All Files (*)"
     );
     
-
-
-    if (!fileName.isEmpty()) {
-        qDebug() << "Selected file:" << fileName;
+    if (!fileNames.isEmpty()) {
+        qDebug() << "Selected" << fileNames.count() << "file(s)";
         
-        // Try to open the file with FFmpeg
-        if (m_audioManager->openFile(fileName)) {
-            qDebug() << "File opened successfully via FFmpeg";
-        } else {
-            qDebug() << "Failed to open file via FFmpeg";
+        // Add files to playlist
+        m_playlist->addFiles(fileNames);
+        
+        // If this is the first file(s) added, start playing
+        if (m_playlist->count() == fileNames.count()) {
+            loadTrackAtIndex(0);
         }
     } else {
         qDebug() << "No file selected";
@@ -307,6 +339,47 @@ void MainWindow::onStop()
 {
     qDebug() << "=== Stop button clicked ===";
     m_audioManager->stop();
+}
+
+void MainWindow::onPrevious()
+{
+    qDebug() << "=== Previous button clicked ===";
+    
+    if (m_playlist->hasPrevious()) {
+        QString prevFile = m_playlist->previous();
+        if (!prevFile.isEmpty()) {
+            m_audioManager->stop();
+            m_audioManager->openFile(prevFile);
+            m_audioManager->play();
+        }
+    }
+}
+
+void MainWindow::onNext()
+{
+    qDebug() << "=== Next button clicked ===";
+    
+    if (m_playlist->hasNext()) {
+        QString nextFile = m_playlist->next();
+        if (!nextFile.isEmpty()) {
+            m_audioManager->stop();
+            m_audioManager->openFile(nextFile);
+            m_audioManager->play();
+        }
+    }
+}
+
+void MainWindow::onTrackFinished()
+{
+    qDebug() << "=== Track finished ===";
+    
+    // Auto-advance to next track if available
+    if (m_playlist->hasNext()) {
+        onNext();
+    } else {
+        qDebug() << "End of playlist reached";
+        m_audioManager->stop();
+    }
 }
 
 void MainWindow::onVolumeChanged(int value)
@@ -398,7 +471,100 @@ void MainWindow::onAlbumArtChanged(const QPixmap &albumArt)
     }
 }
 
+void MainWindow::onPlaylistChanged()
+{
+    qDebug() << "=== Playlist changed ===";
+    
+    // Update the playlist widget
+    m_playlistWidget->clear();
+    
+    QStringList files = m_playlist->getFiles();
+    for (int i = 0; i < files.count(); ++i) {
+        QFileInfo fileInfo(files[i]);
+        QString displayName = QString("%1. %2").arg(i + 1).arg(fileInfo.fileName());
+        QListWidgetItem *item = new QListWidgetItem(displayName);
+        item->setData(Qt::UserRole, files[i]); // Store full path
+        m_playlistWidget->addItem(item);
+    }
+    
+    // Highlight current track
+    if (m_playlist->currentIndex() >= 0) {
+        m_playlistWidget->setCurrentRow(m_playlist->currentIndex());
+    }
+    
+    // Update prev/next button states
+    m_prevButton->setEnabled(m_playlist->hasPrevious());
+    m_nextButton->setEnabled(m_playlist->hasNext());
+}
+
+void MainWindow::onCurrentIndexChanged(int index)
+{
+    qDebug() << "=== Current index changed to:" << index << "===";
+    
+    if (index >= 0 && index < m_playlistWidget->count()) {
+        m_playlistWidget->setCurrentRow(index);
+    }
+    
+    // Update prev/next button states
+    m_prevButton->setEnabled(m_playlist->hasPrevious());
+    m_nextButton->setEnabled(m_playlist->hasNext());
+}
+
+void MainWindow::onPlaylistItemDoubleClicked(QListWidgetItem *item)
+{
+    if (!item) return;
+    
+    int index = m_playlistWidget->row(item);
+    qDebug() << "=== Playlist item double-clicked, index:" << index << "===";
+    
+    loadTrackAtIndex(index);
+}
+
+void MainWindow::onShuffleToggled(bool checked)
+{
+    qDebug() << "=== Shuffle toggled:" << checked << "===";
+    m_playlist->setShuffle(checked);
+}
+
+void MainWindow::onShuffleChanged(bool enabled)
+{
+    qDebug() << "=== Shuffle changed:" << enabled << "===";
+    
+    // Update button state
+    m_shuffleButton->setChecked(enabled);
+    
+    // Update button style to show active state
+    if (enabled) {
+        m_shuffleButton->setStyleSheet("background-color: #4CAF50; color: white;");
+        statusBar()->showMessage("Shuffle enabled", 2000);
+    } else {
+        m_shuffleButton->setStyleSheet("");
+        statusBar()->showMessage("Shuffle disabled", 2000);
+    }
+}
+
 // Helper functions
+void MainWindow::loadTrackAtIndex(int index)
+{
+    if (index < 0 || index >= m_playlist->count()) {
+        return;
+    }
+    
+    QString filePath = m_playlist->getFileAt(index);
+    if (filePath.isEmpty()) {
+        return;
+    }
+    
+    qDebug() << "=== Loading track at index:" << index << "===";
+    
+    m_playlist->setCurrentIndex(index);
+    m_audioManager->stop();
+    
+    if (m_audioManager->openFile(filePath)) {
+        m_audioManager->play();
+    }
+}
+
 void MainWindow::updatePlaybackControls()
 {
     AudioManager::PlaybackState state = m_audioManager->getState();

@@ -5,7 +5,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSlider>
+#include <QListWidget>
 #include "audiomanager.h"
+#include "playlist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -31,17 +33,28 @@ private slots:
     // Playback control slots
     void onPlayPause();
     void onStop();
+    void onPrevious();
+    void onNext();
     void onVolumeChanged(int value);
     void onSeekPositionChanged(int value);
     void onAudioStateChanged(AudioManager::PlaybackState state);
     void onAudioPositionChanged(qint64 position);
     void onAudioDurationChanged(qint64 duration);
     void onAlbumArtChanged(const QPixmap &albumArt);
+    void onTrackFinished();
+    
+    // Playlist slots
+    void onPlaylistChanged();
+    void onCurrentIndexChanged(int index);
+    void onPlaylistItemDoubleClicked(QListWidgetItem *item);
+    void onShuffleToggled(bool checked);
+    void onShuffleChanged(bool enabled);
 
 private:
     void initializeWindow();
     void setupBasicUI();
     void updatePlaybackControls();
+    void loadTrackAtIndex(int index);
     QString formatTime(qint64 microseconds) const;
     
 private:
@@ -52,6 +65,9 @@ private:
     QPushButton *m_openFileButton;
     QPushButton *m_playPauseButton;
     QPushButton *m_stopButton;
+    QPushButton *m_prevButton;
+    QPushButton *m_nextButton;
+    QPushButton *m_shuffleButton;
     QLabel *m_statusLabel;
     QLabel *m_audioInfoLabel;
     QLabel *m_albumArtLabel;
@@ -59,9 +75,11 @@ private:
     QLabel *m_totalTimeLabel;
     QSlider *m_volumeSlider;
     QSlider *m_seekSlider;
+    QListWidget *m_playlistWidget;
     
     // Audio management
     AudioManager *m_audioManager;
+    Playlist *m_playlist;
     qint64 m_duration;
     bool m_seekSliderPressed;
 };

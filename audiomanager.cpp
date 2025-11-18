@@ -606,7 +606,13 @@ void AudioManager::onAudioStateChanged(QAudio::State state)
         qDebug() << "Audio is suspended";
         break;
     case QAudio::IdleState:
-        qDebug() << "Audio is idle";
+        qDebug() << "Audio is idle (buffer empty)";
+        // If decoding is stopped (EOF reached) and buffer is empty, track is finished
+        if (!m_shouldDecode && m_state == PlayingState) {
+            qDebug() << "Track finished playing";
+            stop();
+            emit trackFinished();
+        }
         break;
     }
 }
@@ -709,6 +715,9 @@ bool AudioManager::decodePacket()
             qDebug() << "End of file reached";
             // Send flush packet
             avcodec_send_packet(m_codecContext, nullptr);
+            // Stop decoding
+            setDecodingActive(false);
+            // The trackFinished signal will be emitted when audio buffer is empty
         }
         return false;
     }
