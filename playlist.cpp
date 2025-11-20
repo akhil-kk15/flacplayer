@@ -2,12 +2,16 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QRandomGenerator>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
 #include <algorithm>
 
 Playlist::Playlist(QObject *parent)
     : QObject(parent)
     , m_currentIndex(-1)
     , m_shuffleEnabled(false)
+    , m_name("Untitled Playlist")
 {
 }
 
@@ -277,4 +281,104 @@ int Playlist::getLogicalIndex(int shuffledIndex) const
         return -1;
     }
     return m_shuffleOrder[shuffledIndex];
+}
+
+bool Playlist::saveToFile(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open file for writing:" << filePath;
+        return false;
+    }
+    
+    QTextStream out(&file);
+    
+    // Write playlist header
+    out << "#EXTM3U\n";
+    out << "#PLAYLIST:" << m_name << "\n";
+    
+    // Write each file with metadata
+    for (const QString &filePath : m_files) {
+        QFileInfo fileInfo(filePath);
+        out << "#EXTINF:-1," << fileInfo.completeBaseName() << "\n";
+        out << filePath << "\n";
+    }
+    
+    file.close();
+    qDebug() << "Playlist saved to:" << filePath;
+    return true;
+}
+
+bool Playlist::loadFromFile(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open file for reading:" << filePath;
+        return false;
+    }
+    
+    QTextStream in(&file);
+    QStringList newFiles;
+    QString playlistName;
+    
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        
+        if (line.isEmpty()) {
+            continue;
+        }
+        
+        // Parse playlist name
+        if (line.startsWith("#PLAYLIST:")) {
+            playlistName = line.mid(10).trimmed();
+            continue;
+        }
+        
+        // Skip comments and metadata (except file paths)
+        if (line.startsWith("#")) {
+            continue;
+        }
+        
+        // This should be a file path
+        QFileInfo fileInfo(line);
+        if (fileInfo.exists() && fileInfo.isFile()) {
+            newFiles.append(line);
+        } else {
+            qDebug() << "File not found, skipping:" << line;
+        }
+    }
+    
+    file.close();
+    
+    if (newFiles.isEmpty()) {
+        qDebug() << "No valid files found in playlist";
+        return false;
+    }
+    
+    // Clear current playlist and load new files
+    clear();
+    addFiles(newFiles);
+    
+    if (!playlistName.isEmpty()) {
+        m_name = playlistName;
+    } else {
+        QFileInfo pFileInfo(filePath);
+        m_name = pFileInfo.completeBaseName();
+    }
+    
+    qDebug() << "Playlist loaded:" << m_name << "with" << newFiles.count() << "files";
+    return true;
+}
+
+QString Playlist::getName() const
+{
+    return m_name;
+}
+
+void Playlist::setName(const QString &name)
+{
+    if (m_name != name) {
+        m_name = name;
+        qDebug() << "Playlist name changed to:" << m_name;
+    }
 }

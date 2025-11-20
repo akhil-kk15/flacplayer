@@ -26,6 +26,7 @@ public:
 private slots:
     void onDebugInfo();
     void onOpenFile();
+    void onShowAudioInfo();
     void onFileOpened(const QString &fileName);
     void onFileClosed();
     void onAudioError(const QString &error);
@@ -42,6 +43,7 @@ private slots:
     void onAudioDurationChanged(qint64 duration);
     void onAlbumArtChanged(const QPixmap &albumArt);
     void onTrackFinished();
+    void onMetadataChanged(const AudioMetadata &metadata);
     
     // Playlist slots
     void onPlaylistChanged();
@@ -49,6 +51,10 @@ private slots:
     void onPlaylistItemDoubleClicked(QListWidgetItem *item);
     void onShuffleToggled(bool checked);
     void onShuffleChanged(bool enabled);
+    void onSavePlaylist();
+    void onLoadPlaylist();
+    void onNewPlaylist();
+    void onClearPlaylist();
 
 private:
     void initializeWindow();
@@ -63,6 +69,7 @@ private:
     // UI elements
     QPushButton *m_debugButton;
     QPushButton *m_openFileButton;
+    QPushButton *m_infoButton;
     QPushButton *m_playPauseButton;
     QPushButton *m_stopButton;
     QPushButton *m_prevButton;
@@ -71,11 +78,20 @@ private:
     QLabel *m_statusLabel;
     QLabel *m_audioInfoLabel;
     QLabel *m_albumArtLabel;
+    QLabel *m_titleLabel;
+    QLabel *m_artistLabel;
+    QLabel *m_albumLabel;
+    QLabel *m_yearLabel;
     QLabel *m_timeLabel;
     QLabel *m_totalTimeLabel;
     QSlider *m_volumeSlider;
     QSlider *m_seekSlider;
     QListWidget *m_playlistWidget;
+    QPushButton *m_savePlaylistButton;
+    QPushButton *m_loadPlaylistButton;
+    QPushButton *m_newPlaylistButton;
+    QPushButton *m_clearPlaylistButton;
+    QLabel *m_playlistNameLabel;
     
     // Audio management
     AudioManager *m_audioManager;

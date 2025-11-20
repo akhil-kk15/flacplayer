@@ -22,6 +22,20 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
+struct AudioMetadata
+{
+    QString title;
+    QString artist;
+    QString album;
+    QString year;
+    QString genre;
+    QString comment;
+    
+    bool isEmpty() const {
+        return title.isEmpty() && artist.isEmpty() && album.isEmpty();
+    }
+};
+
 class AudioBuffer : public QIODevice
 {
     Q_OBJECT
@@ -72,9 +86,11 @@ public:
     
     // Audio information
     QString getFileName() const;
+    QString getFormatName() const;
     QString getCodecName() const;
     int getSampleRate() const;
     int getChannels() const;
+    qint64 getBitrate() const;
     int64_t getDuration() const; // in microseconds
     int64_t getPosition() const; // in microseconds
     QString getFormatInfo() const;
@@ -84,6 +100,9 @@ public:
 
     // Debug information
     void printFileInfo() const;
+    
+    // Metadata
+    AudioMetadata getMetadata() const;
 
 signals:
     void fileOpened(const QString &fileName);
@@ -94,12 +113,16 @@ signals:
     void durationChanged(qint64 duration);
     void albumArtChanged(const QPixmap &albumArt);
     void trackFinished();
+    void metadataChanged(const AudioMetadata &metadata);
 
 private slots:
     void updatePosition();
     void onAudioStateChanged(QAudio::State state);
     void decodeAudio();
 
+private:
+    void extractMetadata();
+    
 private:
     // FFmpeg components
     AVFormatContext *m_formatContext;
@@ -129,6 +152,9 @@ private:
     
     // Album art
     QPixmap m_albumArt;
+    
+    // Metadata
+    AudioMetadata m_metadata;
     
     void cleanup();
     void initializeFFmpeg();

@@ -93,3 +93,5 @@ CMakeLists.txt.user*
 
 flac.cpp
 QT_LEARNING_GUIDE.md
+Flacplayer.pro
+flacplayer_en_GB.ts

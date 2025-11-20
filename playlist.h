@@ -39,6 +39,12 @@ public:
     // Shuffle
     void setShuffle(bool enabled);
     bool isShuffled() const;
+    
+    // Playlist file operations
+    bool saveToFile(const QString &filePath);
+    bool loadFromFile(const QString &filePath);
+    QString getName() const;
+    void setName(const QString &name);
 
 signals:
     void playlistChanged();
@@ -55,6 +61,7 @@ private:
     int m_currentIndex;
     bool m_shuffleEnabled;
     QVector<int> m_shuffleOrder;  // Maps logical index to shuffled index
+    QString m_name;
 };
 
 #endif // PLAYLIST_H

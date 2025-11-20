@@ -15,6 +15,7 @@
 #include <QProgressBar>
 #include <QFileInfo>
 #include <QListWidgetItem>
+#include <QInputDialog>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_audioManager, &AudioManager::durationChanged, this, &MainWindow::onAudioDurationChanged);
     connect(m_audioManager, &AudioManager::albumArtChanged, this, &MainWindow::onAlbumArtChanged);
     connect(m_audioManager, &AudioManager::trackFinished, this, &MainWindow::onTrackFinished);
+    connect(m_audioManager, &AudioManager::metadataChanged, this, &MainWindow::onMetadataChanged);
     
     // Initialize playlist
     m_playlist = new Playlist(this);
@@ -97,13 +99,50 @@ void MainWindow::setupBasicUI()
     m_albumArtLabel->setText("♪");
     m_albumArtLabel->setScaledContents(true); // Scale pixmap to fit label
 
+    leftLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
+    
+    // Metadata display - use a container with size constraint
+    QWidget *metadataContainer = new QWidget(this);
+    metadataContainer->setMinimumHeight(120);
+    QVBoxLayout *metadataLayout = new QVBoxLayout(metadataContainer);
+    metadataLayout->setContentsMargins(5, 5, 5, 5);
+    metadataLayout->setSpacing(2);
+    
+    m_titleLabel = new QLabel(this);
+    m_titleLabel->setAlignment(Qt::AlignCenter);
+    m_titleLabel->setStyleSheet("font-size: 14px; font-weight: bold; margin-top: 8px;");
+    m_titleLabel->setWordWrap(true);
+    m_titleLabel->setMaximumHeight(40);
+    
+    m_artistLabel = new QLabel(this);
+    m_artistLabel->setAlignment(Qt::AlignCenter);
+    m_artistLabel->setStyleSheet("font-size: 12px; color: #555;");
+    m_artistLabel->setMaximumHeight(20);
+    
+    m_albumLabel = new QLabel(this);
+    m_albumLabel->setAlignment(Qt::AlignCenter);
+    m_albumLabel->setStyleSheet("font-size: 11px; color: #666;");
+    m_albumLabel->setMaximumHeight(20);
+    
+    m_yearLabel = new QLabel(this);
+    m_yearLabel->setAlignment(Qt::AlignCenter);
+    m_yearLabel->setStyleSheet("font-size: 10px; color: #888;");
+    m_yearLabel->setMaximumHeight(15);
+    
     m_audioInfoLabel = new QLabel("No audio file loaded", this);
     m_audioInfoLabel->setWordWrap(true);
     m_audioInfoLabel->setAlignment(Qt::AlignCenter);
     m_audioInfoLabel->setStyleSheet("font-weight: bold; margin-top: 8px;");
-
-    leftLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
-    leftLayout->addWidget(m_audioInfoLabel);
+    m_audioInfoLabel->setMaximumHeight(25);
+    
+    metadataLayout->addWidget(m_titleLabel);
+    metadataLayout->addWidget(m_artistLabel);
+    metadataLayout->addWidget(m_albumLabel);
+    metadataLayout->addWidget(m_yearLabel);
+    metadataLayout->addWidget(m_audioInfoLabel);
+    metadataLayout->addStretch();
+    
+    leftLayout->addWidget(metadataContainer);
 
     // Seek bar with time labels
     QHBoxLayout *seekLayout = new QHBoxLayout();
@@ -132,7 +171,7 @@ void MainWindow::setupBasicUI()
     m_stopButton = new QPushButton("⏹", this);
     m_nextButton = new QPushButton("⏭", this);
     
-    m_shuffleButton = new QPushButton("🔀", this);
+    m_shuffleButton = new QPushButton("shuffle", this);
     m_shuffleButton->setCheckable(true);
     m_shuffleButton->setToolTip("Shuffle");
     m_shuffleButton->setMaximumWidth(50);
@@ -145,6 +184,9 @@ void MainWindow::setupBasicUI()
     m_volumeSlider->setMaximumWidth(150);
 
     m_openFileButton = new QPushButton("Open", this);
+    m_infoButton = new QPushButton("i", this);
+    m_infoButton->setMaximumWidth(40);
+    m_infoButton->setToolTip("Audio Info");
     m_debugButton = new QPushButton("Debug", this);
 
     controlsLayout->addWidget(m_prevButton);
@@ -153,6 +195,7 @@ void MainWindow::setupBasicUI()
     controlsLayout->addWidget(m_nextButton);
     controlsLayout->addWidget(m_shuffleButton);
     controlsLayout->addStretch();
+    controlsLayout->addWidget(m_infoButton);
     controlsLayout->addWidget(volIcon);
     controlsLayout->addWidget(m_volumeSlider);
     controlsLayout->addWidget(m_openFileButton);
@@ -167,14 +210,41 @@ void MainWindow::setupBasicUI()
 
     // Right side: Playlist
     QVBoxLayout *rightLayout = new QVBoxLayout();
-    QLabel *playlistLabel = new QLabel("Playlist", this);
+    
+    // Playlist header with name
+    QHBoxLayout *playlistHeaderLayout = new QHBoxLayout();
+    QLabel *playlistLabel = new QLabel("Playlist:", this);
     playlistLabel->setStyleSheet("font-weight: bold; padding: 4px;");
+    m_playlistNameLabel = new QLabel("Untitled Playlist", this);
+    m_playlistNameLabel->setStyleSheet("padding: 4px; color: #666;");
+    playlistHeaderLayout->addWidget(playlistLabel);
+    playlistHeaderLayout->addWidget(m_playlistNameLabel);
+    playlistHeaderLayout->addStretch();
+    
+    // Playlist management buttons
+    QHBoxLayout *playlistButtonsLayout = new QHBoxLayout();
+    m_newPlaylistButton = new QPushButton("New", this);
+    m_loadPlaylistButton = new QPushButton("Load", this);
+    m_savePlaylistButton = new QPushButton("Save", this);
+    m_clearPlaylistButton = new QPushButton("Clear", this);
+    
+    m_newPlaylistButton->setMaximumWidth(60);
+    m_loadPlaylistButton->setMaximumWidth(60);
+    m_savePlaylistButton->setMaximumWidth(60);
+    m_clearPlaylistButton->setMaximumWidth(60);
+    
+    playlistButtonsLayout->addWidget(m_newPlaylistButton);
+    playlistButtonsLayout->addWidget(m_loadPlaylistButton);
+    playlistButtonsLayout->addWidget(m_savePlaylistButton);
+    playlistButtonsLayout->addWidget(m_clearPlaylistButton);
+    playlistButtonsLayout->addStretch();
     
     m_playlistWidget = new QListWidget(this);
     m_playlistWidget->setMinimumWidth(300);
     m_playlistWidget->setAlternatingRowColors(true);
     
-    rightLayout->addWidget(playlistLabel);
+    rightLayout->addLayout(playlistHeaderLayout);
+    rightLayout->addLayout(playlistButtonsLayout);
     rightLayout->addWidget(m_playlistWidget);
 
     // Add both sides to main layout
@@ -183,6 +253,7 @@ void MainWindow::setupBasicUI()
 
     // Wire up signals
     connect(m_openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFile);
+    connect(m_infoButton, &QPushButton::clicked, this, &MainWindow::onShowAudioInfo);
     connect(m_debugButton, &QPushButton::clicked, this, &MainWindow::onDebugInfo);
 
     connect(m_playPauseButton, &QPushButton::clicked, this, &MainWindow::onPlayPause);
@@ -191,6 +262,12 @@ void MainWindow::setupBasicUI()
     connect(m_nextButton, &QPushButton::clicked, this, &MainWindow::onNext);
     connect(m_shuffleButton, &QPushButton::toggled, this, &MainWindow::onShuffleToggled);
     connect(m_playlistWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPlaylistItemDoubleClicked);
+    
+    // Playlist management connections
+    connect(m_newPlaylistButton, &QPushButton::clicked, this, &MainWindow::onNewPlaylist);
+    connect(m_loadPlaylistButton, &QPushButton::clicked, this, &MainWindow::onLoadPlaylist);
+    connect(m_savePlaylistButton, &QPushButton::clicked, this, &MainWindow::onSavePlaylist);
+    connect(m_clearPlaylistButton, &QPushButton::clicked, this, &MainWindow::onClearPlaylist);
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
@@ -204,6 +281,82 @@ void MainWindow::setupBasicUI()
     updatePlaybackControls();
 
     qDebug() << "Basic UI setup complete";
+}
+
+void MainWindow::onShowAudioInfo()
+{
+    qDebug() << "=== Show audio info requested ===";
+    
+    if (!m_audioManager->isFileOpen()) {
+        QMessageBox::information(this, "No File", "Please open an audio file first!");
+        return;
+    }
+    
+    // Get metadata
+    AudioMetadata metadata = m_audioManager->getMetadata();
+    
+    // Build detailed info string
+    QString info = "═══════════════════════════════\n";
+    info += "       AUDIO FILE DETAILS\n";
+    info += "═══════════════════════════════\n\n";
+    
+    // Metadata section
+    info += " METADATA:\n";
+    info += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    info += QString("Title:    %1\n").arg(metadata.title.isEmpty() ? "N/A" : metadata.title);
+    info += QString("Artist:   %1\n").arg(metadata.artist.isEmpty() ? "N/A" : metadata.artist);
+    info += QString("Album:    %1\n").arg(metadata.album.isEmpty() ? "N/A" : metadata.album);
+    info += QString("Year:     %1\n").arg(metadata.year.isEmpty() ? "N/A" : metadata.year);
+    info += QString("Genre:    %1\n").arg(metadata.genre.isEmpty() ? "N/A" : metadata.genre);
+    if (!metadata.comment.isEmpty()) {
+        info += QString("Comment:  %1\n").arg(metadata.comment);
+    }
+    info += "\n";
+    
+    // Technical section
+    info += " TECHNICAL INFO:\n";
+    info += "─────────────────────────────\n";
+    info += QString("Format:       %1\n").arg(m_audioManager->getFormatName());
+    info += QString("Codec:        %1\n").arg(m_audioManager->getCodecName());
+    info += QString("Sample Rate:  %1 Hz\n").arg(m_audioManager->getSampleRate());
+    info += QString("Channels:     %1 (%2)\n")
+        .arg(m_audioManager->getChannels())
+        .arg(m_audioManager->getChannels() == 1 ? "Mono" : 
+             m_audioManager->getChannels() == 2 ? "Stereo" :
+             QString("%1 Channel").arg(m_audioManager->getChannels()));
+    qint64 bitrate = m_audioManager->getBitrate();
+    if (bitrate > 0) {
+        info += QString("Bitrate:      %1 kbps\n").arg(bitrate / 1000);
+    }
+    info += QString("Duration:     %1 (%2 seconds)\n")
+        .arg(formatTime(m_audioManager->getDuration()))
+        .arg(m_audioManager->getDuration() / 1000000.0, 0, 'f', 2);
+    info += "\n";
+    
+    // File section
+    info += " FILE INFO:\n";
+    info += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    QString currentFile = m_playlist->current();
+    if (!currentFile.isEmpty()) {
+        QFileInfo fileInfo(currentFile);
+        info += QString("Filename:     %1\n").arg(fileInfo.fileName());
+        info += QString("Path:         %1\n").arg(fileInfo.absolutePath());
+        info += QString("Size:         %1 MB\n").arg(fileInfo.size() / 1024.0 / 1024.0, 0, 'f', 2);
+    }
+    
+    // Show in a dialog with monospace font
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Audio File Information");
+    msgBox.setText(info);
+    msgBox.setIcon(QMessageBox::Information);
+    
+    // Use monospace font for better alignment
+    QFont font("Monospace");
+    font.setStyleHint(QFont::TypeWriter);
+    font.setPointSize(9);
+    msgBox.setFont(font);
+    
+    msgBox.exec();
 }
 
 // This shows debug information about your application
@@ -274,6 +427,9 @@ void MainWindow::onFileOpened(const QString &fileName)
 {
     qDebug() << "=== File opened signal received:" << fileName << "===";
     
+    // Update window title with filename
+    setWindowTitle("FLAC Player v1.0 - " + fileName);
+    
     m_statusLabel->setText("Status: File loaded - " + fileName);
     statusBar()->showMessage("Loaded: " + fileName, 5000);
     
@@ -290,6 +446,9 @@ void MainWindow::onFileClosed()
 {
     qDebug() << "=== File closed signal received ===";
     
+    // Reset window title
+    setWindowTitle("FLAC Player v1.0");
+    
     m_statusLabel->setText("Status: No file loaded");
     m_audioInfoLabel->setText("No audio file loaded");
     statusBar()->showMessage("File closed", 2000);
@@ -299,6 +458,12 @@ void MainWindow::onFileClosed()
         m_albumArtLabel->clear();
         m_albumArtLabel->setText("♪");
     }
+    
+    // Clear metadata labels
+    m_titleLabel->clear();
+    m_artistLabel->clear();
+    m_albumLabel->clear();
+    m_yearLabel->clear();
     
     // Reset playback controls
     m_duration = 0;
@@ -471,6 +636,52 @@ void MainWindow::onAlbumArtChanged(const QPixmap &albumArt)
     }
 }
 
+void MainWindow::onMetadataChanged(const AudioMetadata &metadata)
+{
+    qDebug() << "=== Metadata changed ===";
+    
+    if (!metadata.isEmpty()) {
+        // Display title
+        if (!metadata.title.isEmpty()) {
+            m_titleLabel->setText(metadata.title);
+        } else {
+            m_titleLabel->setText("Unknown Title");
+        }
+        
+        // Display artist
+        if (!metadata.artist.isEmpty()) {
+            m_artistLabel->setText(metadata.artist);
+        } else {
+            m_artistLabel->setText("Unknown Artist");
+        }
+        
+        // Display album
+        if (!metadata.album.isEmpty()) {
+            QString albumText = metadata.album;
+            if (!metadata.year.isEmpty()) {
+                albumText += " (" + metadata.year + ")";
+            }
+            m_albumLabel->setText(albumText);
+        } else {
+            m_albumLabel->setText("Unknown Album");
+        }
+        
+        // Display genre/year separately if no album
+        if (metadata.album.isEmpty() && !metadata.year.isEmpty()) {
+            m_yearLabel->setText(metadata.year);
+        } else if (!metadata.genre.isEmpty()) {
+            m_yearLabel->setText(metadata.genre);
+        } else {
+            m_yearLabel->clear();
+        }
+    } else {
+        m_titleLabel->setText("No metadata available");
+        m_artistLabel->clear();
+        m_albumLabel->clear();
+        m_yearLabel->clear();
+    }
+}
+
 void MainWindow::onPlaylistChanged()
 {
     qDebug() << "=== Playlist changed ===";
@@ -540,6 +751,118 @@ void MainWindow::onShuffleChanged(bool enabled)
     } else {
         m_shuffleButton->setStyleSheet("");
         statusBar()->showMessage("Shuffle disabled", 2000);
+    }
+}
+
+void MainWindow::onSavePlaylist()
+{
+    qDebug() << "=== Save playlist clicked ===";
+    
+    if (m_playlist->count() == 0) {
+        QMessageBox::information(this, "Empty Playlist", "Cannot save an empty playlist.");
+        return;
+    }
+    
+    QString defaultPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Save Playlist",
+        defaultPath + "/" + m_playlist->getName() + ".m3u",
+        "M3U Playlist (*.m3u);;All Files (*)"
+    );
+    
+    if (!fileName.isEmpty()) {
+        if (m_playlist->saveToFile(fileName)) {
+            statusBar()->showMessage("Playlist saved: " + fileName, 3000);
+            QMessageBox::information(this, "Success", "Playlist saved successfully!");
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to save playlist.");
+        }
+    }
+}
+
+void MainWindow::onLoadPlaylist()
+{
+    qDebug() << "=== Load playlist clicked ===";
+    
+    QString defaultPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        "Load Playlist",
+        defaultPath,
+        "M3U Playlist (*.m3u);;All Files (*)"
+    );
+    
+    if (!fileName.isEmpty()) {
+        if (m_playlist->loadFromFile(fileName)) {
+            m_playlistNameLabel->setText(m_playlist->getName());
+            statusBar()->showMessage("Playlist loaded: " + m_playlist->getName(), 3000);
+            
+            // Auto-start playing the first track if available
+            if (m_playlist->count() > 0) {
+                loadTrackAtIndex(0);
+            }
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to load playlist.");
+        }
+    }
+}
+
+void MainWindow::onNewPlaylist()
+{
+    qDebug() << "=== New playlist clicked ===";
+    
+    if (m_playlist->count() > 0) {
+        QMessageBox::StandardButton reply = QMessageBox::question(
+            this,
+            "New Playlist",
+            "Current playlist will be cleared. Continue?",
+            QMessageBox::Yes | QMessageBox::No
+        );
+        
+        if (reply == QMessageBox::No) {
+            return;
+        }
+    }
+    
+    bool ok;
+    QString name = QInputDialog::getText(
+        this,
+        "New Playlist",
+        "Enter playlist name:",
+        QLineEdit::Normal,
+        "My Playlist",
+        &ok
+    );
+    
+    if (ok && !name.isEmpty()) {
+        m_audioManager->stop();
+        m_playlist->clear();
+        m_playlist->setName(name);
+        m_playlistNameLabel->setText(name);
+        statusBar()->showMessage("New playlist created: " + name, 2000);
+    }
+}
+
+void MainWindow::onClearPlaylist()
+{
+    qDebug() << "=== Clear playlist clicked ===";
+    
+    if (m_playlist->count() == 0) {
+        return;
+    }
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        "Clear Playlist",
+        "Are you sure you want to clear the playlist?",
+        QMessageBox::Yes | QMessageBox::No
+    );
+    
+    if (reply == QMessageBox::Yes) {
+        m_audioManager->stop();
+        m_playlist->clear();
+        statusBar()->showMessage("Playlist cleared", 2000);
     }
 }
 

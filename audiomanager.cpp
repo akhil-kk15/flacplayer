@@ -221,6 +221,9 @@ bool AudioManager::openFile(const QString &filePath)
     // Extract album art if available
     extractAlbumArt();
     
+    // Extract metadata
+    extractMetadata();
+    
     emit fileOpened(fileInfo.fileName());
     emit durationChanged(getDuration());
     return true;
@@ -404,10 +407,22 @@ QString AudioManager::getFileName() const
     return QFileInfo(m_currentFile).fileName();
 }
 
+QString AudioManager::getFormatName() const
+{
+    if (!isFileOpen() || !m_formatContext || !m_formatContext->iformat) return QString();
+    return QString(m_formatContext->iformat->long_name);
+}
+
 QString AudioManager::getCodecName() const
 {
     if (!m_codec) return QString();
     return QString(m_codec->long_name);
+}
+
+qint64 AudioManager::getBitrate() const
+{
+    if (!isFileOpen() || !m_formatContext) return 0;
+    return m_formatContext->bit_rate;
 }
 
 int AudioManager::getSampleRate() const
@@ -818,4 +833,77 @@ void AudioManager::extractAlbumArt()
     }
     
     qDebug() << "No album art found in file";
+}
+
+void AudioManager::extractMetadata()
+{
+    if (!m_formatContext) {
+        return;
+    }
+    
+    qDebug() << "Extracting metadata...";
+    
+    // Clear existing metadata
+    m_metadata = AudioMetadata();
+    
+    AVDictionary *metadata = m_formatContext->metadata;
+    
+    if (metadata) {
+        AVDictionaryEntry *tag = nullptr;
+        
+        // Extract title
+        tag = av_dict_get(metadata, "title", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.title = QString::fromUtf8(tag->value);
+        }
+        
+        // Extract artist
+        tag = av_dict_get(metadata, "artist", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.artist = QString::fromUtf8(tag->value);
+        }
+        
+        // Extract album
+        tag = av_dict_get(metadata, "album", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.album = QString::fromUtf8(tag->value);
+        }
+        
+        // Extract year/date
+        tag = av_dict_get(metadata, "date", nullptr, 0);
+        if (!tag) {
+            tag = av_dict_get(metadata, "year", nullptr, 0);
+        }
+        if (tag && tag->value) {
+            m_metadata.year = QString::fromUtf8(tag->value);
+        }
+        
+        // Extract genre
+        tag = av_dict_get(metadata, "genre", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.genre = QString::fromUtf8(tag->value);
+        }
+        
+        // Extract comment
+        tag = av_dict_get(metadata, "comment", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.comment = QString::fromUtf8(tag->value);
+        }
+        
+        qDebug() << "Metadata extracted:";
+        qDebug() << "  Title:" << m_metadata.title;
+        qDebug() << "  Artist:" << m_metadata.artist;
+        qDebug() << "  Album:" << m_metadata.album;
+        qDebug() << "  Year:" << m_metadata.year;
+        qDebug() << "  Genre:" << m_metadata.genre;
+    } else {
+        qDebug() << "No metadata found in file";
+    }
+    
+    emit metadataChanged(m_metadata);
+}
+
+AudioMetadata AudioManager::getMetadata() const
+{
+    return m_metadata;
 }
