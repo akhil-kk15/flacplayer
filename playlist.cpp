@@ -246,7 +246,9 @@ void Playlist::generateShuffleOrder()
         m_shuffleOrder.append(i);
     }
     
-    // Fisher-Yates shuffle algorithm
+// Fisher-Yates shuffle algorithm for shuffling the songs,
+//
+
     for (int i = m_shuffleOrder.count() - 1; i > 0; --i) {
         int j = QRandomGenerator::global()->bounded(i + 1);
         m_shuffleOrder.swapItemsAt(i, j);

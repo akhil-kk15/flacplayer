@@ -55,6 +55,7 @@ private slots:
     void onLoadPlaylist();
     void onNewPlaylist();
     void onClearPlaylist();
+    void onEditMetadata();
 
 private:
     void initializeWindow();
@@ -91,6 +92,7 @@ private:
     QPushButton *m_loadPlaylistButton;
     QPushButton *m_newPlaylistButton;
     QPushButton *m_clearPlaylistButton;
+    QPushButton *m_editMetadataButton;
     QLabel *m_playlistNameLabel;
     
     // Audio management

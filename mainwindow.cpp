@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "metadataeditor.h"
 #include <QDebug>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -227,16 +228,20 @@ void MainWindow::setupBasicUI()
     m_loadPlaylistButton = new QPushButton("Load", this);
     m_savePlaylistButton = new QPushButton("Save", this);
     m_clearPlaylistButton = new QPushButton("Clear", this);
+    m_editMetadataButton = new QPushButton("Edit Tags", this);
     
     m_newPlaylistButton->setMaximumWidth(60);
     m_loadPlaylistButton->setMaximumWidth(60);
     m_savePlaylistButton->setMaximumWidth(60);
     m_clearPlaylistButton->setMaximumWidth(60);
+    m_editMetadataButton->setMaximumWidth(80);
+    m_editMetadataButton->setToolTip("Edit metadata tags for current track");
     
     playlistButtonsLayout->addWidget(m_newPlaylistButton);
     playlistButtonsLayout->addWidget(m_loadPlaylistButton);
     playlistButtonsLayout->addWidget(m_savePlaylistButton);
     playlistButtonsLayout->addWidget(m_clearPlaylistButton);
+    playlistButtonsLayout->addWidget(m_editMetadataButton);
     playlistButtonsLayout->addStretch();
     
     m_playlistWidget = new QListWidget(this);
@@ -268,6 +273,7 @@ void MainWindow::setupBasicUI()
     connect(m_loadPlaylistButton, &QPushButton::clicked, this, &MainWindow::onLoadPlaylist);
     connect(m_savePlaylistButton, &QPushButton::clicked, this, &MainWindow::onSavePlaylist);
     connect(m_clearPlaylistButton, &QPushButton::clicked, this, &MainWindow::onClearPlaylist);
+    connect(m_editMetadataButton, &QPushButton::clicked, this, &MainWindow::onEditMetadata);
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
@@ -863,6 +869,35 @@ void MainWindow::onClearPlaylist()
         m_audioManager->stop();
         m_playlist->clear();
         statusBar()->showMessage("Playlist cleared", 2000);
+    }
+}
+
+void MainWindow::onEditMetadata()
+{
+    qDebug() << "=== Edit metadata clicked ===";
+    
+    QString currentFile = m_playlist->current();
+    if (currentFile.isEmpty()) {
+        QMessageBox::information(this, "No File", "Please load a file first.");
+        return;
+    }
+    
+    MetadataEditor editor(currentFile, this);
+    if (editor.exec() == QDialog::Accepted) {
+        // Reload the file to refresh metadata
+        statusBar()->showMessage("Metadata updated. Reloading file...", 3000);
+        
+        // Reload current file
+        bool wasPlaying = (m_audioManager->getState() == AudioManager::PlayingState);
+        qint64 currentPos = m_audioManager->getPosition();
+        
+        m_audioManager->stop();
+        if (m_audioManager->openFile(currentFile)) {
+            if (wasPlaying) {
+                m_audioManager->setPosition(currentPos);
+                m_audioManager->play();
+            }
+        }
     }
 }
 

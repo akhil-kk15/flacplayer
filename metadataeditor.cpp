@@ -1,0 +1,457 @@
+#include "metadataeditor.h"
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QDebug>
+#include <QGroupBox>
+#include <QSplitter>
+
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+}
+
+MetadataEditor::MetadataEditor(const QString &filePath, QWidget *parent)
+    : QDialog(parent)
+    , m_filePath(filePath)
+    , m_discogsClient(new DiscogsClient(this))
+{
+    setupUI();
+    loadCurrentMetadata();
+    
+    connect(m_discogsClient, &DiscogsClient::searchResultsReady, 
+            this, &MetadataEditor::onSearchResultsReady);
+    connect(m_discogsClient, &DiscogsClient::releaseDetailsReady, 
+            this, &MetadataEditor::onReleaseDetailsReady);
+    connect(m_discogsClient, &DiscogsClient::errorOccurred, 
+            this, &MetadataEditor::onDiscogsError);
+}
+
+MetadataEditor::~MetadataEditor()
+{
+}
+
+void MetadataEditor::setupUI()
+{
+    setWindowTitle("Edit Metadata");
+    setMinimumSize(800, 600);
+    
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    
+    // File info
+    QFileInfo fileInfo(m_filePath);
+    QLabel *fileLabel = new QLabel("<b>File:</b> " + fileInfo.fileName(), this);
+    mainLayout->addWidget(fileLabel);
+    
+    // Create splitter for metadata form and search results
+    QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
+    
+    // Left side: Metadata form
+    QWidget *formWidget = new QWidget(this);
+    QVBoxLayout *formLayout = new QVBoxLayout(formWidget);
+    
+    QGroupBox *metadataGroup = new QGroupBox("Metadata Tags", this);
+    QFormLayout *metaForm = new QFormLayout(metadataGroup);
+    
+    m_titleEdit = new QLineEdit(this);
+    m_artistEdit = new QLineEdit(this);
+    m_albumEdit = new QLineEdit(this);
+    m_yearEdit = new QLineEdit(this);
+    m_genreEdit = new QLineEdit(this);
+    m_commentEdit = new QTextEdit(this);
+    m_commentEdit->setMaximumHeight(60);
+    
+    metaForm->addRow("Title:", m_titleEdit);
+    metaForm->addRow("Artist:", m_artistEdit);
+    metaForm->addRow("Album:", m_albumEdit);
+    metaForm->addRow("Year:", m_yearEdit);
+    metaForm->addRow("Genre:", m_genreEdit);
+    metaForm->addRow("Comment:", m_commentEdit);
+    
+    formLayout->addWidget(metadataGroup);
+    formLayout->addStretch();
+    
+    splitter->addWidget(formWidget);
+    
+    // Right side: Discogs search
+    QWidget *searchWidget = new QWidget(this);
+    QVBoxLayout *searchLayout = new QVBoxLayout(searchWidget);
+    
+    QGroupBox *discogsGroup = new QGroupBox("Discogs Search", this);
+    QVBoxLayout *discogsLayout = new QVBoxLayout(discogsGroup);
+    
+    QLabel *searchLabel = new QLabel("Search by Artist and/or Album:", this);
+    discogsLayout->addWidget(searchLabel);
+    
+    m_searchButton = new QPushButton("Search Discogs", this);
+    connect(m_searchButton, &QPushButton::clicked, this, &MetadataEditor::onSearchDiscogs);
+    discogsLayout->addWidget(m_searchButton);
+    
+    m_resultsWidget = new QListWidget(this);
+    connect(m_resultsWidget, &QListWidget::itemDoubleClicked, 
+            this, &MetadataEditor::onResultSelected);
+    discogsLayout->addWidget(m_resultsWidget);
+    
+    m_statusLabel = new QLabel("Enter artist/album and click Search", this);
+    m_statusLabel->setWordWrap(true);
+    m_statusLabel->setStyleSheet("color: #666; font-size: 10px;");
+    discogsLayout->addWidget(m_statusLabel);
+    
+    searchLayout->addWidget(discogsGroup);
+    
+    splitter->addWidget(searchWidget);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 1);
+    
+    mainLayout->addWidget(splitter);
+    
+    // Buttons
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addStretch();
+    
+    m_saveButton = new QPushButton("Save", this);
+    m_cancelButton = new QPushButton("Cancel", this);
+    
+    connect(m_saveButton, &QPushButton::clicked, this, &MetadataEditor::onSave);
+    connect(m_cancelButton, &QPushButton::clicked, this, &MetadataEditor::onCancel);
+    
+    buttonLayout->addWidget(m_saveButton);
+    buttonLayout->addWidget(m_cancelButton);
+    
+    mainLayout->addLayout(buttonLayout);
+}
+
+void MetadataEditor::loadCurrentMetadata()
+{
+    AVFormatContext *formatContext = nullptr;
+    
+    if (avformat_open_input(&formatContext, m_filePath.toUtf8().constData(), nullptr, nullptr) != 0) {
+        QMessageBox::warning(this, "Error", "Failed to open file");
+        return;
+    }
+    
+    if (avformat_find_stream_info(formatContext, nullptr) < 0) {
+        avformat_close_input(&formatContext);
+        return;
+    }
+    
+    AVDictionary *metadata = formatContext->metadata;
+    
+    if (metadata) {
+        AVDictionaryEntry *tag = nullptr;
+        
+        tag = av_dict_get(metadata, "title", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.title = QString::fromUtf8(tag->value);
+            m_titleEdit->setText(m_metadata.title);
+        }
+        
+        tag = av_dict_get(metadata, "artist", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.artist = QString::fromUtf8(tag->value);
+            m_artistEdit->setText(m_metadata.artist);
+        }
+        
+        tag = av_dict_get(metadata, "album", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.album = QString::fromUtf8(tag->value);
+            m_albumEdit->setText(m_metadata.album);
+        }
+        
+        tag = av_dict_get(metadata, "date", nullptr, 0);
+        if (!tag) tag = av_dict_get(metadata, "year", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.year = QString::fromUtf8(tag->value);
+            m_yearEdit->setText(m_metadata.year);
+        }
+        
+        tag = av_dict_get(metadata, "genre", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.genre = QString::fromUtf8(tag->value);
+            m_genreEdit->setText(m_metadata.genre);
+        }
+        
+        tag = av_dict_get(metadata, "comment", nullptr, 0);
+        if (tag && tag->value) {
+            m_metadata.comment = QString::fromUtf8(tag->value);
+            m_commentEdit->setPlainText(m_metadata.comment);
+        }
+    }
+    
+    avformat_close_input(&formatContext);
+}
+
+bool MetadataEditor::saveMetadata()
+{
+    // FFmpeg doesn't support writing metadata directly to files easily
+    // We need to use a different approach - remux the file with new metadata
+    
+    AVFormatContext *inputContext = nullptr;
+    AVFormatContext *outputContext = nullptr;
+    
+    QString tempFile = m_filePath + ".tmp";
+    
+    // Open input
+    if (avformat_open_input(&inputContext, m_filePath.toUtf8().constData(), nullptr, nullptr) != 0) {
+        QMessageBox::warning(this, "Error", "Failed to open input file");
+        return false;
+    }
+    
+    if (avformat_find_stream_info(inputContext, nullptr) < 0) {
+        avformat_close_input(&inputContext);
+        QMessageBox::warning(this, "Error", "Failed to read file info");
+        return false;
+    }
+    
+    // Open output
+    if (avformat_alloc_output_context2(&outputContext, nullptr, nullptr, 
+                                       tempFile.toUtf8().constData()) < 0) {
+        avformat_close_input(&inputContext);
+        QMessageBox::warning(this, "Error", "Failed to create output context");
+        return false;
+    }
+    
+    // Copy streams
+    for (unsigned int i = 0; i < inputContext->nb_streams; i++) {
+        AVStream *inStream = inputContext->streams[i];
+        AVStream *outStream = avformat_new_stream(outputContext, nullptr);
+        
+        if (!outStream) {
+            avformat_close_input(&inputContext);
+            avformat_free_context(outputContext);
+            return false;
+        }
+        
+        if (avcodec_parameters_copy(outStream->codecpar, inStream->codecpar) < 0) {
+            avformat_close_input(&inputContext);
+            avformat_free_context(outputContext);
+            return false;
+        }
+        
+        outStream->codecpar->codec_tag = 0;
+    }
+    
+    // Set metadata
+    av_dict_set(&outputContext->metadata, "title", m_metadata.title.toUtf8().constData(), 0);
+    av_dict_set(&outputContext->metadata, "artist", m_metadata.artist.toUtf8().constData(), 0);
+    av_dict_set(&outputContext->metadata, "album", m_metadata.album.toUtf8().constData(), 0);
+    av_dict_set(&outputContext->metadata, "date", m_metadata.year.toUtf8().constData(), 0);
+    av_dict_set(&outputContext->metadata, "genre", m_metadata.genre.toUtf8().constData(), 0);
+    if (!m_metadata.comment.isEmpty()) {
+        av_dict_set(&outputContext->metadata, "comment", m_metadata.comment.toUtf8().constData(), 0);
+    }
+    
+    // Open output file
+    if (!(outputContext->oformat->flags & AVFMT_NOFILE)) {
+        if (avio_open(&outputContext->pb, tempFile.toUtf8().constData(), AVIO_FLAG_WRITE) < 0) {
+            avformat_close_input(&inputContext);
+            avformat_free_context(outputContext);
+            QMessageBox::warning(this, "Error", "Failed to open output file");
+            return false;
+        }
+    }
+    
+    // Write header
+    if (avformat_write_header(outputContext, nullptr) < 0) {
+        avformat_close_input(&inputContext);
+        avio_closep(&outputContext->pb);
+        avformat_free_context(outputContext);
+        QMessageBox::warning(this, "Error", "Failed to write header");
+        return false;
+    }
+    
+    // Copy packets
+    AVPacket packet;
+    while (av_read_frame(inputContext, &packet) >= 0) {
+        AVStream *inStream = inputContext->streams[packet.stream_index];
+        AVStream *outStream = outputContext->streams[packet.stream_index];
+        
+        packet.pts = av_rescale_q_rnd(packet.pts, inStream->time_base, outStream->time_base,
+                                      (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+        packet.dts = av_rescale_q_rnd(packet.dts, inStream->time_base, outStream->time_base,
+                                      (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+        packet.duration = av_rescale_q(packet.duration, inStream->time_base, outStream->time_base);
+        packet.pos = -1;
+        
+        if (av_interleaved_write_frame(outputContext, &packet) < 0) {
+            av_packet_unref(&packet);
+            break;
+        }
+        
+        av_packet_unref(&packet);
+    }
+    
+    // Write trailer
+    av_write_trailer(outputContext);
+    
+    // Cleanup
+    avformat_close_input(&inputContext);
+    if (outputContext && !(outputContext->oformat->flags & AVFMT_NOFILE)) {
+        avio_closep(&outputContext->pb);
+    }
+    avformat_free_context(outputContext);
+    
+    // Replace original file with new file
+    QFile::remove(m_filePath);
+    if (!QFile::rename(tempFile, m_filePath)) {
+        QMessageBox::warning(this, "Error", "Failed to replace original file");
+        return false;
+    }
+    
+    return true;
+}
+
+void MetadataEditor::onSearchDiscogs()
+{
+    QString artist = m_artistEdit->text().trimmed();
+    QString album = m_albumEdit->text().trimmed();
+    
+    if (artist.isEmpty() && album.isEmpty()) {
+        QMessageBox::information(this, "Search", "Please enter artist and/or album name");
+        return;
+    }
+    
+    qDebug() << "===========================================";
+    qDebug() << "METADATA EDITOR: Initiating Discogs search";
+    qDebug() << "  Artist:" << (artist.isEmpty() ? "(empty)" : artist);
+    qDebug() << "  Album:" << (album.isEmpty() ? "(empty)" : album);
+    qDebug() << "===========================================";
+    
+    m_statusLabel->setText("Searching...");
+    m_resultsWidget->clear();
+    m_searchButton->setEnabled(false);
+    
+    m_discogsClient->searchRelease(artist, album);
+}
+
+void MetadataEditor::onSearchResultsReady(const QVector<DiscogsRelease> &releases)
+{
+    qDebug() << "===========================================";
+    qDebug() << "METADATA EDITOR: Search results received";
+    qDebug() << "  Number of results:" << releases.size();
+    qDebug() << "===========================================";
+    
+    m_searchButton->setEnabled(true);
+    m_searchResults = releases;
+    
+    if (releases.isEmpty()) {
+        qDebug() << "METADATA EDITOR: No results found";
+        m_statusLabel->setText("No results found");
+        return;
+    }
+    
+    m_statusLabel->setText(QString("Found %1 results. Double-click to apply.").arg(releases.size()));
+    
+    for (int i = 0; i < releases.size(); ++i) {
+        const DiscogsRelease &release = releases[i];
+        QString displayText = QString("%1 - %2 (%3)")
+            .arg(release.artist)
+            .arg(release.title)
+            .arg(release.year);
+        
+        QListWidgetItem *item = new QListWidgetItem(displayText);
+        item->setData(Qt::UserRole, i);
+        m_resultsWidget->addItem(item);
+    }
+}
+
+void MetadataEditor::onReleaseDetailsReady(const DiscogsRelease &release)
+{
+    qDebug() << "===========================================";
+    qDebug() << "METADATA EDITOR: Applying release details";
+    qDebug() << "  Title:" << release.title;
+    qDebug() << "  Artist:" << release.artist;
+    qDebug() << "  Year:" << release.year;
+    qDebug() << "  Genres:" << release.genres.join(", ");
+    qDebug() << "===========================================";
+    
+    // Apply metadata from release
+    if (!release.title.isEmpty()) {
+        m_albumEdit->setText(release.title);
+    }
+    
+    if (!release.artist.isEmpty()) {
+        m_artistEdit->setText(release.artist);
+    }
+    
+    if (!release.year.isEmpty() && release.year != "0") {
+        m_yearEdit->setText(release.year);
+    }
+    
+    if (!release.genres.isEmpty()) {
+        m_genreEdit->setText(release.genres.join(", "));
+    } else if (!release.styles.isEmpty()) {
+        m_genreEdit->setText(release.styles.join(", "));
+    }
+    
+    m_statusLabel->setText("Metadata applied from Discogs");
+    
+    QMessageBox::information(this, "Success", 
+        "Metadata loaded from Discogs.\nYou can edit further and click Save to apply.");
+}
+
+void MetadataEditor::onDiscogsError(const QString &error)
+{
+    qDebug() << "===========================================";
+    qDebug() << "METADATA EDITOR: Discogs error occurred";
+    qDebug() << "  Error message:" << error;
+    qDebug() << "===========================================";
+    
+    m_searchButton->setEnabled(true);
+    m_statusLabel->setText("Error: " + error);
+    QMessageBox::warning(this, "Discogs Error", error);
+}
+
+void MetadataEditor::onResultSelected(QListWidgetItem *item)
+{
+    if (!item) return;
+    
+    int index = item->data(Qt::UserRole).toInt();
+    if (index < 0 || index >= m_searchResults.size()) return;
+    
+    const DiscogsRelease &release = m_searchResults[index];
+    
+    qDebug() << "===========================================";
+    qDebug() << "METADATA EDITOR: User selected release";
+    qDebug() << "  Index:" << index;
+    qDebug() << "  Release ID:" << release.id;
+    qDebug() << "  Title:" << release.title;
+    qDebug() << "===========================================";
+    
+    m_statusLabel->setText("Loading details...");
+    m_discogsClient->getRelease(release.id);
+}
+
+void MetadataEditor::onSave()
+{
+    // Get values from UI
+    m_metadata.title = m_titleEdit->text().trimmed();
+    m_metadata.artist = m_artistEdit->text().trimmed();
+    m_metadata.album = m_albumEdit->text().trimmed();
+    m_metadata.year = m_yearEdit->text().trimmed();
+    m_metadata.genre = m_genreEdit->text().trimmed();
+    m_metadata.comment = m_commentEdit->toPlainText().trimmed();
+    
+    if (m_metadata.title.isEmpty() && m_metadata.artist.isEmpty()) {
+        QMessageBox::warning(this, "Validation", "At least title or artist must be filled");
+        return;
+    }
+    
+    m_statusLabel->setText("Saving metadata...");
+    
+    if (saveMetadata()) {
+        QMessageBox::information(this, "Success", "Metadata saved successfully!");
+        accept();
+    } else {
+        m_statusLabel->setText("Failed to save metadata");
+    }
+}
+
+void MetadataEditor::onCancel()
+{
+    reject();
+}
+
+AudioMetadata MetadataEditor::getMetadata() const
+{
+    return m_metadata;
+}
