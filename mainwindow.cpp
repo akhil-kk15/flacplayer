@@ -229,19 +229,23 @@ void MainWindow::setupBasicUI()
     m_savePlaylistButton = new QPushButton("Save", this);
     m_clearPlaylistButton = new QPushButton("Clear", this);
     m_editMetadataButton = new QPushButton("Edit Tags", this);
+    m_convertButton = new QPushButton("→ MP3", this);
     
     m_newPlaylistButton->setMaximumWidth(60);
     m_loadPlaylistButton->setMaximumWidth(60);
     m_savePlaylistButton->setMaximumWidth(60);
     m_clearPlaylistButton->setMaximumWidth(60);
     m_editMetadataButton->setMaximumWidth(80);
+    m_convertButton->setMaximumWidth(70);
     m_editMetadataButton->setToolTip("Edit metadata tags for current track");
+    m_convertButton->setToolTip("Convert current track to MP3");
     
     playlistButtonsLayout->addWidget(m_newPlaylistButton);
     playlistButtonsLayout->addWidget(m_loadPlaylistButton);
     playlistButtonsLayout->addWidget(m_savePlaylistButton);
     playlistButtonsLayout->addWidget(m_clearPlaylistButton);
     playlistButtonsLayout->addWidget(m_editMetadataButton);
+    playlistButtonsLayout->addWidget(m_convertButton);
     playlistButtonsLayout->addStretch();
     
     m_playlistWidget = new QListWidget(this);
@@ -274,6 +278,7 @@ void MainWindow::setupBasicUI()
     connect(m_savePlaylistButton, &QPushButton::clicked, this, &MainWindow::onSavePlaylist);
     connect(m_clearPlaylistButton, &QPushButton::clicked, this, &MainWindow::onClearPlaylist);
     connect(m_editMetadataButton, &QPushButton::clicked, this, &MainWindow::onEditMetadata);
+    connect(m_convertButton, &QPushButton::clicked, this, &MainWindow::onConvertToMP3);
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
@@ -407,9 +412,9 @@ void MainWindow::onOpenFile()
     
     QStringList fileNames = QFileDialog::getOpenFileNames(
         this,
-        "Open Audio File(s)",
+        "Open Lossless Audio File(s)",
         QStandardPaths::writableLocation(QStandardPaths::MusicLocation),
-        "Audio Files (*.flac *.mp3 *.wav *.ogg *.m4a);;FLAC Files (*.flac);;All Files (*)"
+        "Lossless Audio (*.flac *.wav *.ape *.wv *.m4a);;FLAC Files (*.flac);;WAV Files (*.wav);;All Files (*)"
     );
     
     if (!fileNames.isEmpty()) {
@@ -899,6 +904,26 @@ void MainWindow::onEditMetadata()
             }
         }
     }
+}
+
+void MainWindow::onConvertToMP3()
+{
+    qDebug() << "=== Convert to MP3 clicked ===";
+    
+    QString currentFile = m_playlist->current();
+    if (currentFile.isEmpty()) {
+        QMessageBox::information(this, "No File", "Please load a file first.");
+        return;
+    }
+    
+    // Check if file is already MP3
+    if (currentFile.toLower().endsWith(".mp3")) {
+        QMessageBox::information(this, "Already MP3", "The current file is already in MP3 format.");
+        return;
+    }
+    
+    ConversionDialog dialog(currentFile, this);
+    dialog.exec();
 }
 
 // Helper functions

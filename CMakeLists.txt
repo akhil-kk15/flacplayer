@@ -37,6 +37,10 @@ set(PROJECT_SOURCES
         discogsclient.h
         metadataeditor.cpp
         metadataeditor.h
+        audioconverter.cpp
+        audioconverter.h
+        conversiondialog.cpp
+        conversiondialog.h
         ${TS_FILES}
 )
 

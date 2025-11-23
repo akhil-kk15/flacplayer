@@ -8,6 +8,7 @@
 #include <QListWidget>
 #include "audiomanager.h"
 #include "playlist.h"
+#include "conversiondialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -56,6 +57,7 @@ private slots:
     void onNewPlaylist();
     void onClearPlaylist();
     void onEditMetadata();
+    void onConvertToMP3();
 
 private:
     void initializeWindow();
@@ -93,6 +95,7 @@ private:
     QPushButton *m_newPlaylistButton;
     QPushButton *m_clearPlaylistButton;
     QPushButton *m_editMetadataButton;
+    QPushButton *m_convertButton;
     QLabel *m_playlistNameLabel;
     
     // Audio management
