@@ -144,8 +144,11 @@ void ConversionDialog::onConvertClicked()
         QFile::remove(outputPath);
     }
     
+
+    // remove the debug logs 
+    
     qDebug() << "==========================================";
-    qDebug() << "CONVERSION DIALOG: Starting conversion process";
+    qDebug() << " Starting conversion process";
     qDebug() << "==========================================";
     
     m_converting = true;
