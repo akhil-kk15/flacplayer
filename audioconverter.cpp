@@ -249,7 +249,14 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     // Find audio stream index
     int audioStreamIndex = av_find_best_stream(inputFormatCtx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
 
+    int packetCount = 0;
+    int frameCount = 0;
+    int encodedPacketCount = 0;
+    qDebug() << "AUDIO CONVERTER: Starting main conversion loop";
+    qDebug() << "  Total duration:" << totalDuration << "microseconds";
+
     while (av_read_frame(inputFormatCtx, inputPacket) >= 0) {
+        packetCount++;
         if (m_cancelled) {
             av_packet_unref(inputPacket);
             break;
@@ -266,10 +273,18 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
         }
 
         while (avcodec_receive_frame(inputCodecCtx, inputFrame) >= 0) {
-            if (m_cancelled) break;
+            frameCount++;
+            
+            if (m_cancelled) {
+                av_frame_unref(inputFrame);
+                break;
+            }
 
-            // Resample
-            outputFrame->nb_samples = av_rescale_rnd(
+            // Unref output frame before reuse
+            av_frame_unref(outputFrame);
+
+            // Calculate required output samples
+            int dst_nb_samples = av_rescale_rnd(
                 swr_get_delay(swrCtx, inputCodecCtx->sample_rate) + inputFrame->nb_samples,
                 outputCodecCtx->sample_rate,
                 inputCodecCtx->sample_rate,
@@ -278,18 +293,29 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             outputFrame->format = outputCodecCtx->sample_fmt;
             av_channel_layout_copy(&outputFrame->ch_layout, &outputCodecCtx->ch_layout);
             outputFrame->sample_rate = outputCodecCtx->sample_rate;
+            outputFrame->nb_samples = dst_nb_samples;
 
-            if (av_frame_get_buffer(outputFrame, 0) < 0) {
-                qDebug() << "AUDIO CONVERTER: Failed to allocate output frame buffer";
+            int ret = av_frame_get_buffer(outputFrame, 0);
+            if (ret < 0) {
+                qDebug() << "AUDIO CONVERTER: Failed to allocate output frame buffer, error:" << ret;
+                av_frame_unref(inputFrame);
                 continue;
             }
 
+            // Convert/resample audio
             int frame_count = swr_convert(swrCtx,
                                           outputFrame->data, outputFrame->nb_samples,
                                           (const uint8_t **)inputFrame->data, inputFrame->nb_samples);
 
+            av_frame_unref(inputFrame);
+
             if (frame_count < 0) {
+                qDebug() << "AUDIO CONVERTER: Resampling failed, error:" << frame_count;
                 av_frame_unref(outputFrame);
+                continue;
+            }
+
+            if (frame_count == 0) {
                 continue;
             }
 
@@ -297,19 +323,70 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             outputFrame->pts = currentPts;
             currentPts += frame_count;
 
-            // Encode frame
-            if (avcodec_send_frame(outputCodecCtx, outputFrame) >= 0) {
-                while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
-                    outputPacket->stream_index = 0;
-                    av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base, 
-                                         outputFormatCtx->streams[0]->time_base);
-                    
-                    av_interleaved_write_frame(outputFormatCtx, outputPacket);
-                    av_packet_unref(outputPacket);
-                }
+            // MP3 encoder expects exactly frame_size samples (1152 for MP3)
+            // If we have more, we need to split into multiple frames
+            int encoder_frame_size = outputCodecCtx->frame_size;
+            if (encoder_frame_size <= 0) {
+                encoder_frame_size = 1152; // Default MP3 frame size
             }
 
-            av_frame_unref(outputFrame);
+            int samples_sent = 0;
+            while (samples_sent < frame_count) {
+                AVFrame *encoderFrame = av_frame_alloc();
+                encoderFrame->format = outputCodecCtx->sample_fmt;
+                av_channel_layout_copy(&encoderFrame->ch_layout, &outputCodecCtx->ch_layout);
+                encoderFrame->sample_rate = outputCodecCtx->sample_rate;
+                
+                int samples_to_send = qMin(encoder_frame_size, frame_count - samples_sent);
+                encoderFrame->nb_samples = samples_to_send;
+                encoderFrame->pts = outputFrame->pts + samples_sent;
+                
+                if (av_frame_get_buffer(encoderFrame, 0) >= 0) {
+                    // Copy samples from outputFrame to encoderFrame
+                    int channels = outputCodecCtx->ch_layout.nb_channels;
+                    int bytes_per_sample = av_get_bytes_per_sample(outputCodecCtx->sample_fmt);
+                    
+                    if (av_sample_fmt_is_planar(outputCodecCtx->sample_fmt)) {
+                        // Planar format - each channel in separate plane
+                        for (int ch = 0; ch < channels; ch++) {
+                            memcpy(encoderFrame->data[ch],
+                                   outputFrame->data[ch] + (samples_sent * bytes_per_sample),
+                                   samples_to_send * bytes_per_sample);
+                        }
+                    } else {
+                        // Interleaved format
+                        memcpy(encoderFrame->data[0],
+                               outputFrame->data[0] + (samples_sent * channels * bytes_per_sample),
+                               samples_to_send * channels * bytes_per_sample);
+                    }
+                    
+                    // Send frame to encoder
+                    ret = avcodec_send_frame(outputCodecCtx, encoderFrame);
+                    if (ret >= 0) {
+                        // Receive encoded packets
+                        while (ret >= 0) {
+                            ret = avcodec_receive_packet(outputCodecCtx, outputPacket);
+                            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+                                break;
+                            }
+                            if (ret < 0) {
+                                break;
+                            }
+
+                            encodedPacketCount++;
+                            outputPacket->stream_index = 0;
+                            av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base, 
+                                                 outputFormatCtx->streams[0]->time_base);
+                            
+                            av_interleaved_write_frame(outputFormatCtx, outputPacket);
+                            av_packet_unref(outputPacket);
+                        }
+                    }
+                }
+                
+                av_frame_free(&encoderFrame);
+                samples_sent += samples_to_send;
+            }
 
             // Update progress
             if (totalDuration > 0) {
@@ -321,14 +398,104 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
         av_packet_unref(inputPacket);
     }
 
-    // Flush encoder
-    avcodec_send_frame(outputCodecCtx, nullptr);
-    while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
-        outputPacket->stream_index = 0;
-        av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
-                             outputFormatCtx->streams[0]->time_base);
-        av_interleaved_write_frame(outputFormatCtx, outputPacket);
-        av_packet_unref(outputPacket);
+    qDebug() << "AUDIO CONVERTER: Main loop complete";
+    qDebug() << "  Packets read:" << packetCount;
+    qDebug() << "  Frames decoded:" << frameCount;
+    qDebug() << "  Packets encoded:" << encodedPacketCount;
+
+    if (!m_cancelled) {
+        qDebug() << "AUDIO CONVERTER: Flushing decoder...";
+        // Flush decoder - get any remaining frames
+        avcodec_send_packet(inputCodecCtx, nullptr);
+        while (avcodec_receive_frame(inputCodecCtx, inputFrame) >= 0) {
+            av_frame_unref(outputFrame);
+            
+            int dst_nb_samples = av_rescale_rnd(
+                swr_get_delay(swrCtx, inputCodecCtx->sample_rate) + inputFrame->nb_samples,
+                outputCodecCtx->sample_rate,
+                inputCodecCtx->sample_rate,
+                AV_ROUND_UP);
+            
+            outputFrame->format = outputCodecCtx->sample_fmt;
+            av_channel_layout_copy(&outputFrame->ch_layout, &outputCodecCtx->ch_layout);
+            outputFrame->sample_rate = outputCodecCtx->sample_rate;
+            outputFrame->nb_samples = dst_nb_samples;
+
+            if (av_frame_get_buffer(outputFrame, 0) >= 0) {
+                int frame_count = swr_convert(swrCtx,
+                                              outputFrame->data, outputFrame->nb_samples,
+                                              (const uint8_t **)inputFrame->data, inputFrame->nb_samples);
+                
+                if (frame_count > 0) {
+                    outputFrame->nb_samples = frame_count;
+                    outputFrame->pts = currentPts;
+                    currentPts += frame_count;
+                    
+                    avcodec_send_frame(outputCodecCtx, outputFrame);
+                    while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
+                        encodedPacketCount++;
+                        outputPacket->stream_index = 0;
+                        av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
+                                             outputFormatCtx->streams[0]->time_base);
+                        av_interleaved_write_frame(outputFormatCtx, outputPacket);
+                        av_packet_unref(outputPacket);
+                    }
+                }
+            }
+            av_frame_unref(inputFrame);
+        }
+        qDebug() << "  Decoder flush: added" << (encodedPacketCount - packetCount) << "packets";
+
+        qDebug() << "AUDIO CONVERTER: Flushing resampler...";
+        int resamplerPackets = encodedPacketCount;
+        // Flush resampler - get buffered samples
+        while (true) {
+            av_frame_unref(outputFrame);
+            outputFrame->format = outputCodecCtx->sample_fmt;
+            av_channel_layout_copy(&outputFrame->ch_layout, &outputCodecCtx->ch_layout);
+            outputFrame->sample_rate = outputCodecCtx->sample_rate;
+            outputFrame->nb_samples = outputCodecCtx->frame_size > 0 ? outputCodecCtx->frame_size : 1152;
+
+            if (av_frame_get_buffer(outputFrame, 0) < 0) {
+                break;
+            }
+
+            int frame_count = swr_convert(swrCtx, outputFrame->data, outputFrame->nb_samples, nullptr, 0);
+            if (frame_count <= 0) {
+                break;
+            }
+
+            outputFrame->nb_samples = frame_count;
+            outputFrame->pts = currentPts;
+            currentPts += frame_count;
+
+            avcodec_send_frame(outputCodecCtx, outputFrame);
+            while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
+                encodedPacketCount++;
+                outputPacket->stream_index = 0;
+                av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
+                                     outputFormatCtx->streams[0]->time_base);
+                av_interleaved_write_frame(outputFormatCtx, outputPacket);
+                av_packet_unref(outputPacket);
+            }
+        }
+        qDebug() << "  Resampler flush: added" << (encodedPacketCount - resamplerPackets) << "packets";
+
+        qDebug() << "AUDIO CONVERTER: Flushing encoder...";
+        int encoderFlushStart = encodedPacketCount;
+        // Flush encoder - get remaining packets
+        avcodec_send_frame(outputCodecCtx, nullptr);
+        int ret;
+        while ((ret = avcodec_receive_packet(outputCodecCtx, outputPacket)) >= 0) {
+            encodedPacketCount++;
+            outputPacket->stream_index = 0;
+            av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
+                                 outputFormatCtx->streams[0]->time_base);
+            av_interleaved_write_frame(outputFormatCtx, outputPacket);
+            av_packet_unref(outputPacket);
+        }
+        qDebug() << "  Encoder flush: added" << (encodedPacketCount - encoderFlushStart) << "packets";
+        qDebug() << "AUDIO CONVERTER: Total packets written:" << encodedPacketCount;
     }
 
     // Cleanup
