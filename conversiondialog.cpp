@@ -7,12 +7,15 @@
 #include <QFileInfo>
 #include <QDebug>
 
+// ConversionDialog implementation
+
+
 ConversionDialog::ConversionDialog(const QString &inputFile, QWidget *parent)
     : QDialog(parent)
-    , m_inputFile(inputFile)
-    , m_workerThread(nullptr)
-    , m_worker(nullptr)
-    , m_converting(false)
+    , m_inputFile(inputFile)//stores input file path
+    , m_workerThread(nullptr)// initializing worker thread pointer to nullptr
+    , m_worker(nullptr) //worker null
+    , m_converting(false) //flag to indicate conversion state
 {
     setupUI();
     setWindowTitle("Convert to MP3");
@@ -62,9 +65,11 @@ void ConversionDialog::setupUI()
     
     // Progress bar
     m_progressBar = new QProgressBar();
-    m_progressBar->setRange(0, 100);
-    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 100); 
+    m_progressBar->setValue(0);//intial value 0
     mainLayout->addWidget(m_progressBar);
+    
+
     
     // Status label
     m_statusLabel = new QLabel("Ready to convert");
@@ -207,11 +212,12 @@ void ConversionDialog::onProgressUpdated(int percentage)
 void ConversionDialog::onConversionFinished(bool success, const QString &message)
 {
     qDebug() << "==========================================";
-    qDebug() << "CONVERSION DIALOG: Conversion finished";
+    qDebug() << "Conversion finished";
     qDebug() << "  Success:" << success;
     qDebug() << "  Message:" << message;
     qDebug() << "==========================================";
     
+
     m_converting = false;
     m_convertButton->setEnabled(true);
     m_browseButton->setEnabled(true);

@@ -418,7 +418,7 @@ void MainWindow::onOpenFile()
     );
     
     if (!fileNames.isEmpty()) {
-        qDebug() << "Selected" << fileNames.count() << "file(s)";
+        qDebug() << "Selected" << fileNames.count() << "file(s)";//Coordinator
         
         // Add files to playlist
         m_playlist->addFiles(fileNames);

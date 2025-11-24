@@ -9,9 +9,9 @@
 
 Playlist::Playlist(QObject *parent)
     : QObject(parent)
-    , m_currentIndex(-1)
+    , m_currentIndex(-1) //no audio file initially
     , m_shuffleEnabled(false)
-    , m_name("Untitled Playlist")
+    , m_name("Untitled Playlist") //default name for playlist
 {
 }
 
@@ -247,7 +247,7 @@ void Playlist::generateShuffleOrder()
     }
     
 // Fisher-Yates shuffle algorithm for shuffling the songs,
-//
+//randomly picking an index from 0-i and swapping the i and j 
 
     for (int i = m_shuffleOrder.count() - 1; i > 0; --i) {
         int j = QRandomGenerator::global()->bounded(i + 1);
