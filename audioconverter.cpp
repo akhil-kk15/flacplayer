@@ -1,6 +1,24 @@
 #include "audioconverter.h"
 #include <QDebug>
 #include <QFile>
+#include<memory>
+
+
+//helper for managing AVFrame pointers with unique_ptr
+
+
+
+namespace {
+    struct AvFrameDeleter {
+        void operator()(AVFrame *f) const {
+            if (f) av_frame_free(&f);
+        }
+    };
+
+    using FramePtr = std::unique_ptr<AVFrame, AvFrameDeleter>;
+}
+
+
 
 AudioConverter::AudioConverter(QObject *parent)
     : QObject(parent)
@@ -109,10 +127,18 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
             outputCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
         }
 
-        if (avcodec_open2(outputCodecCtx, outputCodec, nullptr) < 0) {
+        // Set MP3 encoder options for proper compression
+        AVDictionary *opts = nullptr;
+        av_dict_set(&opts, "compression_level", "2", 0);  // Good quality/speed balance
+        av_dict_set_int(&opts, "reservoir", 0, 0);  // Disable bit reservoir for better compatibility
+        
+        if (avcodec_open2(outputCodecCtx, outputCodec, &opts) < 0) {
+            av_dict_free(&opts);
             errorMessage = "Failed to open output codec";
             break;
         }
+        
+        av_dict_free(&opts);
 
         if (avcodec_parameters_from_context(outputStream->codecpar, outputCodecCtx) < 0) {
             errorMessage = "Failed to copy output codec parameters";
@@ -122,6 +148,7 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
         qDebug() << "AUDIO CONVERTER: Output codec configured";
         qDebug() << "  Codec:" << outputCodec->long_name;
         qDebug() << "  Bitrate:" << outputCodecCtx->bit_rate / 1000 << "kbps";
+        qDebug() << "  Frame size:" << outputCodecCtx->frame_size;
 
         // Copy metadata
         copyMetadata(inputFormatCtx, outputFormatCtx);
@@ -218,6 +245,7 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                                    AVCodecContext *inputCodecCtx, AVCodecContext *outputCodecCtx)
 {
     SwrContext *swrCtx = nullptr;
+    AVAudioFifo *fifo = nullptr;
     AVPacket *inputPacket = av_packet_alloc();
     AVPacket *outputPacket = av_packet_alloc();
     AVFrame *inputFrame = av_frame_alloc();
@@ -225,6 +253,11 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
 
     if (!inputPacket || !outputPacket || !inputFrame || !outputFrame) {
         qDebug() << "AUDIO CONVERTER: Failed to allocate frames/packets";
+        // Cleanup any allocated resources
+        if (inputPacket) av_packet_free(&inputPacket);
+        if (outputPacket) av_packet_free(&outputPacket);
+        if (inputFrame) av_frame_free(&inputFrame);
+        if (outputFrame) av_frame_free(&outputFrame);
         return false;
     }
 
@@ -240,6 +273,26 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
 
     if (!swrCtx || swr_init(swrCtx) < 0) {
         qDebug() << "AUDIO CONVERTER: Failed to initialize resampler";
+        // Cleanup allocated resources
+        av_frame_free(&inputFrame);
+        av_frame_free(&outputFrame);
+        av_packet_free(&inputPacket);
+        av_packet_free(&outputPacket);
+        if (swrCtx) swr_free(&swrCtx);
+        return false;
+    }
+
+    // Create audio FIFO buffer to handle variable frame sizes
+    fifo = av_audio_fifo_alloc(outputCodecCtx->sample_fmt,
+                                outputCodecCtx->ch_layout.nb_channels,
+                                outputCodecCtx->frame_size * 2);
+    if (!fifo) {
+        qDebug() << "AUDIO CONVERTER: Failed to allocate audio FIFO";
+        av_frame_free(&inputFrame);
+        av_frame_free(&outputFrame);
+        av_packet_free(&inputPacket);
+        av_packet_free(&outputPacket);
+        swr_free(&swrCtx);
         return false;
     }
 
@@ -320,72 +373,70 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             }
 
             outputFrame->nb_samples = frame_count;
-            outputFrame->pts = currentPts;
-            currentPts += frame_count;
 
-            // MP3 encoder expects exactly frame_size samples (1152 for MP3)
-            // If we have more, we need to split into multiple frames
-            int encoder_frame_size = outputCodecCtx->frame_size;
-            if (encoder_frame_size <= 0) {
-                encoder_frame_size = 1152; // Default MP3 frame size
+            // Add resampled samples to FIFO
+            if (av_audio_fifo_write(fifo, (void**)outputFrame->data, frame_count) < frame_count) {
+                qDebug() << "AUDIO CONVERTER: Failed to write samples to FIFO";
+                av_frame_unref(outputFrame);
+                continue;
             }
 
-            int samples_sent = 0;
-            while (samples_sent < frame_count) {
-                AVFrame *encoderFrame = av_frame_alloc();
-                encoderFrame->format = outputCodecCtx->sample_fmt;
-                av_channel_layout_copy(&encoderFrame->ch_layout, &outputCodecCtx->ch_layout);
-                encoderFrame->sample_rate = outputCodecCtx->sample_rate;
-                
-                int samples_to_send = qMin(encoder_frame_size, frame_count - samples_sent);
-                encoderFrame->nb_samples = samples_to_send;
-                encoderFrame->pts = outputFrame->pts + samples_sent;
-                
-                if (av_frame_get_buffer(encoderFrame, 0) >= 0) {
-                    // Copy samples from outputFrame to encoderFrame
-                    int channels = outputCodecCtx->ch_layout.nb_channels;
-                    int bytes_per_sample = av_get_bytes_per_sample(outputCodecCtx->sample_fmt);
-                    
-                    if (av_sample_fmt_is_planar(outputCodecCtx->sample_fmt)) {
-                        // Planar format - each channel in separate plane
-                        for (int ch = 0; ch < channels; ch++) {
-                            memcpy(encoderFrame->data[ch],
-                                   outputFrame->data[ch] + (samples_sent * bytes_per_sample),
-                                   samples_to_send * bytes_per_sample);
-                        }
-                    } else {
-                        // Interleaved format
-                        memcpy(encoderFrame->data[0],
-                               outputFrame->data[0] + (samples_sent * channels * bytes_per_sample),
-                               samples_to_send * channels * bytes_per_sample);
-                    }
-                    
-                    // Send frame to encoder
-                    ret = avcodec_send_frame(outputCodecCtx, encoderFrame);
-                    if (ret >= 0) {
-                        // Receive encoded packets
-                        while (ret >= 0) {
-                            ret = avcodec_receive_packet(outputCodecCtx, outputPacket);
-                            if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
-                                break;
-                            }
-                            if (ret < 0) {
-                                break;
-                            }
+            // Encode frames from FIFO when we have enough samples
+            int encoder_frame_size = outputCodecCtx->frame_size;
+            if (encoder_frame_size <= 0) {
+                encoder_frame_size = ConverterConstants::MP3_DEFAULT_FRAME_SIZE;
+            }
 
-                            encodedPacketCount++;
-                            outputPacket->stream_index = 0;
-                            av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base, 
-                                                 outputFormatCtx->streams[0]->time_base);
-                            
-                            av_interleaved_write_frame(outputFormatCtx, outputPacket);
-                            av_packet_unref(outputPacket);
-                        }
-                    }
+            while (av_audio_fifo_size(fifo) >= encoder_frame_size) {
+                AVFrame *encFrame = av_frame_alloc();
+                encFrame->nb_samples = encoder_frame_size;
+                encFrame->format = outputCodecCtx->sample_fmt;
+                av_channel_layout_copy(&encFrame->ch_layout, &outputCodecCtx->ch_layout);
+                encFrame->sample_rate = outputCodecCtx->sample_rate;
+                encFrame->pts = currentPts;
+                currentPts += encoder_frame_size;
+
+                if (av_frame_get_buffer(encFrame, 0) < 0) {
+                    qDebug() << "AUDIO CONVERTER: Failed to allocate encoder frame buffer";
+                    av_frame_free(&encFrame);
+                    break;
                 }
-                
-                av_frame_free(&encoderFrame);
-                samples_sent += samples_to_send;
+
+                // Read samples from FIFO
+                if (av_audio_fifo_read(fifo, (void**)encFrame->data, encoder_frame_size) < encoder_frame_size) {
+                    qDebug() << "AUDIO CONVERTER: Failed to read samples from FIFO";
+                    av_frame_free(&encFrame);
+                    break;
+                }
+
+                // Send frame to encoder
+                ret = avcodec_send_frame(outputCodecCtx, encFrame);
+                av_frame_free(&encFrame);
+
+                if (ret < 0) {
+                    qDebug() << "AUDIO CONVERTER: Error sending frame to encoder";
+                    break;
+                }
+
+                // Receive encoded packets
+                while (ret >= 0) {
+                    ret = avcodec_receive_packet(outputCodecCtx, outputPacket);
+                    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+                        break;
+                    }
+                    if (ret < 0) {
+                        qDebug() << "AUDIO CONVERTER: Error receiving packet from encoder";
+                        break;
+                    }
+
+                    encodedPacketCount++;
+                    outputPacket->stream_index = 0;
+                    av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
+                                         outputFormatCtx->streams[0]->time_base);
+
+                    av_interleaved_write_frame(outputFormatCtx, outputPacket);
+                    av_packet_unref(outputPacket);
+                }
             }
 
             // Update progress
@@ -428,33 +479,21 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                 
                 if (frame_count > 0) {
                     outputFrame->nb_samples = frame_count;
-                    outputFrame->pts = currentPts;
-                    currentPts += frame_count;
-                    
-                    avcodec_send_frame(outputCodecCtx, outputFrame);
-                    while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
-                        encodedPacketCount++;
-                        outputPacket->stream_index = 0;
-                        av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
-                                             outputFormatCtx->streams[0]->time_base);
-                        av_interleaved_write_frame(outputFormatCtx, outputPacket);
-                        av_packet_unref(outputPacket);
-                    }
+                    // Add to FIFO
+                    av_audio_fifo_write(fifo, (void**)outputFrame->data, frame_count);
                 }
             }
             av_frame_unref(inputFrame);
         }
-        qDebug() << "  Decoder flush: added" << (encodedPacketCount - packetCount) << "packets";
 
         qDebug() << "AUDIO CONVERTER: Flushing resampler...";
-        int resamplerPackets = encodedPacketCount;
         // Flush resampler - get buffered samples
         while (true) {
             av_frame_unref(outputFrame);
             outputFrame->format = outputCodecCtx->sample_fmt;
             av_channel_layout_copy(&outputFrame->ch_layout, &outputCodecCtx->ch_layout);
             outputFrame->sample_rate = outputCodecCtx->sample_rate;
-            outputFrame->nb_samples = outputCodecCtx->frame_size > 0 ? outputCodecCtx->frame_size : 1152;
+            outputFrame->nb_samples = outputCodecCtx->frame_size > 0 ? outputCodecCtx->frame_size : 1600;
 
             if (av_frame_get_buffer(outputFrame, 0) < 0) {
                 break;
@@ -466,20 +505,45 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             }
 
             outputFrame->nb_samples = frame_count;
-            outputFrame->pts = currentPts;
-            currentPts += frame_count;
-
-            avcodec_send_frame(outputCodecCtx, outputFrame);
-            while (avcodec_receive_packet(outputCodecCtx, outputPacket) >= 0) {
-                encodedPacketCount++;
-                outputPacket->stream_index = 0;
-                av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
-                                     outputFormatCtx->streams[0]->time_base);
-                av_interleaved_write_frame(outputFormatCtx, outputPacket);
-                av_packet_unref(outputPacket);
-            }
+            // Add to FIFO
+            av_audio_fifo_write(fifo, (void**)outputFrame->data, frame_count);
         }
-        qDebug() << "  Resampler flush: added" << (encodedPacketCount - resamplerPackets) << "packets";
+
+        qDebug() << "AUDIO CONVERTER: Encoding remaining samples from FIFO...";
+        // Encode all remaining samples in FIFO
+        int encoder_frame_size = outputCodecCtx->frame_size;
+        if (encoder_frame_size <= 0) {
+            encoder_frame_size = ConverterConstants::MP3_DEFAULT_FRAME_SIZE;
+        }
+
+        while (av_audio_fifo_size(fifo) > 0) {
+            int samples_in_fifo = av_audio_fifo_size(fifo);
+            int samples_to_encode = samples_in_fifo >= encoder_frame_size ? encoder_frame_size : samples_in_fifo;
+
+            AVFrame *encFrame = av_frame_alloc();
+            encFrame->nb_samples = samples_to_encode;
+            encFrame->format = outputCodecCtx->sample_fmt;
+            av_channel_layout_copy(&encFrame->ch_layout, &outputCodecCtx->ch_layout);
+            encFrame->sample_rate = outputCodecCtx->sample_rate;
+            encFrame->pts = currentPts;
+            currentPts += samples_to_encode;
+
+            if (av_frame_get_buffer(encFrame, 0) >= 0) {
+                if (av_audio_fifo_read(fifo, (void**)encFrame->data, samples_to_encode) == samples_to_encode) {
+                    avcodec_send_frame(outputCodecCtx, encFrame);
+                    int ret;
+                    while ((ret = avcodec_receive_packet(outputCodecCtx, outputPacket)) >= 0) {
+                        encodedPacketCount++;
+                        outputPacket->stream_index = 0;
+                        av_packet_rescale_ts(outputPacket, outputCodecCtx->time_base,
+                                             outputFormatCtx->streams[0]->time_base);
+                        av_interleaved_write_frame(outputFormatCtx, outputPacket);
+                        av_packet_unref(outputPacket);
+                    }
+                }
+            }
+            av_frame_free(&encFrame);
+        }
 
         qDebug() << "AUDIO CONVERTER: Flushing encoder...";
         int encoderFlushStart = encodedPacketCount;
@@ -499,6 +563,9 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     }
 
     // Cleanup
+    if (fifo) {
+        av_audio_fifo_free(fifo);
+    }
     av_frame_free(&inputFrame);
     av_frame_free(&outputFrame);
     av_packet_free(&inputPacket);
@@ -508,6 +575,52 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     emit progressUpdated(100);
     return !m_cancelled;
 }
+
+
+
+//qatomic integer for cancellation flag
+//fix this later 
+
+
+
+// QAtomicInteger<bool> m_cancelled;
+
+// bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatContext *outputFormatCtx,
+//                                   AVCodecContext *inputCodecCtx, AVCodecContext *outputCodecCtx);
+// {
+//     SwrPtr    swrCtx(nullptr);
+//     PacketPtr inputPacket(av_packet_alloc());
+//     PacketPtr outputPacket(av_packet_alloc());
+//     FramePtr  inputFrame(av_frame_alloc());
+//     FramePtr  outputFrame(av_frame_alloc());
+
+//     if (!inputPacket || !outputPacket || !inputFrame || !outputFrame) {
+//         qDebug() << "AUDIO CONVERTER: Failed to allocate frames/packets";
+//         return false;  // All freed automatically
+//     }
+
+//     SwrContext *rawSwr = nullptr;
+//     if (swr_alloc_set_opts2(&rawSwr,
+//                             &outputCodecCtx->ch_layout,
+//                             outputCodecCtx->sample_fmt,
+//                             outputCodecCtx->sample_rate,
+//                             &inputCodecCtx->ch_layout,
+//                             inputCodecCtx->sample_fmt,
+//                             inputCodecCtx->sample_rate,
+//                             0, nullptr) < 0) {
+//         qDebug() << "AUDIO CONVERTER: Failed to allocate resampler";
+//         return false;
+//     }
+//     swrCtx.reset(rawSwr);
+
+//     if (swr_init(swrCtx.get()) < 0) {
+//         qDebug() << "AUDIO CONVERTER: Failed to initialize resampler";
+//         return false;
+//     }
+
+
+
+
 
 void AudioConverter::copyMetadata(AVFormatContext *inputFormatCtx, AVFormatContext *outputFormatCtx)
 {

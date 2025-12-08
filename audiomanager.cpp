@@ -3,6 +3,7 @@
 #include <QAudioFormat>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDateTime>
 
 // AudioBuffer implementation
 AudioBuffer::AudioBuffer(QObject *parent)
@@ -27,6 +28,8 @@ void AudioBuffer::clearBuffer()
     QMutexLocker locker(&m_mutex);
     m_buffer.clear();
     m_position = 0;
+    // Reset QIODevice position
+    seek(0);
 }
 
 bool AudioBuffer::hasData() const
@@ -76,18 +79,21 @@ AudioManager::AudioManager(QObject *parent)
     , m_packet(nullptr)
     , m_convertedData(nullptr)
     , m_convertedDataSize(0)
-    , m_shouldDecode(false)
+    , m_shouldDecode(0)
+    , m_lastPacketPts(0)
+    , m_playbackStartTime(0)
+    , m_pausePosition(0)
 {
     qDebug() << "=== AudioManager Constructor ===";
     initializeFFmpeg();
     
     // Setup position timer
     connect(m_positionTimer, &QTimer::timeout, this, &AudioManager::updatePosition);
-    m_positionTimer->setInterval(100); // Update every 100ms
+    m_positionTimer->setInterval(AudioConstants::POSITION_UPDATE_MS);
     
     // Setup decode timer
     connect(m_decodeTimer, &QTimer::timeout, this, &AudioManager::decodeAudio);
-    m_decodeTimer->setInterval(10); // Decode every 10ms for smooth playback
+    m_decodeTimer->setInterval(AudioConstants::DECODE_TIMER_MS);
 }
 
 AudioManager::~AudioManager()
@@ -282,8 +288,13 @@ void AudioManager::play()
     }
     
     // Start decoding
-    m_shouldDecode = true;
+    m_shouldDecode.storeRelaxed(1);
     m_state = PlayingState;
+    {
+        QMutexLocker locker(&m_stateMutex);
+        m_playbackStartTime = QDateTime::currentMSecsSinceEpoch();
+        m_currentPosition = m_pausePosition; // Resume from pause position
+    }
     m_positionTimer->start();
     m_decodeTimer->start();
     emit stateChanged(m_state);
@@ -300,11 +311,16 @@ void AudioManager::pause()
         return;
     }
     
-    m_shouldDecode = false;
+    m_shouldDecode.storeRelaxed(0);
     m_decodeTimer->stop();
     
     if (m_audioOutput) {
         m_audioOutput->suspend();
+    }
+    
+    {
+        QMutexLocker locker(&m_stateMutex);
+        m_pausePosition = m_currentPosition; // Save position for resume
     }
     
     m_state = PausedState;
@@ -320,7 +336,7 @@ void AudioManager::stop()
         return;
     }
     
-    m_shouldDecode = false;
+    m_shouldDecode.storeRelaxed(0);
     m_decodeTimer->stop();
     m_positionTimer->stop();
     
@@ -340,7 +356,13 @@ void AudioManager::stop()
         }
     }
     
-    m_currentPosition = 0;
+    {
+        QMutexLocker locker(&m_stateMutex);
+        m_currentPosition = 0;
+        m_lastPacketPts = 0;
+        m_playbackStartTime = 0;
+        m_pausePosition = 0;
+    }
     m_state = StoppedState;
     emit stateChanged(m_state);
     emit positionChanged(m_currentPosition);
@@ -389,8 +411,20 @@ void AudioManager::setPosition(qint64 position)
         m_audioBuffer->clearBuffer();
     }
     
+    // Ignore next few packets after seek (they may have stale timestamps)
+    m_ignorePackets.storeRelaxed(10);  // Ignore first 10 packets
+    
     // Update current position
-    m_currentPosition = position;
+    {
+        QMutexLocker locker(&m_stateMutex);
+        m_currentPosition = position;
+        m_pausePosition = position;
+        m_lastPacketPts = seekTarget;  // Update PTS tracking
+        // Reset playback start time for accurate position updates
+        if (m_state == PlayingState) {
+            m_playbackStartTime = QDateTime::currentMSecsSinceEpoch();
+        }
+    }
     
     qDebug() << "Seek successful to:" << position << "microseconds";
     emit positionChanged(m_currentPosition);
@@ -449,6 +483,7 @@ int64_t AudioManager::getDuration() const
 
 int64_t AudioManager::getPosition() const
 {
+    QMutexLocker locker(&m_stateMutex);
     return m_currentPosition;
 }
 
@@ -581,21 +616,27 @@ void AudioManager::cleanupAudioOutput()
 void AudioManager::updatePosition()
 {
     if (m_state == PlayingState) {
-        // Calculate position based on audio output progress
-        if (m_audioOutput && m_audioOutput->state() == QAudio::ActiveState) {
-            // Estimate position based on processed bytes (simplified)
-            m_currentPosition += 100000; // Add 100ms in microseconds
-            
-            // Don't exceed duration
-            qint64 duration = getDuration();
-            if (duration > 0 && m_currentPosition >= duration) {
-                m_currentPosition = duration;
-                stop();
-                return;
-            }
-            
-            emit positionChanged(m_currentPosition);
+        QMutexLocker locker(&m_stateMutex);
+        
+        // Calculate position based on elapsed time since playback started
+        if (m_playbackStartTime > 0) {
+            qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+            qint64 elapsedMs = currentTime - m_playbackStartTime;
+            // Convert milliseconds to microseconds and add to pause position
+            m_currentPosition = m_pausePosition + (elapsedMs * 1000);
         }
+        
+        // Don't exceed duration
+        qint64 duration = getDuration();
+        if (duration > 0 && m_currentPosition >= duration) {
+            m_currentPosition = duration;
+            locker.unlock();
+            stop();
+            return;
+        }
+        
+        locker.unlock();
+        emit positionChanged(m_currentPosition);
     }
 }
 
@@ -669,7 +710,7 @@ void AudioManager::initializeDecoding()
     }
     
     // Allocate buffer for converted audio
-    m_convertedDataSize = av_samples_get_buffer_size(nullptr, getChannels(), 4096, AV_SAMPLE_FMT_S16, 1);
+    m_convertedDataSize = av_samples_get_buffer_size(nullptr, getChannels(), AudioConstants::DEFAULT_FRAME_SIZE, AV_SAMPLE_FMT_S16, 1);
     m_convertedData = (uint8_t*)av_malloc(m_convertedDataSize);
     
     qDebug() << "Audio decoding initialized successfully";
@@ -700,12 +741,12 @@ void AudioManager::cleanupDecoding()
 
 void AudioManager::decodeAudio()
 {
-    if (!m_shouldDecode || !m_formatContext || !m_codecContext || !m_audioBuffer) {
+    if (m_shouldDecode.loadRelaxed() == 0 || !m_formatContext || !m_codecContext || !m_audioBuffer) {
         return;
     }
     
     // Don't decode if buffer is too full
-    if (m_audioBuffer->hasData() && m_audioBuffer->bytesAvailable() > 32768) { // 32KB buffer limit
+    if (m_audioBuffer->hasData() && m_audioBuffer->bytesAvailable() > AudioConstants::AUDIO_BUFFER_LIMIT) {
         return;
     }
     
@@ -733,6 +774,10 @@ bool AudioManager::decodePacket()
             // Stop decoding
             setDecodingActive(false);
             // The trackFinished signal will be emitted when audio buffer is empty
+        } else {
+            char errbuf[AV_ERROR_MAX_STRING_SIZE];
+            av_strerror(ret, errbuf, sizeof(errbuf));
+            qDebug() << "Error reading frame:" << errbuf;
         }
         return false;
     }
@@ -741,6 +786,19 @@ bool AudioManager::decodePacket()
     if (m_packet->stream_index != m_audioStreamIndex) {
         av_packet_unref(m_packet);
         return true;
+    }
+    
+    // Ignore packets immediately after seek (stale data)
+    if (m_ignorePackets.loadRelaxed() > 0) {
+        m_ignorePackets.fetchAndSubRelaxed(1);
+        av_packet_unref(m_packet);
+        return true;  // Continue decoding, just skip this packet
+    }
+    
+    // Track packet PTS for position calculation
+    if (m_packet->pts != AV_NOPTS_VALUE) {
+        QMutexLocker locker(&m_stateMutex);
+        m_lastPacketPts = m_packet->pts;
     }
     
     // Send packet to decoder
@@ -785,12 +843,12 @@ bool AudioManager::decodePacket()
 
 void AudioManager::setDecodingActive(bool active)
 {
-    m_shouldDecode = active;
+    m_shouldDecode.storeRelaxed(active ? 1 : 0);
     
     if (active) {
         qDebug() << "Starting decoding...";
         if (!m_decodeTimer->isActive()) {
-            m_decodeTimer->start(10); // Decode every 10ms
+            m_decodeTimer->start(AudioConstants::DECODE_TIMER_MS);
         }
     } else {
         qDebug() << "Stopping decoding...";

@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QSlider>
 #include <QListWidget>
+#include <QMenu>
 #include "audiomanager.h"
 #include "playlist.h"
 #include "conversiondialog.h"
@@ -58,6 +59,9 @@ private slots:
     void onClearPlaylist();
     void onEditMetadata();
     void onConvertToMP3();
+    void onConvertSelectedSong();
+    void onConvertAllPlaylist();
+    void showPlaylistContextMenu(const QPoint &pos);
 
 private:
     void initializeWindow();
@@ -65,6 +69,8 @@ private:
     void updatePlaybackControls();
     void loadTrackAtIndex(int index);
     QString formatTime(qint64 microseconds) const;
+    void convertFilesToMP3(const QStringList &files);
+    QStringList getNonMP3FilesFromPlaylist() const;
     
 private:
     Ui::MainWindow *ui;

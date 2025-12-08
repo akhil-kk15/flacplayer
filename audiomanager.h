@@ -14,6 +14,15 @@
 #include <QMutexLocker>
 #include <QPixmap>
 #include <QImage>
+#include <QAtomicInt>
+
+// Constants
+namespace AudioConstants {
+    constexpr int AUDIO_BUFFER_LIMIT = 32768;      // 32KB buffer limit
+    constexpr int DEFAULT_FRAME_SIZE = 4096;        // Default audio frame size
+    constexpr int DECODE_TIMER_MS = 10;             // Decode timer interval in milliseconds
+    constexpr int POSITION_UPDATE_MS = 100;         // Position update interval in milliseconds
+}
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -142,13 +151,18 @@ private:
     PlaybackState m_state;
     qint64 m_currentPosition;
     qreal m_volume;
+    mutable QMutex m_stateMutex;  // Protects m_currentPosition and m_shouldDecode
     
     // Audio processing
     AVFrame *m_frame;
     AVPacket *m_packet;
     uint8_t *m_convertedData;
     int m_convertedDataSize;
-    bool m_shouldDecode;
+    QAtomicInt m_shouldDecode;  // Thread-safe flag for decoding control
+    qint64 m_lastPacketPts;     // Last packet PTS for accurate position tracking
+    qint64 m_playbackStartTime; // Time when playback started (for calculating elapsed time)
+    qint64 m_pausePosition;     // Position when paused
+    QAtomicInt m_ignorePackets; // Ignore first few packets after seek (stale data)
     
     // Album art
     QPixmap m_albumArt;

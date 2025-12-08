@@ -153,6 +153,8 @@ void MainWindow::setupBasicUI()
     m_seekSlider = new QSlider(Qt::Horizontal, this);
     m_seekSlider->setRange(0, 1000);
     m_seekSlider->setValue(0);
+    m_seekSlider->setTracking(true); // Enable live tracking during drag
+    m_seekSlider->setPageStep(50); // 5% steps for page up/down
 
     seekLayout->addWidget(elapsedLabel);
     seekLayout->addWidget(m_seekSlider);
@@ -238,7 +240,7 @@ void MainWindow::setupBasicUI()
     m_editMetadataButton->setMaximumWidth(80);
     m_convertButton->setMaximumWidth(70);
     m_editMetadataButton->setToolTip("Edit metadata tags for current track");
-    m_convertButton->setToolTip("Convert current track to MP3");
+    m_convertButton->setToolTip("Convert current track to MP3 (Right-click playlist for more options)");
     
     playlistButtonsLayout->addWidget(m_newPlaylistButton);
     playlistButtonsLayout->addWidget(m_loadPlaylistButton);
@@ -251,6 +253,8 @@ void MainWindow::setupBasicUI()
     m_playlistWidget = new QListWidget(this);
     m_playlistWidget->setMinimumWidth(300);
     m_playlistWidget->setAlternatingRowColors(true);
+    m_playlistWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_playlistWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::showPlaylistContextMenu);
     
     rightLayout->addLayout(playlistHeaderLayout);
     rightLayout->addLayout(playlistButtonsLayout);
@@ -281,12 +285,35 @@ void MainWindow::setupBasicUI()
     connect(m_convertButton, &QPushButton::clicked, this, &MainWindow::onConvertToMP3);
 
     connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
-    connect(m_seekSlider, &QSlider::sliderPressed, [this]() { m_seekSliderPressed = true; });
-    connect(m_seekSlider, &QSlider::sliderMoved, this, &MainWindow::onSeekPositionChanged);
+    
+    // Seek slider handling
+    connect(m_seekSlider, &QSlider::sliderPressed, [this]() { 
+        qDebug() << "=== SLIDER: sliderPressed - User pressed down on slider ===";
+        m_seekSliderPressed = true; 
+    });
     connect(m_seekSlider, &QSlider::sliderReleased, [this]() {
+        qDebug() << "=== SLIDER: sliderReleased - User released slider at value:" << m_seekSlider->value() << "===";
         m_seekSliderPressed = false;
+        // Always seek to final position when released
         onSeekPositionChanged(m_seekSlider->value());
     });
+    // Update time display during drag
+    connect(m_seekSlider, &QSlider::sliderMoved, [this](int value) {
+        qDebug() << "=== SLIDER: sliderMoved - Dragging to value:" << value << "===";
+        if (m_duration > 0) {
+            qint64 position = (qint64(value) * m_duration) / 1000;
+            m_timeLabel->setText(formatTime(position));
+        }
+    });
+    // Additional debug for valueChanged  
+    //The value changes every second of the playback
+
+
+    // connect(m_seekSlider, &QSlider::valueChanged, [this](int value) {
+    //     qDebug() << "=== SLIDER: valueChanged - Value changed to:" << value 
+    //              << "isSliderDown:" << m_seekSlider->isSliderDown() 
+    //              << "m_seekSliderPressed:" << m_seekSliderPressed << "===";
+    // });
 
     // Update initial control states
     updatePlaybackControls();
@@ -924,6 +951,142 @@ void MainWindow::onConvertToMP3()
     
     ConversionDialog dialog(currentFile, this);
     dialog.exec();
+}
+
+void MainWindow::onConvertSelectedSong()
+{
+    QListWidgetItem *item = m_playlistWidget->currentItem();
+    if (!item) {
+        QMessageBox::information(this, "No Selection", "Please select a song from the playlist.");
+        return;
+    }
+    
+    int index = m_playlistWidget->row(item);
+    QString filePath = m_playlist->getFileAt(index);
+    
+    if (filePath.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Could not retrieve file path.");
+        return;
+    }
+    
+    // Check if file is already MP3
+    if (filePath.toLower().endsWith(".mp3")) {
+        QMessageBox::information(this, "Already MP3", "The selected file is already in MP3 format.");
+        return;
+    }
+    
+    ConversionDialog dialog(filePath, this);
+    dialog.exec();
+}
+
+void MainWindow::onConvertAllPlaylist()
+{
+    QStringList nonMP3Files = getNonMP3FilesFromPlaylist();
+    
+    if (nonMP3Files.isEmpty()) {
+        QMessageBox::information(this, "Nothing to Convert", "All files in the playlist are already in MP3 format.");
+        return;
+    }
+    
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Convert All",
+                                  QString("Convert %1 file(s) to MP3?\nThis may take some time.")
+                                      .arg(nonMP3Files.count()),
+                                  QMessageBox::Yes | QMessageBox::No);
+    
+    if (reply == QMessageBox::Yes) {
+        convertFilesToMP3(nonMP3Files);
+    }
+}
+
+void MainWindow::showPlaylistContextMenu(const QPoint &pos)
+{
+    QListWidgetItem *item = m_playlistWidget->itemAt(pos);
+    
+    QMenu contextMenu(this);
+    
+    if (item) {
+        // Single item selected
+        int index = m_playlistWidget->row(item);
+        QString filePath = m_playlist->getFileAt(index);
+        bool isMP3 = filePath.toLower().endsWith(".mp3");
+        
+        QAction *playAction = contextMenu.addAction("Play");
+        connect(playAction, &QAction::triggered, [this, item]() {
+            onPlaylistItemDoubleClicked(item);
+        });
+        
+        contextMenu.addSeparator();
+        
+        QAction *convertAction = contextMenu.addAction("Convert to MP3");
+        convertAction->setEnabled(!isMP3);
+        connect(convertAction, &QAction::triggered, this, &MainWindow::onConvertSelectedSong);
+    }
+    
+    // Always show convert all option
+    if (m_playlist->count() > 0) {
+        if (item) {
+            contextMenu.addSeparator();
+        }
+        
+        QStringList nonMP3Files = getNonMP3FilesFromPlaylist();
+        QAction *convertAllAction = contextMenu.addAction(QString("Convert All to MP3 (%1 files)")
+                                                              .arg(nonMP3Files.count()));
+        convertAllAction->setEnabled(!nonMP3Files.isEmpty());
+        connect(convertAllAction, &QAction::triggered, this, &MainWindow::onConvertAllPlaylist);
+    }
+    
+    if (!contextMenu.isEmpty()) {
+        contextMenu.exec(m_playlistWidget->mapToGlobal(pos));
+    }
+}
+
+void MainWindow::convertFilesToMP3(const QStringList &files)
+{
+    if (files.isEmpty()) {
+        return;
+    }
+    
+    // For now, convert files one by one
+    // TODO: Implement a batch conversion dialog with progress tracking
+    int successCount = 0;
+    int failureCount = 0;
+    QStringList failedFiles;
+    
+    for (const QString &file : files) {
+        ConversionDialog dialog(file, this);
+        if (dialog.exec() == QDialog::Accepted) {
+            successCount++;
+        } else {
+            failureCount++;
+            QFileInfo info(file);
+            failedFiles.append(info.fileName());
+        }
+    }
+    
+    // Show summary
+    QString message = QString("Conversion complete:\n%1 successful, %2 failed")
+                          .arg(successCount).arg(failureCount);
+    
+    if (!failedFiles.isEmpty()) {
+        message += "\n\nFailed files:\n" + failedFiles.join("\n");
+    }
+    
+    QMessageBox::information(this, "Batch Conversion Complete", message);
+}
+
+QStringList MainWindow::getNonMP3FilesFromPlaylist() const
+{
+    QStringList nonMP3Files;
+    QStringList allFiles = m_playlist->getFiles();
+    
+    for (const QString &file : allFiles) {
+        if (!file.toLower().endsWith(".mp3")) {
+            nonMP3Files.append(file);
+        }
+    }
+    
+    return nonMP3Files;
 }
 
 // Helper functions
