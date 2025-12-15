@@ -36,8 +36,6 @@ void Playlist::addFile(const QString &filePath)
         if (m_shuffleEnabled) {
             generateShuffleOrder();
         }
-        
-        qDebug() << "Added file to playlist:" << filePath;
     }
 }
 
@@ -59,8 +57,6 @@ void Playlist::addFiles(const QStringList &filePaths)
         if (m_shuffleEnabled) {
             generateShuffleOrder();
         }
-        
-        qDebug() << "Added" << filePaths.count() << "files to playlist";
     }
 }
 
@@ -218,10 +214,8 @@ void Playlist::setShuffle(bool enabled)
         
         if (enabled) {
             generateShuffleOrder();
-            qDebug() << "Shuffle enabled";
         } else {
             m_shuffleOrder.clear();
-            qDebug() << "Shuffle disabled";
         }
         
         emit shuffleChanged(enabled);
@@ -265,8 +259,6 @@ void Playlist::generateShuffleOrder()
             }
         }
     }
-    
-    qDebug() << "Generated shuffle order:" << m_shuffleOrder;
 }
 
 int Playlist::getShuffledIndex(int logicalIndex) const
@@ -307,7 +299,6 @@ bool Playlist::saveToFile(const QString &filePath)
     }
     
     file.close();
-    qDebug() << "Playlist saved to:" << filePath;
     return true;
 }
 
@@ -345,15 +336,12 @@ bool Playlist::loadFromFile(const QString &filePath)
         QFileInfo fileInfo(line);
         if (fileInfo.exists() && fileInfo.isFile()) {
             newFiles.append(line);
-        } else {
-            qDebug() << "File not found, skipping:" << line;
         }
     }
     
     file.close();
     
     if (newFiles.isEmpty()) {
-        qDebug() << "No valid files found in playlist";
         return false;
     }
     
@@ -368,7 +356,6 @@ bool Playlist::loadFromFile(const QString &filePath)
         m_name = pFileInfo.completeBaseName();
     }
     
-    qDebug() << "Playlist loaded:" << m_name << "with" << newFiles.count() << "files";
     return true;
 }
 
@@ -381,6 +368,5 @@ void Playlist::setName(const QString &name)
 {
     if (m_name != name) {
         m_name = name;
-        qDebug() << "Playlist name changed to:" << m_name;
     }
 }

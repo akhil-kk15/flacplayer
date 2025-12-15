@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>assets/play.png</file>
+        <file>assets/pause.png</file>
+        <file>assets/next.png</file>
+        <file>assets/previous.png</file>
+        <file>assets/stop-button.png</file>
+        <file>assets/shuffle.png</file>
+        <file>assets/playlist.png</file>
+        <file>assets/folder.png</file>
+        <file>assets/information.png</file>
+        <file>assets/loop.png</file>
+        <file>assets/repeat.png</file>
+        <file>assets/conversion-settings.png</file>
+        <file>assets/mute.png</file>
+        <file>assets/unmuted.png</file>
+    </qresource>
+</RCC>

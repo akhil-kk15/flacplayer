@@ -10,17 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Multimedia Core Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Multimedia Core Network)
-
-# Find FFmpeg libraries using pkg-config
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
-    libavformat
-    libavcodec
-    libavutil
-    libswresample
-)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Core Multimedia)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Core Multimedia)
 
 set(TS_FILES flacplayer_en_GB.ts)
 
@@ -29,18 +20,7 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        audiomanager.cpp
-        audiomanager.h
-        playlist.cpp
-        playlist.h
-        discogsclient.cpp
-        discogsclient.h
-        metadataeditor.cpp
-        metadataeditor.h
-        audioconverter.cpp
-        audioconverter.h
-        conversiondialog.cpp
-        conversiondialog.h
+        resources.qrc
         ${TS_FILES}
 )
 
@@ -73,10 +53,8 @@ endif()
 
 target_link_libraries(flacplayer PRIVATE 
     Qt${QT_VERSION_MAJOR}::Widgets 
-    Qt${QT_VERSION_MAJOR}::Multimedia
     Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Network
-    PkgConfig::FFMPEG
+    Qt${QT_VERSION_MAJOR}::Multimedia
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

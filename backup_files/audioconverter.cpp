@@ -3,10 +3,7 @@
 #include <QFile>
 #include<memory>
 
-
 //helper for managing AVFrame pointers with unique_ptr
-
-
 
 namespace {
     struct AvFrameDeleter {
@@ -17,8 +14,6 @@ namespace {
 
     using FramePtr = std::unique_ptr<AVFrame, AvFrameDeleter>;
 }
-
-
 
 AudioConverter::AudioConverter(QObject *parent)
     : QObject(parent)
@@ -32,13 +27,6 @@ AudioConverter::~AudioConverter()
 
 void AudioConverter::convertToMP3(const QString &inputPath, const QString &outputPath, BitratePreset bitrate)
 {
-    qDebug() << "==========================================";
-    qDebug() << "AUDIO CONVERTER: Starting conversion";
-    qDebug() << "  Input:" << inputPath;
-    qDebug() << "  Output:" << outputPath;
-    qDebug() << "  Bitrate:" << bitrate / 1000 << "kbps";
-    qDebug() << "==========================================";
-
     m_cancelled = false;
     emit conversionStarted();
 
@@ -87,11 +75,6 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
             errorMessage = "Failed to open input codec";
             break;
         }
-
-        qDebug() << "AUDIO CONVERTER: Input codec opened successfully";
-        qDebug() << "  Codec:" << inputCodec->long_name;
-        qDebug() << "  Sample Rate:" << inputCodecCtx->sample_rate;
-        qDebug() << "  Channels:" << inputCodecCtx->ch_layout.nb_channels;
 
         if (!openOutputFile(outputPath, &outputFormatCtx, inputCodecCtx, bitrate)) {
             errorMessage = "Failed to create output file";
@@ -145,11 +128,6 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
             break;
         }
 
-        qDebug() << "AUDIO CONVERTER: Output codec configured";
-        qDebug() << "  Codec:" << outputCodec->long_name;
-        qDebug() << "  Bitrate:" << outputCodecCtx->bit_rate / 1000 << "kbps";
-        qDebug() << "  Frame size:" << outputCodecCtx->frame_size;
-
         // Copy metadata
         copyMetadata(inputFormatCtx, outputFormatCtx);
 
@@ -169,7 +147,6 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
         av_write_trailer(outputFormatCtx);
 
         success = true;
-        qDebug() << "AUDIO CONVERTER: Conversion completed successfully";
 
     } while (false);
 
@@ -190,25 +167,21 @@ void AudioConverter::convertToMP3(const QString &inputPath, const QString &outpu
         avformat_free_context(outputFormatCtx);
     }
 
-    qDebug() << "==========================================";
     emit conversionComplete(success, success ? "Conversion completed successfully" : errorMessage);
 }
 
 void AudioConverter::cancel()
 {
     m_cancelled = true;
-    qDebug() << "AUDIO CONVERTER: Cancellation requested";
 }
 
 bool AudioConverter::openInputFile(const QString &inputPath, AVFormatContext **inputFormatCtx)
 {
     if (avformat_open_input(inputFormatCtx, inputPath.toUtf8().constData(), nullptr, nullptr) < 0) {
-        qDebug() << "AUDIO CONVERTER: Failed to open input file";
         return false;
     }
 
     if (avformat_find_stream_info(*inputFormatCtx, nullptr) < 0) {
-        qDebug() << "AUDIO CONVERTER: Failed to find stream info";
         avformat_close_input(inputFormatCtx);
         return false;
     }
@@ -221,19 +194,16 @@ bool AudioConverter::openOutputFile(const QString &outputPath, AVFormatContext *
 {
     avformat_alloc_output_context2(outputFormatCtx, nullptr, nullptr, outputPath.toUtf8().constData());
     if (!*outputFormatCtx) {
-        qDebug() << "AUDIO CONVERTER: Failed to create output context";
         return false;
     }
 
     AVStream *outputStream = avformat_new_stream(*outputFormatCtx, nullptr);
     if (!outputStream) {
-        qDebug() << "AUDIO CONVERTER: Failed to create output stream";
         return false;
     }
 
     if (!((*outputFormatCtx)->oformat->flags & AVFMT_NOFILE)) {
         if (avio_open(&(*outputFormatCtx)->pb, outputPath.toUtf8().constData(), AVIO_FLAG_WRITE) < 0) {
-            qDebug() << "AUDIO CONVERTER: Failed to open output file";
             return false;
         }
     }
@@ -252,7 +222,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     AVFrame *outputFrame = av_frame_alloc();
 
     if (!inputPacket || !outputPacket || !inputFrame || !outputFrame) {
-        qDebug() << "AUDIO CONVERTER: Failed to allocate frames/packets";
         // Cleanup any allocated resources
         if (inputPacket) av_packet_free(&inputPacket);
         if (outputPacket) av_packet_free(&outputPacket);
@@ -272,7 +241,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                         0, nullptr);
 
     if (!swrCtx || swr_init(swrCtx) < 0) {
-        qDebug() << "AUDIO CONVERTER: Failed to initialize resampler";
         // Cleanup allocated resources
         av_frame_free(&inputFrame);
         av_frame_free(&outputFrame);
@@ -287,7 +255,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                                 outputCodecCtx->ch_layout.nb_channels,
                                 outputCodecCtx->frame_size * 2);
     if (!fifo) {
-        qDebug() << "AUDIO CONVERTER: Failed to allocate audio FIFO";
         av_frame_free(&inputFrame);
         av_frame_free(&outputFrame);
         av_packet_free(&inputPacket);
@@ -305,8 +272,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     int packetCount = 0;
     int frameCount = 0;
     int encodedPacketCount = 0;
-    qDebug() << "AUDIO CONVERTER: Starting main conversion loop";
-    qDebug() << "  Total duration:" << totalDuration << "microseconds";
 
     while (av_read_frame(inputFormatCtx, inputPacket) >= 0) {
         packetCount++;
@@ -350,7 +315,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
 
             int ret = av_frame_get_buffer(outputFrame, 0);
             if (ret < 0) {
-                qDebug() << "AUDIO CONVERTER: Failed to allocate output frame buffer, error:" << ret;
                 av_frame_unref(inputFrame);
                 continue;
             }
@@ -363,7 +327,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             av_frame_unref(inputFrame);
 
             if (frame_count < 0) {
-                qDebug() << "AUDIO CONVERTER: Resampling failed, error:" << frame_count;
                 av_frame_unref(outputFrame);
                 continue;
             }
@@ -376,7 +339,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
 
             // Add resampled samples to FIFO
             if (av_audio_fifo_write(fifo, (void**)outputFrame->data, frame_count) < frame_count) {
-                qDebug() << "AUDIO CONVERTER: Failed to write samples to FIFO";
                 av_frame_unref(outputFrame);
                 continue;
             }
@@ -397,14 +359,12 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                 currentPts += encoder_frame_size;
 
                 if (av_frame_get_buffer(encFrame, 0) < 0) {
-                    qDebug() << "AUDIO CONVERTER: Failed to allocate encoder frame buffer";
                     av_frame_free(&encFrame);
                     break;
                 }
 
                 // Read samples from FIFO
                 if (av_audio_fifo_read(fifo, (void**)encFrame->data, encoder_frame_size) < encoder_frame_size) {
-                    qDebug() << "AUDIO CONVERTER: Failed to read samples from FIFO";
                     av_frame_free(&encFrame);
                     break;
                 }
@@ -414,7 +374,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                 av_frame_free(&encFrame);
 
                 if (ret < 0) {
-                    qDebug() << "AUDIO CONVERTER: Error sending frame to encoder";
                     break;
                 }
 
@@ -425,7 +384,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
                         break;
                     }
                     if (ret < 0) {
-                        qDebug() << "AUDIO CONVERTER: Error receiving packet from encoder";
                         break;
                     }
 
@@ -449,13 +407,7 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
         av_packet_unref(inputPacket);
     }
 
-    qDebug() << "AUDIO CONVERTER: Main loop complete";
-    qDebug() << "  Packets read:" << packetCount;
-    qDebug() << "  Frames decoded:" << frameCount;
-    qDebug() << "  Packets encoded:" << encodedPacketCount;
-
     if (!m_cancelled) {
-        qDebug() << "AUDIO CONVERTER: Flushing decoder...";
         // Flush decoder - get any remaining frames
         avcodec_send_packet(inputCodecCtx, nullptr);
         while (avcodec_receive_frame(inputCodecCtx, inputFrame) >= 0) {
@@ -486,7 +438,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             av_frame_unref(inputFrame);
         }
 
-        qDebug() << "AUDIO CONVERTER: Flushing resampler...";
         // Flush resampler - get buffered samples
         while (true) {
             av_frame_unref(outputFrame);
@@ -509,7 +460,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             av_audio_fifo_write(fifo, (void**)outputFrame->data, frame_count);
         }
 
-        qDebug() << "AUDIO CONVERTER: Encoding remaining samples from FIFO...";
         // Encode all remaining samples in FIFO
         int encoder_frame_size = outputCodecCtx->frame_size;
         if (encoder_frame_size <= 0) {
@@ -545,8 +495,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             av_frame_free(&encFrame);
         }
 
-        qDebug() << "AUDIO CONVERTER: Flushing encoder...";
-        int encoderFlushStart = encodedPacketCount;
         // Flush encoder - get remaining packets
         avcodec_send_frame(outputCodecCtx, nullptr);
         int ret;
@@ -558,8 +506,6 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
             av_interleaved_write_frame(outputFormatCtx, outputPacket);
             av_packet_unref(outputPacket);
         }
-        qDebug() << "  Encoder flush: added" << (encodedPacketCount - encoderFlushStart) << "packets";
-        qDebug() << "AUDIO CONVERTER: Total packets written:" << encodedPacketCount;
     }
 
     // Cleanup
@@ -576,12 +522,8 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
     return !m_cancelled;
 }
 
-
-
 //qatomic integer for cancellation flag
 //fix this later 
-
-
 
 // QAtomicInteger<bool> m_cancelled;
 
@@ -618,18 +560,12 @@ bool AudioConverter::convertAudio(AVFormatContext *inputFormatCtx, AVFormatConte
 //         return false;
 //     }
 
-
-
-
-
 void AudioConverter::copyMetadata(AVFormatContext *inputFormatCtx, AVFormatContext *outputFormatCtx)
 {
     AVDictionaryEntry *tag = nullptr;
     while ((tag = av_dict_get(inputFormatCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
         av_dict_set(&outputFormatCtx->metadata, tag->key, tag->value, 0);
     }
-
-    qDebug() << "AUDIO CONVERTER: Metadata copied";
 }
 
 // Worker implementation

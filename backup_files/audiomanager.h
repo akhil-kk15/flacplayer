@@ -16,6 +16,11 @@
 #include <QImage>
 #include <QAtomicInt>
 
+// Forward declarations for Qt 6
+class QAudioSink;
+class QMediaDevices;
+class QAudioDevice;
+
 // Constants
 namespace AudioConstants {
     constexpr int AUDIO_BUFFER_LIMIT = 32768;      // 32KB buffer limit
@@ -143,6 +148,7 @@ private:
     
     // Qt Audio components
     QAudioOutput *m_audioOutput;
+    QAudioSink *m_audioSink;
     AudioBuffer *m_audioBuffer;
     QTimer *m_positionTimer;
     QTimer *m_decodeTimer;

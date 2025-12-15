@@ -1,1143 +1,652 @@
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "metadataeditor.h"
-#include <QDebug>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
 #include <QMessageBox>
-#include <QWidget>
+#include <QStatusBar>
 #include <QFileDialog>
-#include <QStandardPaths>
-#include <QSlider>
-#include <QProgressBar>
-#include <QFileInfo>
-#include <QListWidgetItem>
-#include <QInputDialog>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QRadialGradient>
+#include <QElapsedTimer>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QListWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QTimer>
+#include <QMediaMetaData>
+#include <QPixmap>
+#include <QImage>
+#include <QRegularExpression>
 
+// ============================================================================
+// CONSTRUCTOR / DESTRUCTOR
+// ============================================================================
 
+/**
+ * @brief Constructor for MainWindow
+ * @param parent Parent widget (nullptr for top-level window)
+ * 
+ * Initializes the UI, sets up button icons, configures media playback components,
+ * connects signals/slots, and enables mouse tracking for gradient effect.
+ */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_audioManager(nullptr)
-    , m_duration(0)
-    , m_seekSliderPressed(false)
 {
-    qDebug() << "=== MainWindow Constructor START ===";
-    
     ui->setupUi(this);
     
-    // Initialize audio manager
-    m_audioManager = new AudioManager(this);
-    connect(m_audioManager, &AudioManager::fileOpened, this, &MainWindow::onFileOpened);
-    connect(m_audioManager, &AudioManager::fileClosed, this, &MainWindow::onFileClosed);
-    connect(m_audioManager, &AudioManager::errorOccurred, this, &MainWindow::onAudioError);
-    connect(m_audioManager, &AudioManager::stateChanged, this, &MainWindow::onAudioStateChanged);
-    connect(m_audioManager, &AudioManager::positionChanged, this, &MainWindow::onAudioPositionChanged);
-    connect(m_audioManager, &AudioManager::durationChanged, this, &MainWindow::onAudioDurationChanged);
-    connect(m_audioManager, &AudioManager::albumArtChanged, this, &MainWindow::onAlbumArtChanged);
-    connect(m_audioManager, &AudioManager::trackFinished, this, &MainWindow::onTrackFinished);
-    connect(m_audioManager, &AudioManager::metadataChanged, this, &MainWindow::onMetadataChanged);
+    // Configure window properties
+    setWindowTitle("FLAC Player v2.0");
+    setFixedSize(970, 650);  // Fixed size, non-resizable
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);  // Disable maximize button
     
-    // Initialize playlist
-    m_playlist = new Playlist(this);
-    connect(m_playlist, &Playlist::playlistChanged, this, &MainWindow::onPlaylistChanged);
-    connect(m_playlist, &Playlist::currentIndexChanged, this, &MainWindow::onCurrentIndexChanged);
-    connect(m_playlist, &Playlist::shuffleChanged, this, &MainWindow::onShuffleChanged);
+    statusBar()->setSizeGripEnabled(false);  // Disable resize grip in status bar
     
-    // Initialize the window
-    initializeWindow();
-    setupBasicUI();
+    // Initialize media playback components (Qt6 requires separate audio output)
+    MPlayer = new QMediaPlayer();
+    audioOutput = new QAudioOutput();
+    MPlayer->setAudioOutput(audioOutput);
+
+
+    // Set button icons from resources (clear text to show icons only)
+    ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+    ui->playPause->setIconSize(QSize(40, 40));
+    ui->playPause->setText("");  // Clear button text
     
-    qDebug() << "=== MainWindow Constructor END ===";
+    ui->nextTrack->setIcon(QIcon(":/icons/assets/next.png"));
+    ui->nextTrack->setIconSize(QSize(40, 40));
+    ui->nextTrack->setText("");
+    
+    ui->previousTrack->setIcon(QIcon(":/icons/assets/previous.png"));
+    ui->previousTrack->setIconSize(QSize(40, 40));
+    ui->previousTrack->setText("");
+    
+    ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
+    ui->Shuffle->setIconSize(QSize(40, 40));
+    ui->Shuffle->setText("");
+    
+    ui->trackQueue->setIcon(QIcon(":/icons/assets/playlist.png"));
+    ui->trackQueue->setIconSize(QSize(40, 40));
+    ui->trackQueue->setText("");
+    
+    ui->muteButton->setIcon(QIcon(":/icons/assets/unmuted.png"));
+    ui->muteButton->setIconSize(QSize(30, 30));
+    ui->muteButton->setText("");
+
+    //volume slider initial setup
+    ui->volumeSlider->setRange(0, 100);
+    ui->volumeSlider->setValue(30);
+
+    // Connect media player signals for position and duration changes
+    connect(MPlayer, &QMediaPlayer::positionChanged, this, &MainWindow::onPositionChanged);
+    connect(MPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::onDurationChanged);
+    connect(MPlayer, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::onMediaStatusChanged);
+    connect(MPlayer, &QMediaPlayer::metaDataChanged, this, &MainWindow::displayMetadata);
+
+    // Install event filter on next/previous buttons to detect hold vs click
+    ui->nextTrack->installEventFilter(this);
+    ui->previousTrack->installEventFilter(this);
+
+    // Connect button signals
+    connect(ui->muteButton, &QPushButton::clicked, this, &MainWindow::onMuteToggle);
+
+    // Set initial UI state
+    ui->labelFileName->setText("Add files through the menu to begin playback");
+    ui->trackName_2->setText("No next track");
+    ui->seekSlider->setEnabled(false);
+    
+    // Enable mouse tracking for gradient effect on all widgets
+    setMouseTracking(true);
+    setAttribute(Qt::WA_OpaquePaintEvent, false);
+    
+    if (centralWidget()) {
+        centralWidget()->setMouseTracking(true);
+        centralWidget()->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+        
+        // Enable mouse tracking on all child widgets to prevent stuttering
+        QList<QWidget*> allWidgets = centralWidget()->findChildren<QWidget*>();
+        for (QWidget* widget : allWidgets) {
+            widget->setMouseTracking(true);
+            widget->installEventFilter(this);
+        }
+    }
+    
+    // Initialize frame timer for performance tracking
+    frameTimer.start();
+    lastUpdateTime = 0;
+    
+    statusBar()->showMessage("Ready - Click buttons to test UI", 3000);
 }
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "=== MainWindow Destructor ===";
     delete ui;
 }
 
-void MainWindow::initializeWindow()
+//Mute Toggle functionality, just a basic if else condition to change the icon.
+void MainWindow::onMuteToggle()
 {
-    qDebug() << "Initializing window...";
-    
-    // Set window properties
-    setWindowTitle("FLAC Player v1.0");
-    setMinimumSize(700, 500);
-    resize(900, 600);
-    
-    // Status bar message
-    statusBar()->showMessage("  Load audio files!", 3000);
-    
-    qDebug() << "Window initialized:";
-    qDebug() << "  - Title:" << windowTitle();
-    qDebug() << "  - Size:" << size();
+    isMuted = !isMuted;
+    if (isMuted) {
+        ui->muteButton->setIcon(QIcon(":/icons/assets/mute.png"));
+        ui->volumeSlider->setValue(0);
+        statusBar()->showMessage("Volume muted", 2000);
+    } else {
+        ui->muteButton->setIcon(QIcon(":/icons/assets/unmuted.png"));
+        ui->volumeSlider->setValue(70);
+        statusBar()->showMessage("Volume unmuted", 2000);
+    }
 }
 
-void MainWindow::setupBasicUI()
+
+//selection of audio file and loading it into the player
+
+
+void MainWindow::on_actionOpen_triggered()
 {
-    qDebug() << "Setting up basic UI...";
-    
-    // Create central widget (this replaces the ui->centralwidget)
-    QWidget *centralWidget = new QWidget(this);
-    setCentralWidget(centralWidget);
-    
-    // Create main horizontal layout
-    QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget);
-
-    // Left side: Player controls
-    QVBoxLayout *leftLayout = new QVBoxLayout();
-
-    // Top area: album art + track title
-    m_albumArtLabel = new QLabel(this);
-    m_albumArtLabel->setFixedSize(320, 320);
-    m_albumArtLabel->setStyleSheet("background-color:#f0f0f0; border:1px solid #bbb;");
-    m_albumArtLabel->setAlignment(Qt::AlignCenter);
-    m_albumArtLabel->setText("♪");
-    m_albumArtLabel->setScaledContents(true); // Scale pixmap to fit label
-
-    leftLayout->addWidget(m_albumArtLabel, 0, Qt::AlignHCenter);
-    
-    // Metadata display - use a container with size constraint
-    QWidget *metadataContainer = new QWidget(this);
-    metadataContainer->setMinimumHeight(120);
-    QVBoxLayout *metadataLayout = new QVBoxLayout(metadataContainer);
-    metadataLayout->setContentsMargins(5, 5, 5, 5);
-    metadataLayout->setSpacing(2);
-    
-    m_titleLabel = new QLabel(this);
-    m_titleLabel->setAlignment(Qt::AlignCenter);
-    m_titleLabel->setStyleSheet("font-size: 14px; font-weight: bold; margin-top: 8px;");
-    m_titleLabel->setWordWrap(true);
-    m_titleLabel->setMaximumHeight(40);
-    
-    m_artistLabel = new QLabel(this);
-    m_artistLabel->setAlignment(Qt::AlignCenter);
-    m_artistLabel->setStyleSheet("font-size: 12px; color: #555;");
-    m_artistLabel->setMaximumHeight(20);
-    
-    m_albumLabel = new QLabel(this);
-    m_albumLabel->setAlignment(Qt::AlignCenter);
-    m_albumLabel->setStyleSheet("font-size: 11px; color: #666;");
-    m_albumLabel->setMaximumHeight(20);
-    
-    m_yearLabel = new QLabel(this);
-    m_yearLabel->setAlignment(Qt::AlignCenter);
-    m_yearLabel->setStyleSheet("font-size: 10px; color: #888;");
-    m_yearLabel->setMaximumHeight(15);
-    
-    m_audioInfoLabel = new QLabel("No audio file loaded", this);
-    m_audioInfoLabel->setWordWrap(true);
-    m_audioInfoLabel->setAlignment(Qt::AlignCenter);
-    m_audioInfoLabel->setStyleSheet("font-weight: bold; margin-top: 8px;");
-    m_audioInfoLabel->setMaximumHeight(25);
-    
-    metadataLayout->addWidget(m_titleLabel);
-    metadataLayout->addWidget(m_artistLabel);
-    metadataLayout->addWidget(m_albumLabel);
-    metadataLayout->addWidget(m_yearLabel);
-    metadataLayout->addWidget(m_audioInfoLabel);
-    metadataLayout->addStretch();
-    
-    leftLayout->addWidget(metadataContainer);
-
-    // Seek bar with time labels
-    QHBoxLayout *seekLayout = new QHBoxLayout();
-    QLabel *elapsedLabel = new QLabel("00:00", this);
-    QLabel *totalLabel = new QLabel("00:00", this);
-
-    m_seekSlider = new QSlider(Qt::Horizontal, this);
-    m_seekSlider->setRange(0, 1000);
-    m_seekSlider->setValue(0);
-    m_seekSlider->setTracking(true); // Enable live tracking during drag
-    m_seekSlider->setPageStep(50); // 5% steps for page up/down
-
-    seekLayout->addWidget(elapsedLabel);
-    seekLayout->addWidget(m_seekSlider);
-    seekLayout->addWidget(totalLabel);
-
-    leftLayout->addLayout(seekLayout);
-
-    // Keep references to elapsed/total labels for updates
-    m_timeLabel = elapsedLabel;
-    m_totalTimeLabel = totalLabel;
-
-    // Controls bar
-    QHBoxLayout *controlsLayout = new QHBoxLayout();
-
-    m_prevButton = new QPushButton("⏮", this);
-    m_playPauseButton = new QPushButton("▶", this);
-    m_stopButton = new QPushButton("⏹", this);
-    m_nextButton = new QPushButton("⏭", this);
-    
-    m_shuffleButton = new QPushButton("shuffle", this);
-    m_shuffleButton->setCheckable(true);
-    m_shuffleButton->setToolTip("Shuffle");
-    m_shuffleButton->setMaximumWidth(50);
-
-    // Volume and open
-    QLabel *volIcon = new QLabel("🔊", this);
-    m_volumeSlider = new QSlider(Qt::Horizontal, this);
-    m_volumeSlider->setRange(0, 100);
-    m_volumeSlider->setValue(100);
-    m_volumeSlider->setMaximumWidth(150);
-
-    m_openFileButton = new QPushButton("Open", this);
-    m_infoButton = new QPushButton("i", this);
-    m_infoButton->setMaximumWidth(40);
-    m_infoButton->setToolTip("Audio Info");
-    m_debugButton = new QPushButton("Debug", this);
-
-    controlsLayout->addWidget(m_prevButton);
-    controlsLayout->addWidget(m_playPauseButton);
-    controlsLayout->addWidget(m_stopButton);
-    controlsLayout->addWidget(m_nextButton);
-    controlsLayout->addWidget(m_shuffleButton);
-    controlsLayout->addStretch();
-    controlsLayout->addWidget(m_infoButton);
-    controlsLayout->addWidget(volIcon);
-    controlsLayout->addWidget(m_volumeSlider);
-    controlsLayout->addWidget(m_openFileButton);
-    controlsLayout->addWidget(m_debugButton);
-
-    leftLayout->addLayout(controlsLayout);
-
-    // Status label at bottom
-    m_statusLabel = new QLabel("Status: Ready", this);
-    m_statusLabel->setStyleSheet("color: #444; padding: 6px;");
-    leftLayout->addWidget(m_statusLabel);
-
-    // Right side: Playlist
-    QVBoxLayout *rightLayout = new QVBoxLayout();
-    
-    // Playlist header with name
-    QHBoxLayout *playlistHeaderLayout = new QHBoxLayout();
-    QLabel *playlistLabel = new QLabel("Playlist:", this);
-    playlistLabel->setStyleSheet("font-weight: bold; padding: 4px;");
-    m_playlistNameLabel = new QLabel("Untitled Playlist", this);
-    m_playlistNameLabel->setStyleSheet("padding: 4px; color: #666;");
-    playlistHeaderLayout->addWidget(playlistLabel);
-    playlistHeaderLayout->addWidget(m_playlistNameLabel);
-    playlistHeaderLayout->addStretch();
-    
-    // Playlist management buttons
-    QHBoxLayout *playlistButtonsLayout = new QHBoxLayout();
-    m_newPlaylistButton = new QPushButton("New", this);
-    m_loadPlaylistButton = new QPushButton("Load", this);
-    m_savePlaylistButton = new QPushButton("Save", this);
-    m_clearPlaylistButton = new QPushButton("Clear", this);
-    m_editMetadataButton = new QPushButton("Edit Tags", this);
-    m_convertButton = new QPushButton("→ MP3", this);
-    
-    m_newPlaylistButton->setMaximumWidth(60);
-    m_loadPlaylistButton->setMaximumWidth(60);
-    m_savePlaylistButton->setMaximumWidth(60);
-    m_clearPlaylistButton->setMaximumWidth(60);
-    m_editMetadataButton->setMaximumWidth(80);
-    m_convertButton->setMaximumWidth(70);
-    m_editMetadataButton->setToolTip("Edit metadata tags for current track");
-    m_convertButton->setToolTip("Convert current track to MP3 (Right-click playlist for more options)");
-    
-    playlistButtonsLayout->addWidget(m_newPlaylistButton);
-    playlistButtonsLayout->addWidget(m_loadPlaylistButton);
-    playlistButtonsLayout->addWidget(m_savePlaylistButton);
-    playlistButtonsLayout->addWidget(m_clearPlaylistButton);
-    playlistButtonsLayout->addWidget(m_editMetadataButton);
-    playlistButtonsLayout->addWidget(m_convertButton);
-    playlistButtonsLayout->addStretch();
-    
-    m_playlistWidget = new QListWidget(this);
-    m_playlistWidget->setMinimumWidth(300);
-    m_playlistWidget->setAlternatingRowColors(true);
-    m_playlistWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_playlistWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::showPlaylistContextMenu);
-    
-    rightLayout->addLayout(playlistHeaderLayout);
-    rightLayout->addLayout(playlistButtonsLayout);
-    rightLayout->addWidget(m_playlistWidget);
-
-    // Add both sides to main layout
-    mainLayout->addLayout(leftLayout, 1);
-    mainLayout->addLayout(rightLayout, 0);
-
-    // Wire up signals
-    connect(m_openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFile);
-    connect(m_infoButton, &QPushButton::clicked, this, &MainWindow::onShowAudioInfo);
-    connect(m_debugButton, &QPushButton::clicked, this, &MainWindow::onDebugInfo);
-
-    connect(m_playPauseButton, &QPushButton::clicked, this, &MainWindow::onPlayPause);
-    connect(m_stopButton, &QPushButton::clicked, this, &MainWindow::onStop);
-    connect(m_prevButton, &QPushButton::clicked, this, &MainWindow::onPrevious);
-    connect(m_nextButton, &QPushButton::clicked, this, &MainWindow::onNext);
-    connect(m_shuffleButton, &QPushButton::toggled, this, &MainWindow::onShuffleToggled);
-    connect(m_playlistWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPlaylistItemDoubleClicked);
-    
-    // Playlist management connections
-    connect(m_newPlaylistButton, &QPushButton::clicked, this, &MainWindow::onNewPlaylist);
-    connect(m_loadPlaylistButton, &QPushButton::clicked, this, &MainWindow::onLoadPlaylist);
-    connect(m_savePlaylistButton, &QPushButton::clicked, this, &MainWindow::onSavePlaylist);
-    connect(m_clearPlaylistButton, &QPushButton::clicked, this, &MainWindow::onClearPlaylist);
-    connect(m_editMetadataButton, &QPushButton::clicked, this, &MainWindow::onEditMetadata);
-    connect(m_convertButton, &QPushButton::clicked, this, &MainWindow::onConvertToMP3);
-
-    connect(m_volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
-    
-    // Seek slider handling
-    connect(m_seekSlider, &QSlider::sliderPressed, [this]() { 
-        qDebug() << "=== SLIDER: sliderPressed - User pressed down on slider ===";
-        m_seekSliderPressed = true; 
-    });
-    connect(m_seekSlider, &QSlider::sliderReleased, [this]() {
-        qDebug() << "=== SLIDER: sliderReleased - User released slider at value:" << m_seekSlider->value() << "===";
-        m_seekSliderPressed = false;
-        // Always seek to final position when released
-        onSeekPositionChanged(m_seekSlider->value());
-    });
-    // Update time display during drag
-    connect(m_seekSlider, &QSlider::sliderMoved, [this](int value) {
-        qDebug() << "=== SLIDER: sliderMoved - Dragging to value:" << value << "===";
-        if (m_duration > 0) {
-            qint64 position = (qint64(value) * m_duration) / 1000;
-            m_timeLabel->setText(formatTime(position));
-        }
-    });
-    // Additional debug for valueChanged  
-    //The value changes every second of the playback
-
-
-    // connect(m_seekSlider, &QSlider::valueChanged, [this](int value) {
-    //     qDebug() << "=== SLIDER: valueChanged - Value changed to:" << value 
-    //              << "isSliderDown:" << m_seekSlider->isSliderDown() 
-    //              << "m_seekSliderPressed:" << m_seekSliderPressed << "===";
-    // });
-
-    // Update initial control states
-    updatePlaybackControls();
-
-    qDebug() << "Basic UI setup complete";
-}
-
-void MainWindow::onShowAudioInfo()
-{
-    qDebug() << "=== Show audio info requested ===";
-    
-    if (!m_audioManager->isFileOpen()) {
-        QMessageBox::information(this, "No File", "Please open an audio file first!");
-        return;
-    }
-    
-    // Get metadata
-    AudioMetadata metadata = m_audioManager->getMetadata();
-    
-    // Build detailed info string
-    QString info = "═══════════════════════════════\n";
-    info += "       AUDIO FILE DETAILS\n";
-    info += "═══════════════════════════════\n\n";
-    
-    // Metadata section
-    info += " METADATA:\n";
-    info += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-    info += QString("Title:    %1\n").arg(metadata.title.isEmpty() ? "N/A" : metadata.title);
-    info += QString("Artist:   %1\n").arg(metadata.artist.isEmpty() ? "N/A" : metadata.artist);
-    info += QString("Album:    %1\n").arg(metadata.album.isEmpty() ? "N/A" : metadata.album);
-    info += QString("Year:     %1\n").arg(metadata.year.isEmpty() ? "N/A" : metadata.year);
-    info += QString("Genre:    %1\n").arg(metadata.genre.isEmpty() ? "N/A" : metadata.genre);
-    if (!metadata.comment.isEmpty()) {
-        info += QString("Comment:  %1\n").arg(metadata.comment);
-    }
-    info += "\n";
-    
-    // Technical section
-    info += " TECHNICAL INFO:\n";
-    info += "─────────────────────────────\n";
-    info += QString("Format:       %1\n").arg(m_audioManager->getFormatName());
-    info += QString("Codec:        %1\n").arg(m_audioManager->getCodecName());
-    info += QString("Sample Rate:  %1 Hz\n").arg(m_audioManager->getSampleRate());
-    info += QString("Channels:     %1 (%2)\n")
-        .arg(m_audioManager->getChannels())
-        .arg(m_audioManager->getChannels() == 1 ? "Mono" : 
-             m_audioManager->getChannels() == 2 ? "Stereo" :
-             QString("%1 Channel").arg(m_audioManager->getChannels()));
-    qint64 bitrate = m_audioManager->getBitrate();
-    if (bitrate > 0) {
-        info += QString("Bitrate:      %1 kbps\n").arg(bitrate / 1000);
-    }
-    info += QString("Duration:     %1 (%2 seconds)\n")
-        .arg(formatTime(m_audioManager->getDuration()))
-        .arg(m_audioManager->getDuration() / 1000000.0, 0, 'f', 2);
-    info += "\n";
-    
-    // File section
-    info += " FILE INFO:\n";
-    info += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-    QString currentFile = m_playlist->current();
-    if (!currentFile.isEmpty()) {
-        QFileInfo fileInfo(currentFile);
-        info += QString("Filename:     %1\n").arg(fileInfo.fileName());
-        info += QString("Path:         %1\n").arg(fileInfo.absolutePath());
-        info += QString("Size:         %1 MB\n").arg(fileInfo.size() / 1024.0 / 1024.0, 0, 'f', 2);
-    }
-    
-    // Show in a dialog with monospace font
-    QMessageBox msgBox(this);
-    msgBox.setWindowTitle("Audio File Information");
-    msgBox.setText(info);
-    msgBox.setIcon(QMessageBox::Information);
-    
-    // Use monospace font for better alignment
-    QFont font("Monospace");
-    font.setStyleHint(QFont::TypeWriter);
-    font.setPointSize(9);
-    msgBox.setFont(font);
-    
-    msgBox.exec();
-}
-
-// This shows debug information about your application
-void MainWindow::onDebugInfo()
-{
-    qDebug() << "=== Debug info requested ===";
-    
-    QString info = QString(
-        "=== QT APPLICATION DEBUG INFO ===\n\n"
-        "Window Properties:\n"
-        "  • Title: %1\n"
-        "  • Size: %2 x %3 pixels\n"
-        "  • Position: (%4, %5)\n"
-        "  • Visible: %6\n\n"
-        "Qt Information:\n"
-        "  • Qt Version: %7\n"
-        "  • Widget Count: %8\n\n"
-        "  • Check the terminal for debug output!\n"
-        "  • Try setting breakpoints\n"
-        "  • Use qDebug() for logging"
-    ).arg(windowTitle())
-     .arg(width()).arg(height())
-     .arg(x()).arg(y())
-     .arg(isVisible() ? "Yes" : "No")
-     .arg(QT_VERSION_STR)
-     .arg(findChildren<QWidget*>().count());
-    
-    // Show in message box
-    QMessageBox::information(this, "Debug Information", info);
-    
-    // Also print to console with detailed formatting
-    qDebug().noquote() << "\n" << info;
-}
-
-// New FFmpeg-related slot functions
-
-
-//file format changes needed 
-void MainWindow::onOpenFile()
-{
-    qDebug() << "=== onOpenFile() called ===";
-    
-    QStringList fileNames = QFileDialog::getOpenFileNames(
-        this,
-        "Open Lossless Audio File(s)",
-        QStandardPaths::writableLocation(QStandardPaths::MusicLocation),
-        "Lossless Audio (*.flac *.wav *.ape *.wv *.m4a);;FLAC Files (*.flac);;WAV Files (*.wav);;All Files (*)"
-    );
-    
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Audio Files"), "", tr("Audio Files (*.flac *.m4a *.wav *.mp3);;All Files (*)"));
     if (!fileNames.isEmpty()) {
-        qDebug() << "Selected" << fileNames.count() << "file(s)";//Coordinator
-        
         // Add files to playlist
-        m_playlist->addFiles(fileNames);
+        playlist.append(fileNames);
         
-        // If this is the first file(s) added, start playing
-        if (m_playlist->count() == fileNames.count()) {
-            loadTrackAtIndex(0);
+        // If this is the first file, start playing it
+        if (currentTrackIndex == -1) {
+            currentTrackIndex = playlist.size() - fileNames.size();
+            loadTrack(currentTrackIndex);
         }
+        
+        updateNextTrackDisplay();
+        statusBar()->showMessage(QString("Added %1 file(s) to queue").arg(fileNames.size()), 2000);
+    }
+}
+
+/**
+ * @brief Load a track from the playlist
+ * @param index Index of the track in the playlist
+ * 
+ * Loads the specified track, updates UI labels, resets seekbar, and updates next track display.
+ * Does not automatically start playback.
+ */
+void MainWindow::loadTrack(int index)
+{
+    if (index >= 0 && index < playlist.size()) {
+        currentTrackIndex = index;
+        QString fileName = playlist[index];
+        MPlayer->setSource(QUrl::fromLocalFile(fileName));
+        QFileInfo fileinfo(fileName);
+        ui->labelFileName->setText(fileinfo.fileName());
+        ui->seekSlider->setEnabled(true);
+        ui->seekSlider->setValue(0);
+        updateNextTrackDisplay();
+    }
+}
+
+/**
+ * @brief Update the "Next Track" display label
+ * 
+ * Shows the filename of the next track in queue, or "No next track" if at end.
+ */
+void MainWindow::updateNextTrackDisplay()
+{
+    int nextIndex = currentTrackIndex + 1;
+    if (nextIndex < playlist.size()) {
+        QFileInfo nextFile(playlist[nextIndex]);
+        ui->trackName_2->setText(QString("Next: %1").arg(nextFile.fileName()));
     } else {
-        qDebug() << "No file selected";
+        ui->trackName_2->setText("No next track");
     }
 }
 
-
-
-void MainWindow::onFileOpened(const QString &fileName)
+/**
+ * @brief Extract and display metadata from the current track
+ * 
+ * Reads metadata from the loaded track and updates UI labels:
+ * - Track name/title
+ * - Album artist
+ * - Album name
+ * - Album year/date
+ * - Album art/cover image (if available)
+ * 
+ * Uses QMediaMetaData to extract tags from audio files (FLAC, MP3, M4A, etc.)
+ */
+void MainWindow::displayMetadata()
 {
-    qDebug() << "=== File opened signal received:" << fileName << "===";
+    // Get metadata from the media player
+    QMediaMetaData metadata = MPlayer->metaData();
     
-    // Update window title with filename
-    setWindowTitle("FLAC Player v1.0 - " + fileName);
-    
-    m_statusLabel->setText("Status: File loaded - " + fileName);
-    statusBar()->showMessage("Loaded: " + fileName, 5000);
-    
-    // Update audio info display
-    if (m_audioManager->isFileOpen()) {
-        m_audioInfoLabel->setText(m_audioManager->getFormatInfo());
+    // Extract and display track title
+    QString trackTitle = "Unknown Track";
+    if (metadata.value(QMediaMetaData::Title).isValid()) {
+        trackTitle = metadata.stringValue(QMediaMetaData::Title);
+    } else if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+        // Fallback to filename without extension
+        QFileInfo fileInfo(playlist[currentTrackIndex]);
+        trackTitle = fileInfo.completeBaseName();
     }
+    ui->trackName->setText(trackTitle);
     
-    // Update playback controls
-    updatePlaybackControls();
-}
-
-void MainWindow::onFileClosed()
-{
-    qDebug() << "=== File closed signal received ===";
-    
-    // Reset window title
-    setWindowTitle("FLAC Player v1.0");
-    
-    m_statusLabel->setText("Status: No file loaded");
-    m_audioInfoLabel->setText("No audio file loaded");
-    statusBar()->showMessage("File closed", 2000);
-    
-    // Clear album art
-    if (m_albumArtLabel) {
-        m_albumArtLabel->clear();
-        m_albumArtLabel->setText("♪");
+    // Extract and display album artist
+    QString artist = "Unknown Artist";
+    if (metadata.value(QMediaMetaData::AlbumArtist).isValid()) {
+        artist = metadata.stringValue(QMediaMetaData::AlbumArtist);
+    } else if (metadata.value(QMediaMetaData::ContributingArtist).isValid()) {
+        artist = metadata.stringValue(QMediaMetaData::ContributingArtist);
     }
+    ui->albumArtist->setText(artist);
     
-    // Clear metadata labels
-    m_titleLabel->clear();
-    m_artistLabel->clear();
-    m_albumLabel->clear();
-    m_yearLabel->clear();
-    
-    // Reset playback controls
-    m_duration = 0;
-    m_timeLabel->setText("00:00 / 00:00");
-    m_seekSlider->setValue(0);
-    updatePlaybackControls();
-}
-
-void MainWindow::onAudioError(const QString &error)
-{
-    qDebug() << "=== Audio error:" << error << "===";
-    
-    QMessageBox::warning(this, "Audio Error", error);
-    m_statusLabel->setText("Status: Error - " + error);
-    statusBar()->showMessage("Error: " + error, 5000);
-}
-
-// Playback control slot functions
-void MainWindow::onPlayPause()
-{
-    qDebug() << "=== Play/Pause button clicked ===";
-    
-    if (!m_audioManager->isFileOpen()) {
-        QMessageBox::information(this, "No File", "Please open an audio file first!");
-        return;
+    // Extract and display album name
+    QString album = "Unknown Album";
+    if (metadata.value(QMediaMetaData::AlbumTitle).isValid()) {
+        album = metadata.stringValue(QMediaMetaData::AlbumTitle);
     }
+    ui->albumName->setText(album);
     
-    AudioManager::PlaybackState state = m_audioManager->getState();
-    
-    if (state == AudioManager::PlayingState) {
-        m_audioManager->pause();
-    } else {
-        m_audioManager->play();
-    }
-}
-
-void MainWindow::onStop()
-{
-    qDebug() << "=== Stop button clicked ===";
-    m_audioManager->stop();
-}
-
-void MainWindow::onPrevious()
-{
-    qDebug() << "=== Previous button clicked ===";
-    
-    if (m_playlist->hasPrevious()) {
-        QString prevFile = m_playlist->previous();
-        if (!prevFile.isEmpty()) {
-            m_audioManager->stop();
-            m_audioManager->openFile(prevFile);
-            m_audioManager->play();
-        }
-    }
-}
-
-void MainWindow::onNext()
-{
-    qDebug() << "=== Next button clicked ===";
-    
-    if (m_playlist->hasNext()) {
-        QString nextFile = m_playlist->next();
-        if (!nextFile.isEmpty()) {
-            m_audioManager->stop();
-            m_audioManager->openFile(nextFile);
-            m_audioManager->play();
-        }
-    }
-}
-
-void MainWindow::onTrackFinished()
-{
-    qDebug() << "=== Track finished ===";
-    
-    // Auto-advance to next track if available
-    if (m_playlist->hasNext()) {
-        onNext();
-    } else {
-        qDebug() << "End of playlist reached";
-        m_audioManager->stop();
-    }
-}
-
-void MainWindow::onVolumeChanged(int value)
-{
-    qreal volume = value / 100.0; // Convert to 0.0-1.0 range
-    qDebug() << "=== Volume changed to:" << volume << "===";
-    m_audioManager->setVolume(volume);
-}
-
-void MainWindow::onSeekPositionChanged(int value)
-{
-    if (m_duration > 0) {
-        qint64 position = (qint64(value) * m_duration) / 1000;
-        qDebug() << "=== Seek to position:" << position << "===";
-        m_audioManager->setPosition(position);
-    }
-}
-
-void MainWindow::onAudioStateChanged(AudioManager::PlaybackState state)
-{
-    qDebug() << "=== Audio state changed to:" << state << "===";
-    updatePlaybackControls();
-    
-    QString stateText;
-    switch (state) {
-    case AudioManager::StoppedState:
-        stateText = "Stopped";
-        break;
-    case AudioManager::PlayingState:
-        stateText = "Playing";
-        break;
-    case AudioManager::PausedState:
-        stateText = "Paused";
-        break;
-    }
-    
-    statusBar()->showMessage("Playback: " + stateText, 2000);
-}
-
-void MainWindow::onAudioPositionChanged(qint64 position)
-{
-    // Update elapsed time display
-    if (m_timeLabel) {
-        m_timeLabel->setText(formatTime(position));
-    }
-
-    // Update seek slider (only if user is not dragging it)
-    if (!m_seekSliderPressed && m_duration > 0) {
-        int sliderValue = (int)((position * 1000) / m_duration);
-        m_seekSlider->setValue(sliderValue);
-    }
-}
-
-void MainWindow::onAudioDurationChanged(qint64 duration)
-{
-    qDebug() << "=== Duration changed to:" << duration << "microseconds ===";
-    m_duration = duration;
-    
-    // Update elapsed / total time labels
-    if (m_timeLabel) {
-        m_timeLabel->setText(formatTime(0));
-    }
-    if (m_totalTimeLabel) {
-        m_totalTimeLabel->setText(formatTime(duration));
-    }
-
-    // Reset seek slider
-    m_seekSlider->setValue(0);
-}
-
-void MainWindow::onAlbumArtChanged(const QPixmap &albumArt)
-{
-    qDebug() << "=== Album art changed ===";
-    
-    if (!albumArt.isNull() && m_albumArtLabel) {
-        // Scale the album art to fit the label while maintaining aspect ratio
-        QPixmap scaled = albumArt.scaled(
-            m_albumArtLabel->size(),
-            Qt::KeepAspectRatio,
-            Qt::SmoothTransformation
-        );
-        m_albumArtLabel->setPixmap(scaled);
-        qDebug() << "Album art displayed:" << albumArt.size();
-    } else if (m_albumArtLabel) {
-        // No album art - show placeholder
-        m_albumArtLabel->clear();
-        m_albumArtLabel->setText("♪");
-        qDebug() << "No album art to display";
-    }
-}
-
-void MainWindow::onMetadataChanged(const AudioMetadata &metadata)
-{
-    qDebug() << "=== Metadata changed ===";
-    
-    if (!metadata.isEmpty()) {
-        // Display title
-        if (!metadata.title.isEmpty()) {
-            m_titleLabel->setText(metadata.title);
+    // Extract and display year
+    QString year = "----";
+    if (metadata.value(QMediaMetaData::Date).isValid()) {
+        QVariant dateVariant = metadata.value(QMediaMetaData::Date);
+        // Try to convert to year
+        if (dateVariant.typeId() == QMetaType::QDate) {
+            year = QString::number(dateVariant.toDate().year());
+        } else if (dateVariant.typeId() == QMetaType::QDateTime) {
+            year = QString::number(dateVariant.toDateTime().date().year());
         } else {
-            m_titleLabel->setText("Unknown Title");
-        }
-        
-        // Display artist
-        if (!metadata.artist.isEmpty()) {
-            m_artistLabel->setText(metadata.artist);
-        } else {
-            m_artistLabel->setText("Unknown Artist");
-        }
-        
-        // Display album
-        if (!metadata.album.isEmpty()) {
-            QString albumText = metadata.album;
-            if (!metadata.year.isEmpty()) {
-                albumText += " (" + metadata.year + ")";
-            }
-            m_albumLabel->setText(albumText);
-        } else {
-            m_albumLabel->setText("Unknown Album");
-        }
-        
-        // Display genre/year separately if no album
-        if (metadata.album.isEmpty() && !metadata.year.isEmpty()) {
-            m_yearLabel->setText(metadata.year);
-        } else if (!metadata.genre.isEmpty()) {
-            m_yearLabel->setText(metadata.genre);
-        } else {
-            m_yearLabel->clear();
-        }
-    } else {
-        m_titleLabel->setText("No metadata available");
-        m_artistLabel->clear();
-        m_albumLabel->clear();
-        m_yearLabel->clear();
-    }
-}
-
-void MainWindow::onPlaylistChanged()
-{
-    qDebug() << "=== Playlist changed ===";
-    
-    // Update the playlist widget
-    m_playlistWidget->clear();
-    
-    QStringList files = m_playlist->getFiles();
-    for (int i = 0; i < files.count(); ++i) {
-        QFileInfo fileInfo(files[i]);
-        QString displayName = QString("%1. %2").arg(i + 1).arg(fileInfo.fileName());
-        QListWidgetItem *item = new QListWidgetItem(displayName);
-        item->setData(Qt::UserRole, files[i]); // Store full path
-        m_playlistWidget->addItem(item);
-    }
-    
-    // Highlight current track
-    if (m_playlist->currentIndex() >= 0) {
-        m_playlistWidget->setCurrentRow(m_playlist->currentIndex());
-    }
-    
-    // Update prev/next button states
-    m_prevButton->setEnabled(m_playlist->hasPrevious());
-    m_nextButton->setEnabled(m_playlist->hasNext());
-}
-
-void MainWindow::onCurrentIndexChanged(int index)
-{
-    qDebug() << "=== Current index changed to:" << index << "===";
-    
-    if (index >= 0 && index < m_playlistWidget->count()) {
-        m_playlistWidget->setCurrentRow(index);
-    }
-    
-    // Update prev/next button states
-    m_prevButton->setEnabled(m_playlist->hasPrevious());
-    m_nextButton->setEnabled(m_playlist->hasNext());
-}
-
-void MainWindow::onPlaylistItemDoubleClicked(QListWidgetItem *item)
-{
-    if (!item) return;
-    
-    int index = m_playlistWidget->row(item);
-    qDebug() << "=== Playlist item double-clicked, index:" << index << "===";
-    
-    loadTrackAtIndex(index);
-}
-
-void MainWindow::onShuffleToggled(bool checked)
-{
-    qDebug() << "=== Shuffle toggled:" << checked << "===";
-    m_playlist->setShuffle(checked);
-}
-
-void MainWindow::onShuffleChanged(bool enabled)
-{
-    qDebug() << "=== Shuffle changed:" << enabled << "===";
-    
-    // Update button state
-    m_shuffleButton->setChecked(enabled);
-    
-    // Update button style to show active state
-    if (enabled) {
-        m_shuffleButton->setStyleSheet("background-color: #4CAF50; color: white;");
-        statusBar()->showMessage("Shuffle enabled", 2000);
-    } else {
-        m_shuffleButton->setStyleSheet("");
-        statusBar()->showMessage("Shuffle disabled", 2000);
-    }
-}
-
-void MainWindow::onSavePlaylist()
-{
-    qDebug() << "=== Save playlist clicked ===";
-    
-    if (m_playlist->count() == 0) {
-        QMessageBox::information(this, "Empty Playlist", "Cannot save an empty playlist.");
-        return;
-    }
-    
-    QString defaultPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    QString fileName = QFileDialog::getSaveFileName(
-        this,
-        "Save Playlist",
-        defaultPath + "/" + m_playlist->getName() + ".m3u",
-        "M3U Playlist (*.m3u);;All Files (*)"
-    );
-    
-    if (!fileName.isEmpty()) {
-        if (m_playlist->saveToFile(fileName)) {
-            statusBar()->showMessage("Playlist saved: " + fileName, 3000);
-            QMessageBox::information(this, "Success", "Playlist saved successfully!");
-        } else {
-            QMessageBox::warning(this, "Error", "Failed to save playlist.");
-        }
-    }
-}
-
-void MainWindow::onLoadPlaylist()
-{
-    qDebug() << "=== Load playlist clicked ===";
-    
-    QString defaultPath = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    QString fileName = QFileDialog::getOpenFileName(
-        this,
-        "Load Playlist",
-        defaultPath,
-        "M3U Playlist (*.m3u);;All Files (*)"
-    );
-    
-    if (!fileName.isEmpty()) {
-        if (m_playlist->loadFromFile(fileName)) {
-            m_playlistNameLabel->setText(m_playlist->getName());
-            statusBar()->showMessage("Playlist loaded: " + m_playlist->getName(), 3000);
-            
-            // Auto-start playing the first track if available
-            if (m_playlist->count() > 0) {
-                loadTrackAtIndex(0);
-            }
-        } else {
-            QMessageBox::warning(this, "Error", "Failed to load playlist.");
-        }
-    }
-}
-
-void MainWindow::onNewPlaylist()
-{
-    qDebug() << "=== New playlist clicked ===";
-    
-    if (m_playlist->count() > 0) {
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this,
-            "New Playlist",
-            "Current playlist will be cleared. Continue?",
-            QMessageBox::Yes | QMessageBox::No
-        );
-        
-        if (reply == QMessageBox::No) {
-            return;
-        }
-    }
-    
-    bool ok;
-    QString name = QInputDialog::getText(
-        this,
-        "New Playlist",
-        "Enter playlist name:",
-        QLineEdit::Normal,
-        "My Playlist",
-        &ok
-    );
-    
-    if (ok && !name.isEmpty()) {
-        m_audioManager->stop();
-        m_playlist->clear();
-        m_playlist->setName(name);
-        m_playlistNameLabel->setText(name);
-        statusBar()->showMessage("New playlist created: " + name, 2000);
-    }
-}
-
-void MainWindow::onClearPlaylist()
-{
-    qDebug() << "=== Clear playlist clicked ===";
-    
-    if (m_playlist->count() == 0) {
-        return;
-    }
-    
-    QMessageBox::StandardButton reply = QMessageBox::question(
-        this,
-        "Clear Playlist",
-        "Are you sure you want to clear the playlist?",
-        QMessageBox::Yes | QMessageBox::No
-    );
-    
-    if (reply == QMessageBox::Yes) {
-        m_audioManager->stop();
-        m_playlist->clear();
-        statusBar()->showMessage("Playlist cleared", 2000);
-    }
-}
-
-void MainWindow::onEditMetadata()
-{
-    qDebug() << "=== Edit metadata clicked ===";
-    
-    QString currentFile = m_playlist->current();
-    if (currentFile.isEmpty()) {
-        QMessageBox::information(this, "No File", "Please load a file first.");
-        return;
-    }
-    
-    MetadataEditor editor(currentFile, this);
-    if (editor.exec() == QDialog::Accepted) {
-        // Reload the file to refresh metadata
-        statusBar()->showMessage("Metadata updated. Reloading file...", 3000);
-        
-        // Reload current file
-        bool wasPlaying = (m_audioManager->getState() == AudioManager::PlayingState);
-        qint64 currentPos = m_audioManager->getPosition();
-        
-        m_audioManager->stop();
-        if (m_audioManager->openFile(currentFile)) {
-            if (wasPlaying) {
-                m_audioManager->setPosition(currentPos);
-                m_audioManager->play();
+            QString dateStr = dateVariant.toString();
+            // Try to extract year from string (first 4 digits)
+            QRegularExpression yearRegex("(\\d{4})");
+            QRegularExpressionMatch match = yearRegex.match(dateStr);
+            if (match.hasMatch()) {
+                year = match.captured(1);
             }
         }
     }
-}
-
-void MainWindow::onConvertToMP3()
-{
-    qDebug() << "=== Convert to MP3 clicked ===";
+    ui->albumYear->setText(year);
     
-    QString currentFile = m_playlist->current();
-    if (currentFile.isEmpty()) {
-        QMessageBox::information(this, "No File", "Please load a file first.");
-        return;
-    }
-    
-    // Check if file is already MP3
-    if (currentFile.toLower().endsWith(".mp3")) {
-        QMessageBox::information(this, "Already MP3", "The current file is already in MP3 format.");
-        return;
-    }
-    
-    ConversionDialog dialog(currentFile, this);
-    dialog.exec();
-}
-
-void MainWindow::onConvertSelectedSong()
-{
-    QListWidgetItem *item = m_playlistWidget->currentItem();
-    if (!item) {
-        QMessageBox::information(this, "No Selection", "Please select a song from the playlist.");
-        return;
-    }
-    
-    int index = m_playlistWidget->row(item);
-    QString filePath = m_playlist->getFileAt(index);
-    
-    if (filePath.isEmpty()) {
-        QMessageBox::warning(this, "Error", "Could not retrieve file path.");
-        return;
-    }
-    
-    // Check if file is already MP3
-    if (filePath.toLower().endsWith(".mp3")) {
-        QMessageBox::information(this, "Already MP3", "The selected file is already in MP3 format.");
-        return;
-    }
-    
-    ConversionDialog dialog(filePath, this);
-    dialog.exec();
-}
-
-void MainWindow::onConvertAllPlaylist()
-{
-    QStringList nonMP3Files = getNonMP3FilesFromPlaylist();
-    
-    if (nonMP3Files.isEmpty()) {
-        QMessageBox::information(this, "Nothing to Convert", "All files in the playlist are already in MP3 format.");
-        return;
-    }
-    
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Convert All",
-                                  QString("Convert %1 file(s) to MP3?\nThis may take some time.")
-                                      .arg(nonMP3Files.count()),
-                                  QMessageBox::Yes | QMessageBox::No);
-    
-    if (reply == QMessageBox::Yes) {
-        convertFilesToMP3(nonMP3Files);
-    }
-}
-
-void MainWindow::showPlaylistContextMenu(const QPoint &pos)
-{
-    QListWidgetItem *item = m_playlistWidget->itemAt(pos);
-    
-    QMenu contextMenu(this);
-    
-    if (item) {
-        // Single item selected
-        int index = m_playlistWidget->row(item);
-        QString filePath = m_playlist->getFileAt(index);
-        bool isMP3 = filePath.toLower().endsWith(".mp3");
-        
-        QAction *playAction = contextMenu.addAction("Play");
-        connect(playAction, &QAction::triggered, [this, item]() {
-            onPlaylistItemDoubleClicked(item);
-        });
-        
-        contextMenu.addSeparator();
-        
-        QAction *convertAction = contextMenu.addAction("Convert to MP3");
-        convertAction->setEnabled(!isMP3);
-        connect(convertAction, &QAction::triggered, this, &MainWindow::onConvertSelectedSong);
-    }
-    
-    // Always show convert all option
-    if (m_playlist->count() > 0) {
-        if (item) {
-            contextMenu.addSeparator();
-        }
-        
-        QStringList nonMP3Files = getNonMP3FilesFromPlaylist();
-        QAction *convertAllAction = contextMenu.addAction(QString("Convert All to MP3 (%1 files)")
-                                                              .arg(nonMP3Files.count()));
-        convertAllAction->setEnabled(!nonMP3Files.isEmpty());
-        connect(convertAllAction, &QAction::triggered, this, &MainWindow::onConvertAllPlaylist);
-    }
-    
-    if (!contextMenu.isEmpty()) {
-        contextMenu.exec(m_playlistWidget->mapToGlobal(pos));
-    }
-}
-
-void MainWindow::convertFilesToMP3(const QStringList &files)
-{
-    if (files.isEmpty()) {
-        return;
-    }
-    
-    // For now, convert files one by one
-    // TODO: Implement a batch conversion dialog with progress tracking
-    int successCount = 0;
-    int failureCount = 0;
-    QStringList failedFiles;
-    
-    for (const QString &file : files) {
-        ConversionDialog dialog(file, this);
-        if (dialog.exec() == QDialog::Accepted) {
-            successCount++;
+    // Extract and display album art
+    if (metadata.value(QMediaMetaData::ThumbnailImage).isValid()) {
+        QImage coverImage = metadata.value(QMediaMetaData::ThumbnailImage).value<QImage>();
+        if (!coverImage.isNull()) {
+            // Scale image to fit the label while maintaining aspect ratio
+            QPixmap coverPixmap = QPixmap::fromImage(coverImage);
+            QSize labelSize = ui->albumArtLabel->size();  // Assuming label_2 is for album art
+            QPixmap scaledPixmap = coverPixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            ui->albumArtLabel->setPixmap(scaledPixmap);
+            ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         } else {
-            failureCount++;
-            QFileInfo info(file);
-            failedFiles.append(info.fileName());
+            // No album art available - show placeholder text
+            ui->albumArtLabel->clear();
+            ui->albumArtLabel->setText("No Album Art");
+            ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         }
-    }
-    
-    // Show summary
-    QString message = QString("Conversion complete:\n%1 successful, %2 failed")
-                          .arg(successCount).arg(failureCount);
-    
-    if (!failedFiles.isEmpty()) {
-        message += "\n\nFailed files:\n" + failedFiles.join("\n");
-    }
-    
-    QMessageBox::information(this, "Batch Conversion Complete", message);
-}
-
-QStringList MainWindow::getNonMP3FilesFromPlaylist() const
-{
-    QStringList nonMP3Files;
-    QStringList allFiles = m_playlist->getFiles();
-    
-    for (const QString &file : allFiles) {
-        if (!file.toLower().endsWith(".mp3")) {
-            nonMP3Files.append(file);
+    } else if (metadata.value(QMediaMetaData::CoverArtImage).isValid()) {
+        // Try alternative metadata key for cover art
+        QImage coverImage = metadata.value(QMediaMetaData::CoverArtImage).value<QImage>();
+        if (!coverImage.isNull()) {
+            QPixmap coverPixmap = QPixmap::fromImage(coverImage);
+            QSize labelSize = ui->albumArtLabel->size();
+            QPixmap scaledPixmap = coverPixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            ui->albumArtLabel->setPixmap(scaledPixmap);
+            ui->albumArtLabel->setAlignment(Qt::AlignCenter);
+        } else {
+            ui->albumArtLabel->clear();
+            ui->albumArtLabel->setText("No Album Art");
+            ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         }
-    }
-    
-    return nonMP3Files;
-}
-
-// Helper functions
-void MainWindow::loadTrackAtIndex(int index)
-{
-    if (index < 0 || index >= m_playlist->count()) {
-        return;
-    }
-    
-    QString filePath = m_playlist->getFileAt(index);
-    if (filePath.isEmpty()) {
-        return;
-    }
-    
-    qDebug() << "=== Loading track at index:" << index << "===";
-    
-    m_playlist->setCurrentIndex(index);
-    m_audioManager->stop();
-    
-    if (m_audioManager->openFile(filePath)) {
-        m_audioManager->play();
-    }
-}
-
-void MainWindow::updatePlaybackControls()
-{
-    AudioManager::PlaybackState state = m_audioManager->getState();
-    bool hasFile = m_audioManager->isFileOpen();
-    
-    // Update play/pause button
-    if (state == AudioManager::PlayingState) {
-        m_playPauseButton->setText("⏸");
     } else {
-        m_playPauseButton->setText("▶");
+        // No album art available
+        ui->albumArtLabel->clear();
+        ui->albumArtLabel->setText("No Album Art");
+        ui->albumArtLabel->setAlignment(Qt::AlignCenter);
     }
     
-    // Enable/disable controls based on file availability
-    m_playPauseButton->setEnabled(hasFile);
-    m_stopButton->setEnabled(hasFile && state != AudioManager::StoppedState);
-    m_seekSlider->setEnabled(hasFile);
-    
-    qDebug() << "Playback controls updated - hasFile:" << hasFile << "state:" << state;
+    // Update status bar with additional info
+    QString statusInfo = QString("Loaded: %1").arg(trackTitle);
+    if (metadata.value(QMediaMetaData::AudioBitRate).isValid()) {
+        int bitrate = metadata.value(QMediaMetaData::AudioBitRate).toInt();
+        statusInfo += QString(" | %1 kbps").arg(bitrate / 1000);
+    }
+    statusBar()->showMessage(statusInfo, 3000);
 }
 
-QString MainWindow::formatTime(qint64 microseconds) const
+
+void MainWindow::on_Shuffle_clicked()
 {
-    qint64 seconds = microseconds / 1000000;
-    qint64 minutes = seconds / 60;
-    seconds = seconds % 60;
-    
-    return QString("%1:%2")
-        .arg(minutes, 2, 10, QChar('0'))
-        .arg(seconds, 2, 10, QChar('0'));
+
+
+
 }
+
+
+void MainWindow::on_previousTrack_clicked()
+{
+    if (isButtonHeld) {
+        // Was held - seeking already handled
+        isButtonHeld = false;
+        return;
+    }
+    
+    // Quick click - go to previous track
+    if (currentTrackIndex > 0) {
+        bool wasPlaying = isPlaying;  // Save current playing state
+        loadTrack(currentTrackIndex - 1);
+        if (wasPlaying) {
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        }
+        statusBar()->showMessage("Previous track", 2000);
+    } else {
+        // Already at first track, restart current track
+        MPlayer->setPosition(0);
+        statusBar()->showMessage("Restarting track", 2000);
+    }
+}
+
+
+
+
+
+//icon and functionality toggle for play and pause button
+
+void MainWindow::on_playPause_clicked()
+{
+    if (isPlaying) {
+        MPlayer->pause();
+        ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+        statusBar()->showMessage("Playback paused", 2000);
+        isPlaying = false;
+    } else {
+        MPlayer->play();
+        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        statusBar()->showMessage("Playback started", 2000);
+        isPlaying = true;
+    }
+}
+
+
+
+//next track button functionality - click to skip track, hold to seek
+void MainWindow::on_nextTrack_clicked()
+{
+    if (isButtonHeld) {
+        // Was held - seeking already handled
+        isButtonHeld = false;
+        return;
+    }
+    
+    // Quick click - go to next track
+    if (currentTrackIndex + 1 < playlist.size()) {
+        bool wasPlaying = isPlaying;  // Save current playing state
+        loadTrack(currentTrackIndex + 1);
+        if (wasPlaying) {
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        }
+        statusBar()->showMessage("Next track", 2000);
+    } else {
+        statusBar()->showMessage("End of playlist", 2000);
+    }
+}
+
+
+//implementation of seek forward and backwards
+
+ //seeks forward 10 seconds if pressed and held and if clicked skips to next track
+void MainWindow::seekForward()
+{
+    qint64 currentPos = MPlayer->position();
+    qint64 newPos = qMin(mediaDuration, currentPos + 10000);
+    MPlayer->setPosition(newPos);
+    statusBar()->showMessage("Seeking forward", 1000);
+}
+
+ //for backwards 
+void MainWindow::seekBackward()
+{
+    qint64 currentPos = MPlayer->position();
+    qint64 newPos = qMax(qint64(0), currentPos - 10000);
+    MPlayer->setPosition(newPos);
+    statusBar()->showMessage("Seeking backward", 1000);
+}
+
+
+//this is for displaying the next songs in the queue, for now it is a dialog box instead of a side panel
+ 
+void MainWindow::on_trackQueue_clicked()
+{
+    if (playlist.isEmpty()) {
+        QMessageBox::information(this, "Queue", "No tracks in queue.\n\nUse File > Open to add tracks.");
+        return;
+    }
+    
+    // Create a modal dialog to show the queue
+    QDialog *queueDialog = new QDialog(this);
+    queueDialog->setWindowTitle("Track Queue");
+    queueDialog->resize(500, 400);
+    
+    QVBoxLayout *layout = new QVBoxLayout(queueDialog);
+    
+    // Add list widget to show tracks
+    QListWidget *trackList = new QListWidget(queueDialog);
+    
+    for (int i = 0; i < playlist.size(); ++i) {
+        QFileInfo fileInfo(playlist[i]);
+        QString itemText = QString("%1. %2").arg(i + 1).arg(fileInfo.fileName());
+        QListWidgetItem *item = new QListWidgetItem(itemText);
+        
+        // Highlight current track
+        if (i == currentTrackIndex) {
+            item->setBackground(QColor(100, 150, 255, 100));
+            item->setForeground(Qt::white);
+        }
+        
+        trackList->addItem(item);
+    }
+    
+    // Connect double-click to play that track
+    connect(trackList, &QListWidget::itemDoubleClicked, [this, trackList, queueDialog](QListWidgetItem *item) {
+        int index = trackList->row(item);
+        loadTrack(index);
+        MPlayer->play();
+        isPlaying = true;
+        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        queueDialog->accept();
+    });
+    
+    layout->addWidget(new QLabel(QString("Total tracks: %1 | Current: %2").arg(playlist.size()).arg(currentTrackIndex + 1)));
+    layout->addWidget(trackList);
+    
+    // Add close button
+    QPushButton *closeButton = new QPushButton("Close", queueDialog);
+    connect(closeButton, &QPushButton::clicked, queueDialog, &QDialog::accept);
+    layout->addWidget(closeButton);
+    
+    queueDialog->exec();
+    delete queueDialog;
+}
+
+
+void MainWindow::on_seekSlider_valueChanged(int value)
+{
+    // Only seek if user is dragging the slider (not when we update it programmatically)
+    if (!isSeeking && mediaDuration > 0) {
+        qint64 position = (value * mediaDuration) / 100;
+        MPlayer->setPosition(position);
+    }
+}
+
+
+void MainWindow::on_volumeSlider_valueChanged(int value)
+{
+    audioOutput->setVolume(value / 100.0);
+}
+
+
+// Update seek slider and timestamp as playback position changes
+
+void MainWindow::onPositionChanged(qint64 position)
+{
+    if (!ui->seekSlider->isSliderDown() && mediaDuration > 0) {
+        isSeeking = true;
+        int sliderPosition = (position * 100) / mediaDuration;
+        ui->seekSlider->setValue(sliderPosition);
+        isSeeking = false;
+    }
+    
+    // Update timestamp label
+    qint64 currentSeconds = position / 1000;
+    qint64 totalSeconds = mediaDuration / 1000;
+    
+    QString timeText = QString("%1:%2 / %3:%4")
+        .arg(currentSeconds / 60, 2, 10, QChar('0'))
+        .arg(currentSeconds % 60, 2, 10, QChar('0'))
+        .arg(totalSeconds / 60, 2, 10, QChar('0'))
+        .arg(totalSeconds % 60, 2, 10, QChar('0'));
+    
+    ui->timeStamp->setText(timeText);
+}
+
+void MainWindow::onDurationChanged(qint64 duration)
+{
+    mediaDuration = duration;
+    ui->seekSlider->setEnabled(duration > 0);
+}
+
+
+
+ //the function onMediaStatusChanged is responsible for moving to the next track when the current one ends
+void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
+{
+    if (status == QMediaPlayer::EndOfMedia) {
+        // Current track ended, automatically play next track
+        if (currentTrackIndex + 1 < playlist.size()) {
+            loadTrack(currentTrackIndex + 1);
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+            statusBar()->showMessage("Playing next track", 2000);
+        } else {
+            // End of playlist
+            isPlaying = false;
+            ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+            statusBar()->showMessage("End of playlist", 2000);
+        }
+    }
+}
+
+
+
+//this whole section is responsible for the gradient effect following the mouse cursor
+//do not modify unless necessary, it is already optimized for performance. 
+
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    qint64 currentTime = frameTimer.elapsed();
+    qint64 elapsed = currentTime - lastUpdateTime;
+    
+    // Throttle updates to maintain 60fps (16ms per frame)
+    // Allow updates if enough time has passed OR if mouse moved significantly
+    QPoint newPos = centralWidget() ? centralWidget()->mapFrom(this, event->pos()) : event->pos();
+    int distance = QPoint(newPos - mousePos).manhattanLength();
+    
+    // Lower threshold for smoother movement, especially over buttons
+    if (elapsed < TARGET_FRAME_TIME - 2 && distance < 2) {
+        // Skip this update if we're updating too frequently and mouse barely moved
+        QMainWindow::mouseMoveEvent(event);
+        return;
+    }
+    
+    lastUpdateTime = currentTime;
+    
+    // Map the event position to central widget coordinates if available
+    lastMousePos = mousePos;
+    mousePos = newPos;
+    
+    // Only update the region affected by the gradient (old and new positions)
+    if (!lastMousePos.isNull()) {
+        QPoint globalMousePos = centralWidget() ? centralWidget()->mapTo(this, mousePos) : mousePos;
+        QPoint globalLastPos = centralWidget() ? centralWidget()->mapTo(this, lastMousePos) : lastMousePos;
+        
+        // Update both old and new gradient areas (with some margin)
+        int radius = 110; // Slightly larger than gradient radius for smooth transition
+        update(QRect(globalLastPos.x() - radius, globalLastPos.y() - radius, radius * 2, radius * 2));
+        update(QRect(globalMousePos.x() - radius, globalMousePos.y() - radius, radius * 2, radius * 2));
+    } else {
+        update();
+    }
+    
+    QMainWindow::mouseMoveEvent(event);
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    // Handle mouse move events for gradient effect
+    if (event->type() == QEvent::MouseMove) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        QWidget *widget = qobject_cast<QWidget*>(obj);
+        if (widget && obj != ui->nextTrack && obj != ui->previousTrack) {
+            QPoint globalPos = widget->mapTo(this, mouseEvent->pos());
+            QMouseEvent mappedEvent(QEvent::MouseMove, globalPos, mouseEvent->button(), 
+                                   mouseEvent->buttons(), mouseEvent->modifiers());
+            mouseMoveEvent(&mappedEvent);
+        }
+    }
+    
+    // Handle button press/release for next/previous buttons
+    if (obj == ui->nextTrack || obj == ui->previousTrack) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            buttonPressTimer.start();
+            isButtonHeld = false;
+            // Start a timer to check if button is held
+            QTimer::singleShot(500, this, [this, obj]() {
+                if (buttonPressTimer.isValid() && buttonPressTimer.elapsed() >= 500) {
+                    isButtonHeld = true;
+                    // Start seeking
+                    if (obj == ui->nextTrack) {
+                        seekForward();
+                    } else if (obj == ui->previousTrack) {
+                        seekBackward();
+                    }
+                }
+            });
+        } else if (event->type() == QEvent::MouseButtonRelease) {
+            buttonPressTimer.invalidate();
+        }
+    }
+    
+    return QMainWindow::eventFilter(obj, event);
+}
+
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+    QMainWindow::paintEvent(event);
+    
+    // Draw the gradient on the central widget
+    if (centralWidget() && !mousePos.isNull()) {
+        QPainter painter(this);
+        
+        // Optimize painter settings for performance
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        
+        // Clip to the update region for better performance
+        painter.setClipRegion(event->region());
+        
+        // Map mouse position to this widget's coordinates
+        QPoint globalMousePos = centralWidget()->mapTo(this, mousePos);
+        
+        // Create radial gradient centered on mouse position
+        QRadialGradient gradient(globalMousePos, 100);
+        gradient.setColorAt(0, QColor(255, 255, 255, 60));  // White at center with transparency
+        gradient.setColorAt(0.7, QColor(255, 255, 255, 20)); // Softer falloff
+        gradient.setColorAt(1, QColor(255, 255, 255, 0));   // Fully transparent at edge
+        
+        painter.setBrush(gradient);
+        painter.setPen(Qt::NoPen);
+        painter.drawEllipse(globalMousePos, 100, 100);
+    }
+}
+

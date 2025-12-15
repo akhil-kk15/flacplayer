@@ -4,6 +4,9 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QDateTime>
+#include <QtMultimedia/qmediadevices.h>
+#include <QtMultimedia/qaudiodevice.h>
+#include <QtMultimedia/qaudiosink.h>
 
 // AudioBuffer implementation
 AudioBuffer::AudioBuffer(QObject *parent)
@@ -69,6 +72,7 @@ AudioManager::AudioManager(QObject *parent)
     , m_swrContext(nullptr)
     , m_audioStreamIndex(-1)
     , m_audioOutput(nullptr)
+    , m_audioSink(nullptr)
     , m_audioBuffer(nullptr)
     , m_positionTimer(new QTimer(this))
     , m_decodeTimer(new QTimer(this))
@@ -84,7 +88,6 @@ AudioManager::AudioManager(QObject *parent)
     , m_playbackStartTime(0)
     , m_pausePosition(0)
 {
-    qDebug() << "=== AudioManager Constructor ===";
     initializeFFmpeg();
     
     // Setup position timer
@@ -98,7 +101,6 @@ AudioManager::AudioManager(QObject *parent)
 
 AudioManager::~AudioManager()
 {
-    qDebug() << "=== AudioManager Destructor ===";
     stop();
     cleanup();
     cleanupDecoding();
@@ -106,16 +108,10 @@ AudioManager::~AudioManager()
 
 void AudioManager::initializeFFmpeg()
 {
-    qDebug() << "Initializing FFmpeg...";
-    
-    qDebug() << "FFmpeg initialized successfully";
-    qDebug() << "FFmpeg version:" << av_version_info();
 }
 
 bool AudioManager::openFile(const QString &filePath)
 {
-    qDebug() << "=== Opening audio file:" << filePath << "===";
-    
     // Close any previously opened file
     closeFile();
     
@@ -214,22 +210,10 @@ bool AudioManager::openFile(const QString &filePath)
     }
     
     m_currentFile = filePath;
-    
-    qDebug() << "File opened successfully!";
-    printFileInfo();
-    
-    // Setup audio output for playback
     setupAudioOutput();
-    
-    // Initialize decoding components
     initializeDecoding();
-    
-    // Extract album art if available
     extractAlbumArt();
-    
-    // Extract metadata
     extractMetadata();
-    
     emit fileOpened(fileInfo.fileName());
     emit durationChanged(getDuration());
     return true;
@@ -238,7 +222,6 @@ bool AudioManager::openFile(const QString &filePath)
 void AudioManager::closeFile()
 {
     if (isFileOpen()) {
-        qDebug() << "=== Closing audio file ===";
         stop();
         cleanup();
         emit fileClosed();
@@ -248,17 +231,12 @@ void AudioManager::closeFile()
 // Playback control methods
 void AudioManager::play()
 {
-    qDebug() << "=== Play requested ===";
-    
     if (!isFileOpen()) {
-        qDebug() << "No file is open for playback";
         return;
     }
     
-    if (m_state == PausedState && m_audioOutput) {
-        // Resume from pause
-        qDebug() << "Resuming playback";
-        m_audioOutput->resume();
+    if (m_state == PausedState && m_audioSink) {
+        m_audioSink->resume();
         m_state = PlayingState;
         m_positionTimer->start();
         m_decodeTimer->start();
@@ -268,23 +246,17 @@ void AudioManager::play()
     }
     
     if (m_state == PlayingState) {
-        qDebug() << "Already playing";
         return;
     }
     
-    if (!m_audioOutput || !m_audioBuffer) {
-        qDebug() << "No audio output available";
+    if (!m_audioSink || !m_audioBuffer) {
         return;
     }
     
-    qDebug() << "Starting playback";
-    
-    // Clear any existing buffer data
     m_audioBuffer->clearBuffer();
     
-    // Start Qt audio output
-    if (m_audioOutput->state() != QAudio::ActiveState) {
-        m_audioOutput->start(m_audioBuffer);
+    if (m_audioSink->state() != QAudio::ActiveState) {
+        m_audioSink->start(m_audioBuffer);
     }
     
     // Start decoding
@@ -298,31 +270,23 @@ void AudioManager::play()
     m_positionTimer->start();
     m_decodeTimer->start();
     emit stateChanged(m_state);
-    
-    qDebug() << "Playback started successfully";
 }
 
 void AudioManager::pause()
 {
-    qDebug() << "=== Pause requested ===";
-    
     if (m_state != PlayingState) {
-        qDebug() << "Not currently playing";
         return;
     }
     
     m_shouldDecode.storeRelaxed(0);
     m_decodeTimer->stop();
-    
-    if (m_audioOutput) {
-        m_audioOutput->suspend();
+    if (m_audioSink) {
+        m_audioSink->suspend();
     }
-    
     {
         QMutexLocker locker(&m_stateMutex);
-        m_pausePosition = m_currentPosition; // Save position for resume
+        m_pausePosition = m_currentPosition;
     }
-    
     m_state = PausedState;
     m_positionTimer->stop();
     emit stateChanged(m_state);
@@ -330,8 +294,6 @@ void AudioManager::pause()
 
 void AudioManager::stop()
 {
-    qDebug() << "=== Stop requested ===";
-    
     if (m_state == StoppedState) {
         return;
     }
@@ -339,15 +301,12 @@ void AudioManager::stop()
     m_shouldDecode.storeRelaxed(0);
     m_decodeTimer->stop();
     m_positionTimer->stop();
-    
-    if (m_audioOutput) {
-        m_audioOutput->stop();
+    if (m_audioSink) {
+        m_audioSink->stop();
     }
-    
     if (m_audioBuffer) {
         m_audioBuffer->clearBuffer();
     }
-    
     // Reset to beginning of file
     if (m_formatContext) {
         av_seek_frame(m_formatContext, m_audioStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
@@ -355,7 +314,6 @@ void AudioManager::stop()
             avcodec_flush_buffers(m_codecContext);
         }
     }
-    
     {
         QMutexLocker locker(&m_stateMutex);
         m_currentPosition = 0;
@@ -370,8 +328,6 @@ void AudioManager::stop()
 
 void AudioManager::setVolume(qreal volume)
 {
-    qDebug() << "=== Setting volume to:" << volume << "===";
-    
     m_volume = qBound(0.0, volume, 1.0);
     
     if (m_audioOutput) {
@@ -381,8 +337,6 @@ void AudioManager::setVolume(qreal volume)
 
 void AudioManager::setPosition(qint64 position)
 {
-    qDebug() << "=== Setting position to:" << position << "microseconds ===";
-    
     if (!isFileOpen() || m_audioStreamIndex < 0) {
         return;
     }
@@ -410,10 +364,8 @@ void AudioManager::setPosition(qint64 position)
     if (m_audioBuffer) {
         m_audioBuffer->clearBuffer();
     }
-    
-    // Ignore next few packets after seek (they may have stale timestamps)
-    m_ignorePackets.storeRelaxed(10);  // Ignore first 10 packets
-    
+    // Ignore next few packets after seek
+    m_ignorePackets.storeRelaxed(10);
     // Update current position
     {
         QMutexLocker locker(&m_stateMutex);
@@ -426,7 +378,6 @@ void AudioManager::setPosition(qint64 position)
         }
     }
     
-    qDebug() << "Seek successful to:" << position << "microseconds";
     emit positionChanged(m_currentPosition);
 }
 
@@ -523,38 +474,17 @@ QString AudioManager::getFormatInfo() const
      .arg(m_formatContext->bit_rate / 1000);
 }
 
-void AudioManager::printFileInfo() const
-{
-    if (!isFileOpen()) {
-        qDebug() << "No file is currently open";
-        return;
-    }
-    
-    qDebug() << "=== AUDIO FILE INFORMATION ===";
-    qDebug() << "File:" << getFileName();
-    qDebug() << "Format:" << m_formatContext->iformat->long_name;
-    qDebug() << "Codec:" << getCodecName();
-    qDebug() << "Sample Rate:" << getSampleRate() << "Hz";
-    qDebug() << "Channels:" << getChannels();
-    qDebug() << "Duration:" << (getDuration() / 1000000.0) << "seconds";
-    qDebug() << "Bitrate:" << (m_formatContext->bit_rate / 1000) << "kbps";
-    qDebug() << "===============================";
-}
-
 void AudioManager::cleanup()
 {
     cleanupAudioOutput();
-    
     if (m_codecContext) {
         avcodec_free_context(&m_codecContext);
         m_codecContext = nullptr;
     }
-    
     if (m_formatContext) {
         avformat_close_input(&m_formatContext);
         m_formatContext = nullptr;
     }
-    
     m_codec = nullptr;
     m_audioStreamIndex = -1;
     m_currentFile.clear();
@@ -567,42 +497,38 @@ void AudioManager::setupAudioOutput()
         return;
     }
     
-    qDebug() << "Setting up audio output...";
-    
-    // Clean up any existing audio output
     cleanupAudioOutput();
     
-    // Create Qt audio format from FFmpeg codec context
     QAudioFormat format;
     format.setSampleRate(getSampleRate());
     format.setChannelCount(getChannels());
-    format.setSampleSize(16); // 16-bit samples
-    format.setCodec("audio/pcm");
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setSampleType(QAudioFormat::SignedInt);
+    format.setSampleFormat(QAudioFormat::Int16);
     
-    qDebug() << "Audio format:";
-    qDebug() << "  Sample Rate:" << format.sampleRate();
-    qDebug() << "  Channels:" << format.channelCount();
-    qDebug() << "  Sample Size:" << format.sampleSize();
+    QAudioDevice device = QMediaDevices::defaultAudioOutput();
+    if (device.isNull()) {
+        qDebug() << "ERROR: No audio output device available";
+        emit errorOccurred("No audio output device available");
+        return;
+    }
     
-    // Create audio output
-    m_audioOutput = new QAudioOutput(format, this);
-    connect(m_audioOutput, &QAudioOutput::stateChanged, this, &AudioManager::onAudioStateChanged);
-    
-    // Create audio buffer
-    m_audioBuffer = new AudioBuffer(this);
-    
-    // Set initial volume
+    m_audioOutput = new QAudioOutput(device, this);
     m_audioOutput->setVolume(m_volume);
     
-    qDebug() << "Audio output setup complete";
+    m_audioSink = new QAudioSink(format, this);
+    connect(m_audioSink, &QAudioSink::stateChanged, this, &AudioManager::onAudioStateChanged);
+    
+    m_audioBuffer = new AudioBuffer(this);
 }
 
 void AudioManager::cleanupAudioOutput()
 {
+    if (m_audioSink) {
+        m_audioSink->stop();
+        m_audioSink->deleteLater();
+        m_audioSink = nullptr;
+    }
+    
     if (m_audioOutput) {
-        m_audioOutput->stop();
         m_audioOutput->deleteLater();
         m_audioOutput = nullptr;
     }
@@ -617,15 +543,11 @@ void AudioManager::updatePosition()
 {
     if (m_state == PlayingState) {
         QMutexLocker locker(&m_stateMutex);
-        
-        // Calculate position based on elapsed time since playback started
         if (m_playbackStartTime > 0) {
             qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
             qint64 elapsedMs = currentTime - m_playbackStartTime;
-            // Convert milliseconds to microseconds and add to pause position
             m_currentPosition = m_pausePosition + (elapsedMs * 1000);
         }
-        
         // Don't exceed duration
         qint64 duration = getDuration();
         if (duration > 0 && m_currentPosition >= duration) {
@@ -634,7 +556,6 @@ void AudioManager::updatePosition()
             stop();
             return;
         }
-        
         locker.unlock();
         emit positionChanged(m_currentPosition);
     }
@@ -642,30 +563,23 @@ void AudioManager::updatePosition()
 
 void AudioManager::onAudioStateChanged(QAudio::State state)
 {
-    qDebug() << "Qt Audio state changed to:" << state;
-    
     switch (state) {
     case QAudio::StoppedState:
         if (m_state == PlayingState) {
-            // Playback finished or error occurred
-            if (m_audioOutput->error() != QAudio::NoError) {
-                QString error = QString("Audio playback error: %1").arg(m_audioOutput->error());
+            if (m_audioSink && m_audioSink->error() != QAudio::NoError) {
+                QString error = QString("Audio playback error: %1").arg(m_audioSink->error());
                 emit errorOccurred(error);
             }
             stop();
         }
         break;
     case QAudio::ActiveState:
-        qDebug() << "Audio is active";
         break;
     case QAudio::SuspendedState:
-        qDebug() << "Audio is suspended";
         break;
     case QAudio::IdleState:
-        qDebug() << "Audio is idle (buffer empty)";
         // If decoding is stopped (EOF reached) and buffer is empty, track is finished
         if (!m_shouldDecode && m_state == PlayingState) {
-            qDebug() << "Track finished playing";
             stop();
             emit trackFinished();
         }
@@ -676,10 +590,7 @@ void AudioManager::onAudioStateChanged(QAudio::State state)
 // New audio decoding methods
 void AudioManager::initializeDecoding()
 {
-    qDebug() << "Initializing audio decoding...";
-    
     if (!m_codecContext) {
-        qDebug() << "No codec context available";
         return;
     }
     
@@ -708,12 +619,9 @@ void AudioManager::initializeDecoding()
         qDebug() << "Failed to initialize resampler";
         return;
     }
-    
     // Allocate buffer for converted audio
     m_convertedDataSize = av_samples_get_buffer_size(nullptr, getChannels(), AudioConstants::DEFAULT_FRAME_SIZE, AV_SAMPLE_FMT_S16, 1);
     m_convertedData = (uint8_t*)av_malloc(m_convertedDataSize);
-    
-    qDebug() << "Audio decoding initialized successfully";
 }
 
 void AudioManager::cleanupDecoding()
@@ -744,14 +652,12 @@ void AudioManager::decodeAudio()
     if (m_shouldDecode.loadRelaxed() == 0 || !m_formatContext || !m_codecContext || !m_audioBuffer) {
         return;
     }
-    
     // Don't decode if buffer is too full
     if (m_audioBuffer->hasData() && m_audioBuffer->bytesAvailable() > AudioConstants::AUDIO_BUFFER_LIMIT) {
         return;
     }
-    
     // Try to decode some packets
-    for (int i = 0; i < 5; ++i) { // Decode up to 5 packets per call
+    for (int i = 0; i < 5; ++i) {
         if (!decodePacket()) {
             break;
         }
@@ -768,12 +674,8 @@ bool AudioManager::decodePacket()
     int ret = av_read_frame(m_formatContext, m_packet);
     if (ret < 0) {
         if (ret == AVERROR_EOF) {
-            qDebug() << "End of file reached";
-            // Send flush packet
             avcodec_send_packet(m_codecContext, nullptr);
-            // Stop decoding
             setDecodingActive(false);
-            // The trackFinished signal will be emitted when audio buffer is empty
         } else {
             char errbuf[AV_ERROR_MAX_STRING_SIZE];
             av_strerror(ret, errbuf, sizeof(errbuf));
@@ -781,26 +683,22 @@ bool AudioManager::decodePacket()
         }
         return false;
     }
-    
     // Skip non-audio packets
     if (m_packet->stream_index != m_audioStreamIndex) {
         av_packet_unref(m_packet);
         return true;
     }
-    
-    // Ignore packets immediately after seek (stale data)
+    // Ignore packets immediately after seek
     if (m_ignorePackets.loadRelaxed() > 0) {
         m_ignorePackets.fetchAndSubRelaxed(1);
         av_packet_unref(m_packet);
-        return true;  // Continue decoding, just skip this packet
+        return true;
     }
-    
     // Track packet PTS for position calculation
     if (m_packet->pts != AV_NOPTS_VALUE) {
         QMutexLocker locker(&m_stateMutex);
         m_lastPacketPts = m_packet->pts;
     }
-    
     // Send packet to decoder
     ret = avcodec_send_packet(m_codecContext, m_packet);
     av_packet_unref(m_packet);
@@ -809,7 +707,6 @@ bool AudioManager::decodePacket()
         qDebug() << "Error sending packet to decoder";
         return false;
     }
-    
     // Receive decoded frames
     while (ret >= 0) {
         ret = avcodec_receive_frame(m_codecContext, m_frame);
@@ -819,39 +716,32 @@ bool AudioManager::decodePacket()
             qDebug() << "Error receiving frame from decoder";
             return false;
         }
-        
         // Convert audio to target format
         if (m_swrContext && m_convertedData) {
             int converted_samples = swr_convert(
                 m_swrContext,
-                &m_convertedData, m_convertedDataSize / (getChannels() * 2), // 2 bytes per sample
+                &m_convertedData, m_convertedDataSize / (getChannels() * 2),
                 (const uint8_t**)m_frame->data, m_frame->nb_samples
             );
-            
             if (converted_samples > 0) {
-                int converted_size = converted_samples * getChannels() * 2; // 2 bytes per sample
+                int converted_size = converted_samples * getChannels() * 2;
                 QByteArray audioData((const char*)m_convertedData, converted_size);
                 m_audioBuffer->appendData(audioData);
             }
         }
-        
         av_frame_unref(m_frame);
     }
-    
     return true;
 }
 
 void AudioManager::setDecodingActive(bool active)
 {
     m_shouldDecode.storeRelaxed(active ? 1 : 0);
-    
     if (active) {
-        qDebug() << "Starting decoding...";
         if (!m_decodeTimer->isActive()) {
             m_decodeTimer->start(AudioConstants::DECODE_TIMER_MS);
         }
     } else {
-        qDebug() << "Stopping decoding...";
         m_decodeTimer->stop();
     }
 }
@@ -862,16 +752,11 @@ void AudioManager::extractAlbumArt()
         return;
     }
     
-    qDebug() << "Extracting album art...";
-    
-    // Clear any existing album art
     m_albumArt = QPixmap();
-    
-    // Look for attached picture stream (common in FLAC, MP3, etc.)
+    // Look for attached picture stream
     for (unsigned int i = 0; i < m_formatContext->nb_streams; i++) {
         AVStream *stream = m_formatContext->streams[i];
-        
-        // Check if this is an attached picture (album art)
+        // Check if this is an attached picture
         if (stream->disposition & AV_DISPOSITION_ATTACHED_PIC) {
             AVPacket *pkt = &stream->attached_pic;
             
@@ -882,15 +767,12 @@ void AudioManager::extractAlbumArt()
                 if (!image.isNull()) {
                     // Convert to QPixmap and store
                     m_albumArt = QPixmap::fromImage(image);
-                    qDebug() << "Album art extracted successfully:" << image.size();
                     emit albumArtChanged(m_albumArt);
                     return;
                 }
             }
         }
     }
-    
-    qDebug() << "No album art found in file";
 }
 
 void AudioManager::extractMetadata()
@@ -899,34 +781,26 @@ void AudioManager::extractMetadata()
         return;
     }
     
-    qDebug() << "Extracting metadata...";
-    
-    // Clear existing metadata
     m_metadata = AudioMetadata();
-    
     AVDictionary *metadata = m_formatContext->metadata;
     
     if (metadata) {
         AVDictionaryEntry *tag = nullptr;
-        
         // Extract title
         tag = av_dict_get(metadata, "title", nullptr, 0);
         if (tag && tag->value) {
             m_metadata.title = QString::fromUtf8(tag->value);
         }
-        
         // Extract artist
         tag = av_dict_get(metadata, "artist", nullptr, 0);
         if (tag && tag->value) {
             m_metadata.artist = QString::fromUtf8(tag->value);
         }
-        
         // Extract album
         tag = av_dict_get(metadata, "album", nullptr, 0);
         if (tag && tag->value) {
             m_metadata.album = QString::fromUtf8(tag->value);
         }
-        
         // Extract year/date
         tag = av_dict_get(metadata, "date", nullptr, 0);
         if (!tag) {
@@ -935,27 +809,16 @@ void AudioManager::extractMetadata()
         if (tag && tag->value) {
             m_metadata.year = QString::fromUtf8(tag->value);
         }
-        
         // Extract genre
         tag = av_dict_get(metadata, "genre", nullptr, 0);
         if (tag && tag->value) {
             m_metadata.genre = QString::fromUtf8(tag->value);
         }
-        
         // Extract comment
         tag = av_dict_get(metadata, "comment", nullptr, 0);
         if (tag && tag->value) {
             m_metadata.comment = QString::fromUtf8(tag->value);
         }
-        
-        qDebug() << "Metadata extracted:";
-        qDebug() << "  Title:" << m_metadata.title;
-        qDebug() << "  Artist:" << m_metadata.artist;
-        qDebug() << "  Album:" << m_metadata.album;
-        qDebug() << "  Year:" << m_metadata.year;
-        qDebug() << "  Genre:" << m_metadata.genre;
-    } else {
-        qDebug() << "No metadata found in file";
     }
     
     emit metadataChanged(m_metadata);

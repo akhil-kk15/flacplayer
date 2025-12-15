@@ -6,25 +6,529 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>915</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
+  <property name="styleSheet">
+   <string notr="true">QMainWindow{
+background-color:rgb(52,51,64);
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="labelFileName">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>451</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>File name</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="seekSlider">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>360</y>
+      <width>801</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:horizontal{
+height:10px;
+background:white;
+border-radius:5px;
+}
+
+QSlider::handle:horizontal{
+background:#4CAF50;
+width:20px;
+height:20px;
+margin:-7px -7px;
+border-radius:10px;
+border: 2px solid white;
+}</string>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="playPause">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>playPause</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nextTrack">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>nextSeek</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="previousTrack">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>previousSeek</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Shuffle">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>shuffle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="trackQueue">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>queue</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="trackName">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>Track Name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="albumArtist">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>Artist</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="albumName">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>210</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>Album</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="albumYear">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>270</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>Year</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="volumeSlider">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>100</y>
+      <width>61</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:vertical{
+height:200px;
+width: 10px;
+background:white;
+border-radius:5px;
+}
+
+QSlider::handle:vertical{
+background:#4CAF50;
+width:20px;
+height:20px;
+margin:-7px -7px;
+border-radius:10px;
+border: 2px solid white;
+}</string>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="value">
+     <number>70</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Vertical</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::TickPosition::TicksBelow</enum>
+    </property>
+    <property name="tickInterval">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="muteButton">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>330</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:20px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:40px;
+max-width:40px;
+
+min-height:40px;
+max-height:40px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="timeStamp">
+    <property name="geometry">
+     <rect>
+      <x>417</x>
+      <y>349</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+font-weight: bold;
+color: white;
+}</string>
+    </property>
+    <property name="text">
+     <string>00:00:00</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="trackName_2">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>10</y>
+      <width>221</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border-color:rgb(255,255,255);
+
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::Panel</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="text">
+     <string>Next Song</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="albumArtLabel">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>80</y>
+      <width>250</width>
+      <height>250</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel{
+border: 2px solid rgb(255,255,255);
+background-color: rgb(35,34,47);
+}</string>
+    </property>
+    <property name="text">
+     <string>No Album Art</string>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>27</height>
+     <width>915</width>
+     <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionConvert"/>
+    <addaction name="actionMetadata_Editor"/>
+   </widget>
+   <widget class="QMenu" name="menuhelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuhelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionConvert">
+   <property name="text">
+    <string>Convert</string>
+   </property>
+  </action>
+  <action name="actionMetadata_Editor">
+   <property name="text">
+    <string>Metadata Editor</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

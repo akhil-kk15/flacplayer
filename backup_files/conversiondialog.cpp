@@ -9,7 +9,6 @@
 
 // ConversionDialog implementation
 
-
 ConversionDialog::ConversionDialog(const QString &inputFile, QWidget *parent)
     : QDialog(parent)
     , m_inputFile(inputFile)//stores input file path
@@ -149,13 +148,6 @@ void ConversionDialog::onConvertClicked()
         QFile::remove(outputPath);
     }
     
-
-    // remove the debug logs 
-    
-    qDebug() << "==========================================";
-    qDebug() << " Starting conversion process";
-    qDebug() << "==========================================";
-    
     m_converting = true;
     m_progressBar->setValue(0);
     m_statusLabel->setText("Converting...");
@@ -211,13 +203,6 @@ void ConversionDialog::onProgressUpdated(int percentage)
 
 void ConversionDialog::onConversionFinished(bool success, const QString &message)
 {
-    qDebug() << "==========================================";
-    qDebug() << "Conversion finished";
-    qDebug() << "  Success:" << success;
-    qDebug() << "  Message:" << message;
-    qDebug() << "==========================================";
-    
-
     m_converting = false;
     m_convertButton->setEnabled(true);
     m_browseButton->setEnabled(true);

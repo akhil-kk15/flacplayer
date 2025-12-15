@@ -310,12 +310,6 @@ void MetadataEditor::onSearchDiscogs()
         return;
     }
     
-    qDebug() << "===========================================";
-    qDebug() << "METADATA EDITOR: Initiating Discogs search";
-    qDebug() << "  Artist:" << (artist.isEmpty() ? "(empty)" : artist);
-    qDebug() << "  Album:" << (album.isEmpty() ? "(empty)" : album);
-    qDebug() << "===========================================";
-    
     m_statusLabel->setText("Searching...");
     m_resultsWidget->clear();
     m_searchButton->setEnabled(false);
@@ -325,16 +319,10 @@ void MetadataEditor::onSearchDiscogs()
 
 void MetadataEditor::onSearchResultsReady(const QVector<DiscogsRelease> &releases)
 {
-    qDebug() << "===========================================";
-    qDebug() << "METADATA EDITOR: Search results received";
-    qDebug() << "  Number of results:" << releases.size();
-    qDebug() << "===========================================";
-    
     m_searchButton->setEnabled(true);
     m_searchResults = releases;
     
     if (releases.isEmpty()) {
-        qDebug() << "METADATA EDITOR: No results found";
         m_statusLabel->setText("No results found");
         return;
     }
@@ -356,14 +344,6 @@ void MetadataEditor::onSearchResultsReady(const QVector<DiscogsRelease> &release
 
 void MetadataEditor::onReleaseDetailsReady(const DiscogsRelease &release)
 {
-    qDebug() << "===========================================";
-    qDebug() << "METADATA EDITOR: Applying release details";
-    qDebug() << "  Title:" << release.title;
-    qDebug() << "  Artist:" << release.artist;
-    qDebug() << "  Year:" << release.year;
-    qDebug() << "  Genres:" << release.genres.join(", ");
-    qDebug() << "===========================================";
-    
     // Apply metadata from release
     if (!release.title.isEmpty()) {
         m_albumEdit->setText(release.title);
@@ -391,11 +371,6 @@ void MetadataEditor::onReleaseDetailsReady(const DiscogsRelease &release)
 
 void MetadataEditor::onDiscogsError(const QString &error)
 {
-    qDebug() << "===========================================";
-    qDebug() << "METADATA EDITOR: Discogs error occurred";
-    qDebug() << "  Error message:" << error;
-    qDebug() << "===========================================";
-    
     m_searchButton->setEnabled(true);
     m_statusLabel->setText("Error: " + error);
     QMessageBox::warning(this, "Discogs Error", error);
@@ -409,13 +384,6 @@ void MetadataEditor::onResultSelected(QListWidgetItem *item)
     if (index < 0 || index >= m_searchResults.size()) return;
     
     const DiscogsRelease &release = m_searchResults[index];
-    
-    qDebug() << "===========================================";
-    qDebug() << "METADATA EDITOR: User selected release";
-    qDebug() << "  Index:" << index;
-    qDebug() << "  Release ID:" << release.id;
-    qDebug() << "  Title:" << release.title;
-    qDebug() << "===========================================";
     
     m_statusLabel->setText("Loading details...");
     m_discogsClient->getRelease(release.id);

@@ -6,7 +6,6 @@
 #include <QThread>
 #include <QAtomicInteger>
 
-
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -19,9 +18,6 @@ extern "C" {
 namespace ConverterConstants {
     constexpr int MP3_DEFAULT_FRAME_SIZE = 1152;  // Standard MP3 frame size
 }
-
-
-
 
 class AudioConverter : public QObject
 {
@@ -78,11 +74,5 @@ private:
     AudioConverter::BitratePreset m_bitrate;
     AudioConverter *m_converter;
 };
-
-
-
-
-
-
 
 #endif // AUDIOCONVERTER_H

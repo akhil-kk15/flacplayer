@@ -6,13 +6,11 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QLabel>
-#include <QListWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QGroupBox>
 #include "audiomanager.h"
-#include "discogsclient.h"
 
 class MetadataEditor : public QDialog
 {
@@ -25,11 +23,6 @@ public:
     AudioMetadata getMetadata() const;
 
 private slots:
-    void onSearchDiscogs();
-    void onSearchResultsReady(const QVector<DiscogsRelease> &releases);
-    void onReleaseDetailsReady(const DiscogsRelease &release);
-    void onDiscogsError(const QString &error);
-    void onResultSelected(QListWidgetItem *item);
     void onSave();
     void onCancel();
 
@@ -41,7 +34,6 @@ private:
 private:
     QString m_filePath;
     AudioMetadata m_metadata;
-    DiscogsClient *m_discogsClient;
     
     // UI elements
     QLineEdit *m_titleEdit;
@@ -51,13 +43,9 @@ private:
     QLineEdit *m_genreEdit;
     QTextEdit *m_commentEdit;
     
-    QPushButton *m_searchButton;
-    QListWidget *m_resultsWidget;
     QLabel *m_statusLabel;
     QPushButton *m_saveButton;
     QPushButton *m_cancelButton;
-    
-    QVector<DiscogsRelease> m_searchResults;
 };
 
 #endif // METADATAEDITOR_H
