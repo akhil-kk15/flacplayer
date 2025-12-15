@@ -19,17 +19,10 @@
 #include <QImage>
 #include <QRegularExpression>
 
-// ============================================================================
-// CONSTRUCTOR / DESTRUCTOR
-// ============================================================================
 
-/**
- * @brief Constructor for MainWindow
- * @param parent Parent widget (nullptr for top-level window)
- * 
- * Initializes the UI, sets up button icons, configures media playback components,
- * connects signals/slots, and enables mouse tracking for gradient effect.
- */
+// * Initializes the UI, sets up button icons, configures media playback components,
+ // connects signals/slots, and enables mouse tracking for gradient effect.
+ 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -124,33 +117,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//Mute Toggle functionality, just a basic if else condition to change the icon.
-void MainWindow::onMuteToggle()
-{
-    isMuted = !isMuted;
-    if (isMuted) {
-        ui->muteButton->setIcon(QIcon(":/icons/assets/mute.png"));
-        ui->volumeSlider->setValue(0);
-        statusBar()->showMessage("Volume muted", 2000);
-    } else {
-        ui->muteButton->setIcon(QIcon(":/icons/assets/unmuted.png"));
-        ui->volumeSlider->setValue(70);
-        statusBar()->showMessage("Volume unmuted", 2000);
-    }
-}
-
-
-//selection of audio file and loading it into the player
-
-
+//file management slots 
 void MainWindow::on_actionOpen_triggered()
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Audio Files"), "", tr("Audio Files (*.flac *.m4a *.wav *.mp3);;All Files (*)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(
+        this, 
+        tr("Open Audio Files"), 
+        "", 
+        tr("Audio Files (*.flac *.m4a *.wav *);;All Files (*)")
+    );
+    
     if (!fileNames.isEmpty()) {
-        // Add files to playlist
         playlist.append(fileNames);
         
-        // If this is the first file, start playing it
+        // If this is the first file, load it
         if (currentTrackIndex == -1) {
             currentTrackIndex = playlist.size() - fileNames.size();
             loadTrack(currentTrackIndex);
@@ -162,31 +142,87 @@ void MainWindow::on_actionOpen_triggered()
 }
 
 /**
- * @brief Load a track from the playlist
- * @param index Index of the track in the playlist
+ * @brief Show track queue dialog with list of all tracks
  * 
- * Loads the specified track, updates UI labels, resets seekbar, and updates next track display.
- * Does not automatically start playback.
+ * Displays a modal dialog showing all tracks in the playlist with the current track highlighted.
+ * Users can double-click a track to jump to it.
  */
+void MainWindow::on_trackQueue_clicked()
+{
+    if (playlist.isEmpty()) {
+        QMessageBox::information(this, "Queue", "No tracks in queue.\n\nUse File > Open to add tracks.");
+        return;
+    }
+    
+    // Create modal dialog
+    QDialog *queueDialog = new QDialog(this);
+    queueDialog->setWindowTitle("Track Queue");
+    queueDialog->resize(500, 400);
+    
+    QVBoxLayout *layout = new QVBoxLayout(queueDialog);
+    
+    // Add list widget showing all tracks
+    QListWidget *trackList = new QListWidget(queueDialog);
+    for (int i = 0; i < playlist.size(); ++i) {
+        QFileInfo fileInfo(playlist[i]);
+        QListWidgetItem *item = new QListWidgetItem(
+            QString("%1. %2").arg(i + 1).arg(fileInfo.fileName())
+        );
+        
+        // Highlight current track
+        if (i == currentTrackIndex) {
+            item->setBackground(QColor(100, 150, 255, 100));
+            item->setForeground(Qt::white);
+        }
+        
+        trackList->addItem(item);
+    }
+    
+    // Double-click to play that track
+    connect(trackList, &QListWidget::itemDoubleClicked, 
+            [this, trackList, queueDialog](QListWidgetItem *item) {
+        int index = trackList->row(item);
+        loadTrack(index);
+        MPlayer->play();
+        isPlaying = true;
+        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        queueDialog->accept();
+    });
+    
+    layout->addWidget(new QLabel(
+        QString("Total tracks: %1 | Current: %2")
+        .arg(playlist.size())
+        .arg(currentTrackIndex + 1)
+    ));
+    layout->addWidget(trackList);
+    
+    // Add close button
+    QPushButton *closeButton = new QPushButton("Close", queueDialog);
+    connect(closeButton, &QPushButton::clicked, queueDialog, &QDialog::accept);
+    layout->addWidget(closeButton);
+    
+    queueDialog->exec();
+    delete queueDialog;
+}
+
+//song loading and metadata display
 void MainWindow::loadTrack(int index)
 {
     if (index >= 0 && index < playlist.size()) {
         currentTrackIndex = index;
         QString fileName = playlist[index];
         MPlayer->setSource(QUrl::fromLocalFile(fileName));
+        
         QFileInfo fileinfo(fileName);
         ui->labelFileName->setText(fileinfo.fileName());
         ui->seekSlider->setEnabled(true);
         ui->seekSlider->setValue(0);
+        
         updateNextTrackDisplay();
     }
 }
 
-/**
- * @brief Update the "Next Track" display label
- * 
- * Shows the filename of the next track in queue, or "No next track" if at end.
- */
+//next song  display update, if there are no song left in the queue it will show no next track
 void MainWindow::updateNextTrackDisplay()
 {
     int nextIndex = currentTrackIndex + 1;
@@ -198,18 +234,9 @@ void MainWindow::updateNextTrackDisplay()
     }
 }
 
-/**
- * @brief Extract and display metadata from the current track
- * 
- * Reads metadata from the loaded track and updates UI labels:
- * - Track name/title
- * - Album artist
- * - Album name
- * - Album year/date
- * - Album art/cover image (if available)
- * 
- * Uses QMediaMetaData to extract tags from audio files (FLAC, MP3, M4A, etc.)
- */
+
+
+//metadata extraction and display using QMediaMetaData
 void MainWindow::displayMetadata()
 {
     // Get metadata from the media player
@@ -309,15 +336,48 @@ void MainWindow::displayMetadata()
     statusBar()->showMessage(statusInfo, 3000);
 }
 
-
-void MainWindow::on_Shuffle_clicked()
+//playback control slots
+//main play/pause button handler 
+void MainWindow::on_playPause_clicked()
 {
-
-
-
+    if (isPlaying) {
+        MPlayer->pause();
+        ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+        statusBar()->showMessage("Playback paused", 2000);
+        isPlaying = false;
+    } else {
+        MPlayer->play();
+        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        statusBar()->showMessage("Playback started", 2000);
+        isPlaying = true;
+    }
 }
 
+//button click vs hold behavior implementation, click for next/previous track, hold for seeking
+void MainWindow::on_nextTrack_clicked()
+{
+    if (isButtonHeld) {
+        // Was held - seeking already handled
+        isButtonHeld = false;
+        return;
+    }
+    
+    // Quick click - go to next track
+    if (currentTrackIndex + 1 < playlist.size()) {
+        bool wasPlaying = isPlaying;  // Save current playing state
+        loadTrack(currentTrackIndex + 1);
+        if (wasPlaying) {
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+        }
+        statusBar()->showMessage("Next track", 2000);
+    } else {
+        statusBar()->showMessage("End of playlist", 2000);
+    }
+}
 
+//same as above but for previous track button
 void MainWindow::on_previousTrack_clicked()
 {
     if (isButtonHeld) {
@@ -343,57 +403,14 @@ void MainWindow::on_previousTrack_clicked()
     }
 }
 
-
-
-
-
-//icon and functionality toggle for play and pause button
-
-void MainWindow::on_playPause_clicked()
+//this is for shuffle, currently a placeholder 
+//to-do try implement shuffle functionality using fisher-yates algorithm
+void MainWindow::on_Shuffle_clicked()
 {
-    if (isPlaying) {
-        MPlayer->pause();
-        ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
-        statusBar()->showMessage("Playback paused", 2000);
-        isPlaying = false;
-    } else {
-        MPlayer->play();
-        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
-        statusBar()->showMessage("Playback started", 2000);
-        isPlaying = true;
-    }
+    // TODO: Implement shuffle functionality
 }
 
-
-
-//next track button functionality - click to skip track, hold to seek
-void MainWindow::on_nextTrack_clicked()
-{
-    if (isButtonHeld) {
-        // Was held - seeking already handled
-        isButtonHeld = false;
-        return;
-    }
-    
-    // Quick click - go to next track
-    if (currentTrackIndex + 1 < playlist.size()) {
-        bool wasPlaying = isPlaying;  // Save current playing state
-        loadTrack(currentTrackIndex + 1);
-        if (wasPlaying) {
-            MPlayer->play();
-            isPlaying = true;
-            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
-        }
-        statusBar()->showMessage("Next track", 2000);
-    } else {
-        statusBar()->showMessage("End of playlist", 2000);
-    }
-}
-
-
-//implementation of seek forward and backwards
-
- //seeks forward 10 seconds if pressed and held and if clicked skips to next track
+//seek forward
 void MainWindow::seekForward()
 {
     qint64 currentPos = MPlayer->position();
@@ -402,7 +419,7 @@ void MainWindow::seekForward()
     statusBar()->showMessage("Seeking forward", 1000);
 }
 
- //for backwards 
+//same for backwards
 void MainWindow::seekBackward()
 {
     qint64 currentPos = MPlayer->position();
@@ -411,81 +428,39 @@ void MainWindow::seekBackward()
     statusBar()->showMessage("Seeking backward", 1000);
 }
 
-
-//this is for displaying the next songs in the queue, for now it is a dialog box instead of a side panel
- 
-void MainWindow::on_trackQueue_clicked()
+//audio output controls
+//mute state toggle button handler
+void MainWindow::onMuteToggle()
 {
-    if (playlist.isEmpty()) {
-        QMessageBox::information(this, "Queue", "No tracks in queue.\n\nUse File > Open to add tracks.");
-        return;
+    isMuted = !isMuted;
+    if (isMuted) {
+        ui->muteButton->setIcon(QIcon(":/icons/assets/mute.png"));
+        ui->volumeSlider->setValue(0);
+        statusBar()->showMessage("Volume muted", 2000);
+    } else {
+        ui->muteButton->setIcon(QIcon(":/icons/assets/unmuted.png"));
+        ui->volumeSlider->setValue(70);
+        statusBar()->showMessage("Volume unmuted", 2000);
     }
-    
-    // Create a modal dialog to show the queue
-    QDialog *queueDialog = new QDialog(this);
-    queueDialog->setWindowTitle("Track Queue");
-    queueDialog->resize(500, 400);
-    
-    QVBoxLayout *layout = new QVBoxLayout(queueDialog);
-    
-    // Add list widget to show tracks
-    QListWidget *trackList = new QListWidget(queueDialog);
-    
-    for (int i = 0; i < playlist.size(); ++i) {
-        QFileInfo fileInfo(playlist[i]);
-        QString itemText = QString("%1. %2").arg(i + 1).arg(fileInfo.fileName());
-        QListWidgetItem *item = new QListWidgetItem(itemText);
-        
-        // Highlight current track
-        if (i == currentTrackIndex) {
-            item->setBackground(QColor(100, 150, 255, 100));
-            item->setForeground(Qt::white);
-        }
-        
-        trackList->addItem(item);
-    }
-    
-    // Connect double-click to play that track
-    connect(trackList, &QListWidget::itemDoubleClicked, [this, trackList, queueDialog](QListWidgetItem *item) {
-        int index = trackList->row(item);
-        loadTrack(index);
-        MPlayer->play();
-        isPlaying = true;
-        ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
-        queueDialog->accept();
-    });
-    
-    layout->addWidget(new QLabel(QString("Total tracks: %1 | Current: %2").arg(playlist.size()).arg(currentTrackIndex + 1)));
-    layout->addWidget(trackList);
-    
-    // Add close button
-    QPushButton *closeButton = new QPushButton("Close", queueDialog);
-    connect(closeButton, &QPushButton::clicked, queueDialog, &QDialog::accept);
-    layout->addWidget(closeButton);
-    
-    queueDialog->exec();
-    delete queueDialog;
 }
 
+//volume control slider handler
+void MainWindow::on_volumeSlider_valueChanged(int value)
+{
+    audioOutput->setVolume(value / 100.0);
+}
 
+//skimming through track using seek slider
 void MainWindow::on_seekSlider_valueChanged(int value)
 {
-    // Only seek if user is dragging the slider (not when we update it programmatically)
     if (!isSeeking && mediaDuration > 0) {
         qint64 position = (value * mediaDuration) / 100;
         MPlayer->setPosition(position);
     }
 }
 
-
-void MainWindow::on_volumeSlider_valueChanged(int value)
-{
-    audioOutput->setVolume(value / 100.0);
-}
-
-
-// Update seek slider and timestamp as playback position changes
-
+//updates for media player signals
+//time and slider updates during playback
 void MainWindow::onPositionChanged(qint64 position)
 {
     if (!ui->seekSlider->isSliderDown() && mediaDuration > 0) {
@@ -508,19 +483,18 @@ void MainWindow::onPositionChanged(qint64 position)
     ui->timeStamp->setText(timeText);
 }
 
+//track duration loaded handler
 void MainWindow::onDurationChanged(qint64 duration)
 {
     mediaDuration = duration;
     ui->seekSlider->setEnabled(duration > 0);
 }
 
-
-
- //the function onMediaStatusChanged is responsible for moving to the next track when the current one ends
+//auto play next after current
 void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
     if (status == QMediaPlayer::EndOfMedia) {
-        // Current track ended, automatically play next track
+        // Current track ended, auto-play next track
         if (currentTrackIndex + 1 < playlist.size()) {
             loadTrack(currentTrackIndex + 1);
             MPlayer->play();
@@ -538,10 +512,11 @@ void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 
 
 
-//this whole section is responsible for the gradient effect following the mouse cursor
-//do not modify unless necessary, it is already optimized for performance. 
-
-
+ //Tracks mouse position and triggers partial repaints for gradient rendering.
+ // Optimized for 60fps with frame throttling and minimal repaint regions.
+ 
+ // DO NOT MODIFY unless necessary - already optimized for performance.
+ 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     qint64 currentTime = frameTimer.elapsed();
@@ -581,12 +556,17 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     QMainWindow::mouseMoveEvent(event);
 }
 
+
+//mouse move event routing and button hold detection, gradient effect handling. click vs hold for next/previous buttons
+
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    // Handle mouse move events for gradient effect
+    // Route mouse move events to gradient handler
     if (event->type() == QEvent::MouseMove) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         QWidget *widget = qobject_cast<QWidget*>(obj);
+        
+        // Skip next/previous buttons (they have their own event handling)
         if (widget && obj != ui->nextTrack && obj != ui->previousTrack) {
             QPoint globalPos = widget->mapTo(this, mouseEvent->pos());
             QMouseEvent mappedEvent(QEvent::MouseMove, globalPos, mouseEvent->button(), 
@@ -595,12 +575,13 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
     }
     
-    // Handle button press/release for next/previous buttons
+    // Handle button press/hold detection for next/previous buttons
     if (obj == ui->nextTrack || obj == ui->previousTrack) {
         if (event->type() == QEvent::MouseButtonPress) {
             buttonPressTimer.start();
             isButtonHeld = false;
-            // Start a timer to check if button is held
+            
+            // Check after 500ms if button is still held
             QTimer::singleShot(500, this, [this, obj]() {
                 if (buttonPressTimer.isValid() && buttonPressTimer.elapsed() >= 500) {
                     isButtonHeld = true;
@@ -620,6 +601,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     return QMainWindow::eventFilter(obj, event);
 }
 
+
+ //drawing the gradient effect on hover , dont modify unless necessary.
+ //Already optimized for performance.
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QMainWindow::paintEvent(event);
