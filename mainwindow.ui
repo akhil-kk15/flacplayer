@@ -76,7 +76,7 @@ border: 2px solid white;
    <widget class="QPushButton" name="playPause">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>430</x>
       <y>450</y>
       <width>75</width>
       <height>75</height>
@@ -106,7 +106,7 @@ padding:0px;
    <widget class="QPushButton" name="nextTrack">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>570</x>
       <y>450</y>
       <width>75</width>
       <height>75</height>
@@ -136,7 +136,7 @@ padding:0px;
    <widget class="QPushButton" name="previousTrack">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>270</x>
       <y>450</y>
       <width>75</width>
       <height>75</height>
@@ -196,7 +196,7 @@ padding:0px;
    <widget class="QPushButton" name="trackQueue">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>820</x>
       <y>450</y>
       <width>75</width>
       <height>75</height>
@@ -470,6 +470,36 @@ background-color: rgb(35,34,47);
      <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="repeatToggle">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>450</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>repeatToggle</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -493,6 +523,7 @@ background-color: rgb(35,34,47);
     </property>
     <addaction name="actionConvert"/>
     <addaction name="actionMetadata_Editor"/>
+    <addaction name="actionEditMetadata"/>
    </widget>
    <widget class="QMenu" name="menuhelp">
     <property name="title">
@@ -527,6 +558,11 @@ background-color: rgb(35,34,47);
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionEditMetadata">
+   <property name="text">
+    <string>Edit Metadata</string>
    </property>
   </action>
  </widget>

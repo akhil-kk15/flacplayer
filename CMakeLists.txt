@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        metadataeditor.cpp
+        metadataeditor.h
         resources.qrc
         ${TS_FILES}
 )

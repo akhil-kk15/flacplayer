@@ -1,6 +1,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "metadataeditor.h"
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QFileDialog>
@@ -30,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     
     // Configure window properties
-    setWindowTitle("FLAC Player v2.0");
+    setWindowTitle("Flac Player v2.0");
     setFixedSize(970, 650);  // Fixed size, non-resizable
     setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);  // Disable maximize button
     
@@ -124,22 +125,29 @@ void MainWindow::on_actionOpen_triggered()
         this, 
         tr("Open Audio Files"), 
         "", 
-        tr("Audio Files (*.flac *.m4a *.wav *);;All Files (*)")
+        tr("FLAC Files (*.flac);;All Audio Files (*.flac *.m4a *.wav);;All Files (*)")
     );
-    
-    if (!fileNames.isEmpty()) {
-        playlist.append(fileNames);
-        
-        // If this is the first file, load it
-        if (currentTrackIndex == -1) {
-            currentTrackIndex = playlist.size() - fileNames.size();
-            loadTrack(currentTrackIndex);
-        }
-        
-        updateNextTrackDisplay();
-        statusBar()->showMessage(QString("Added %1 file(s) to queue").arg(fileNames.size()), 2000);
+
+    if (fileNames.isEmpty()) {
+        return; // User cancelled
     }
+
+    // Add files to playlist
+    for (const QString &fileName : fileNames) {
+        playlist.append(fileName);
+        // qDebug() << "[MainWindow] Added to playlist:" << fileName;
+    }
+    
+    // If this is the first file, load it
+    if (currentTrackIndex == -1) {
+        currentTrackIndex = 0;
+        loadTrack(currentTrackIndex);
+    }
+    
+    updateNextTrackDisplay();
+    statusBar()->showMessage(QString("Added %1 file(s) to queue").arg(fileNames.size()), 2000);
 }
+
 
 /**
  * @brief Show track queue dialog with list of all tracks
@@ -203,6 +211,55 @@ void MainWindow::on_trackQueue_clicked()
     
     queueDialog->exec();
     delete queueDialog;
+}
+
+/**
+ * @brief Open metadata editor for current track
+ * 
+ * Opens a dialog that allows editing of the current track's metadata
+ * including title, artist, album, year, and album art.
+ */
+void MainWindow::on_actionEditMetadata_triggered()
+{
+    // qDebug() << "[MainWindow] Edit Metadata triggered";
+    if (currentTrackIndex < 0 || currentTrackIndex >= playlist.size()) {
+        // qDebug() << "[MainWindow] No track loaded";
+        QMessageBox::information(this, "Edit Metadata", 
+            "No track currently loaded.\n\nLoad a track first, then use Tools > Edit Metadata.");
+        return;
+    }
+    
+    QString currentFile = playlist[currentTrackIndex];
+    // qDebug() << "[MainWindow] Current file:" << currentFile;
+    
+    // Check if it's a FLAC file
+    if (!currentFile.toLower().endsWith(".flac")) {
+        QMessageBox::warning(this, "Edit Metadata", 
+            "Metadata editing is currently only supported for FLAC files.\n\nCurrent file: " + 
+            QFileInfo(currentFile).fileName());
+        return;
+    }
+    
+    // Open metadata editor dialog
+    // qDebug() << "[MainWindow] Creating MetadataEditorDialog...";
+    MetadataEditorDialog dialog(currentFile, this);
+    // qDebug() << "[MainWindow] Dialog created, executing...";
+    if (dialog.exec() == QDialog::Accepted) {
+        // qDebug() << "[MainWindow] Dialog accepted, refreshing metadata...";
+        // Reload metadata display after editing
+        statusBar()->showMessage("Metadata updated - reloading track info...", 2000);
+        
+        // Force metadata refresh by reloading the track
+        qint64 currentPosition = MPlayer->position();
+        bool wasPlaying = isPlaying;
+        
+        loadTrack(currentTrackIndex);
+        MPlayer->setPosition(currentPosition);
+        
+        if (wasPlaying) {
+            MPlayer->play();
+        }
+    }
 }
 
 //song loading and metadata display
@@ -633,4 +690,10 @@ void MainWindow::paintEvent(QPaintEvent *event)
         painter.drawEllipse(globalMousePos, 100, 100);
     }
 }
+
+
+// void MainWindow::on_repeatToggle_clicked()
+// {
+
+// }
 
