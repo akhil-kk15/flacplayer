@@ -14,6 +14,12 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+// Repeat mode enumeration
+enum class RepeatMode {
+    Off,        // No repeat
+    All,        // Repeat entire playlist
+    One         // Repeat current song
+};
 
 //window class, handles UI, plaback and the stupid gradient effect
 class MainWindow : public QMainWindow
@@ -75,7 +81,8 @@ private:
     bool isPlaying = false;        
     bool isMuted = false;           
     bool isSeeking = false;      
-    qint64 mediaDuration = 0;       ///< Total duration of current track in milliseconds
+    qint64 mediaDuration = 0;
+    RepeatMode repeatMode = RepeatMode::Off;       ///< Total duration of current track in milliseconds
     
     // Button press vs hold detection
     QElapsedTimer buttonPressTimer;

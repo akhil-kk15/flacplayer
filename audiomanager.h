@@ -1,5 +1,5 @@
-#ifndef METADATAEDITOR_H
-#define METADATAEDITOR_H
+#ifndef AUDIOMANAGER_H
+#define AUDIOMANAGER_H
 
 #include <QString>
 #include <QMap>
@@ -7,10 +7,12 @@
 #include <QImage>
 #include <QFile>
 #include <QDialog>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QLabel>
-#include <QPushButton>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MetadataEditorDialog;
+}
+QT_END_NAMESPACE
 
 /**
  * @struct FlacMetadata
@@ -123,29 +125,13 @@ private slots:
     void onRemoveAlbumArtClicked();
 
 private:
-    void setupUI();
     void loadMetadata();
     void updateAlbumArtDisplay();
 
+    Ui::MetadataEditorDialog *ui;
     QString m_filePath;
     MetadataEditor m_editor;
     FlacMetadata m_metadata;
-
-    // UI elements
-    QLineEdit *m_titleEdit;
-    QLineEdit *m_artistEdit;
-    QLineEdit *m_albumEdit;
-    QLineEdit *m_albumArtistEdit;
-    QLineEdit *m_yearEdit;
-    QLineEdit *m_genreEdit;
-    QLineEdit *m_trackNumberEdit;
-    QTextEdit *m_commentEdit;
-    QLabel *m_albumArtLabel;
-    QLabel *m_fileInfoLabel;
-    QPushButton *m_loadArtButton;
-    QPushButton *m_removeArtButton;
-    QPushButton *m_saveButton;
-    QPushButton *m_cancelButton;
 };
 
-#endif // METADATAEDITOR_H
+#endif // AUDIOMANAGER_H

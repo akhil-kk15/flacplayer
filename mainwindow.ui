@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>915</width>
-    <height>568</height>
+    <width>916</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,9 +48,9 @@ border-color:rgb(255,255,255);
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>360</y>
+      <y>380</y>
       <width>801</width>
-      <height>91</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -77,7 +77,7 @@ border: 2px solid white;
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -107,7 +107,7 @@ padding:0px;
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -137,7 +137,7 @@ padding:0px;
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -167,7 +167,7 @@ padding:0px;
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -197,7 +197,7 @@ padding:0px;
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -474,7 +474,7 @@ background-color: rgb(35,34,47);
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>450</y>
+      <y>470</y>
       <width>75</width>
       <height>75</height>
      </rect>
@@ -506,7 +506,7 @@ padding:0px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>915</width>
+     <width>916</width>
      <height>23</height>
     </rect>
    </property>

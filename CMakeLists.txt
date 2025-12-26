@@ -20,8 +20,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        metadataeditor.cpp
-        metadataeditor.h
+        audiomanager.cpp
+        audiomanager.h
+        metadataeditor.ui
         resources.qrc
         ${TS_FILES}
 )

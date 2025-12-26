@@ -1,12 +1,9 @@
-#include "metadataeditor.h"
+#include "audiomanager.h"
+#include "ui_metadataeditor.h"
 #include <QFile>
 #include <QFileInfo>
 #include <QBuffer>
 #include <QDebug>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QGroupBox>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPixmap>
@@ -392,19 +389,14 @@ QImage MetadataEditor::parsePictureBlock(const QByteArray &data)
     if (data.size() < 32) {
         return QImage(); // Too small
     }
-    
     int offset = 0;
-    
     // Picture type (4 bytes, big-endian) - skip
-    offset += 4;
-    
+    offset += 4; 
     // MIME type length (4 bytes, big-endian)
     quint32 mimeLength = readBigEndian32(data, offset);
     offset += 4;
-    
     // Skip MIME type string
     offset += mimeLength;
-    
     if (offset >= data.size()) {
         return QImage();
     }
@@ -646,130 +638,50 @@ void MetadataEditor::writeBigEndian32(QByteArray &data, quint32 value)
 
 MetadataEditorDialog::MetadataEditorDialog(const QString &filePath, QWidget *parent)
     : QDialog(parent)
+    , ui(new Ui::MetadataEditorDialog)
     , m_filePath(filePath)
 {
-    // qDebug() << "[MetadataEditorDialog] Constructor called for:" << filePath;
-    // qDebug() << "[MetadataEditorDialog] Setting up UI...";
-    setupUI();
-    // qDebug() << "[MetadataEditorDialog] UI setup complete, loading metadata...";
+    qDebug() << "[MetadataEditorDialog] Constructor called for:" << filePath;
+    ui->setupUi(this);
+    qDebug() << "[MetadataEditorDialog] UI setup complete, loading metadata...";
     loadMetadata();
-    // qDebug() << "[MetadataEditorDialog] Metadata loaded, dialog ready";
+    qDebug() << "[MetadataEditorDialog] Metadata loaded, dialog ready";
 }
 
 MetadataEditorDialog::~MetadataEditorDialog()
 {
-}
-
-void MetadataEditorDialog::setupUI()
-{
-    setWindowTitle("Edit Metadata");
-    resize(600, 700);
-    
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    
-    // File info label
-    QFileInfo fileInfo(m_filePath);
-    m_fileInfoLabel = new QLabel(QString("<b>File:</b> %1").arg(fileInfo.fileName()));
-    mainLayout->addWidget(m_fileInfoLabel);
-    
-    // Create form for text fields
-    QGroupBox *textGroup = new QGroupBox("Track Information");
-    QFormLayout *formLayout = new QFormLayout();
-    
-    m_titleEdit = new QLineEdit();
-    formLayout->addRow("Title:", m_titleEdit);
-    
-    m_artistEdit = new QLineEdit();
-    formLayout->addRow("Artist:", m_artistEdit);
-    
-    m_albumEdit = new QLineEdit();
-    formLayout->addRow("Album:", m_albumEdit);
-    
-    m_albumArtistEdit = new QLineEdit();
-    formLayout->addRow("Album Artist:", m_albumArtistEdit);
-    
-    m_yearEdit = new QLineEdit();
-    m_yearEdit->setMaxLength(4);
-    formLayout->addRow("Year:", m_yearEdit);
-    
-    m_genreEdit = new QLineEdit();
-    formLayout->addRow("Genre:", m_genreEdit);
-    
-    m_trackNumberEdit = new QLineEdit();
-    m_trackNumberEdit->setMaxLength(3);
-    formLayout->addRow("Track Number:", m_trackNumberEdit);
-    
-    m_commentEdit = new QTextEdit();
-    m_commentEdit->setMaximumHeight(60);
-    formLayout->addRow("Comment:", m_commentEdit);
-    
-    textGroup->setLayout(formLayout);
-    mainLayout->addWidget(textGroup);
-    
-    // Album art section
-    QGroupBox *artGroup = new QGroupBox("Album Art");
-    QVBoxLayout *artLayout = new QVBoxLayout();
-    
-    m_albumArtLabel = new QLabel("No album art");
-    m_albumArtLabel->setAlignment(Qt::AlignCenter);
-    m_albumArtLabel->setMinimumSize(200, 200);
-    m_albumArtLabel->setMaximumSize(200, 200);
-    m_albumArtLabel->setStyleSheet("QLabel { border: 1px solid #666; background-color: #222; }");
-    m_albumArtLabel->setScaledContents(false);
-    artLayout->addWidget(m_albumArtLabel, 0, Qt::AlignCenter);
-    
-    QHBoxLayout *artButtonLayout = new QHBoxLayout();
-    m_loadArtButton = new QPushButton("Load Image");
-    m_removeArtButton = new QPushButton("Remove");
-    artButtonLayout->addWidget(m_loadArtButton);
-    artButtonLayout->addWidget(m_removeArtButton);
-    artLayout->addLayout(artButtonLayout);
-    
-    artGroup->setLayout(artLayout);
-    mainLayout->addWidget(artGroup);
-    
-    // Dialog buttons
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch();
-    
-    m_saveButton = new QPushButton("Save Changes");
-    m_saveButton->setDefault(true);
-    m_cancelButton = new QPushButton("Cancel");
-    
-    buttonLayout->addWidget(m_saveButton);
-    buttonLayout->addWidget(m_cancelButton);
-    
-    mainLayout->addLayout(buttonLayout);
-    
-    // Connect signals
-    connect(m_saveButton, &QPushButton::clicked, this, &MetadataEditorDialog::onSaveClicked);
-    connect(m_cancelButton, &QPushButton::clicked, this, &MetadataEditorDialog::onCancelClicked);
-    connect(m_loadArtButton, &QPushButton::clicked, this, &MetadataEditorDialog::onLoadAlbumArtClicked);
-    connect(m_removeArtButton, &QPushButton::clicked, this, &MetadataEditorDialog::onRemoveAlbumArtClicked);
+    delete ui;
 }
 
 void MetadataEditorDialog::loadMetadata()
 {
-    // qDebug() << "[MetadataEditorDialog] loadMetadata called";
+    qDebug() << "[MetadataEditorDialog] loadMetadata called for:" << m_filePath;
+    
+    // Validate file exists
+    if (!QFile::exists(m_filePath)) {
+        QMessageBox::critical(this, "Error", "File does not exist: " + m_filePath);
+        return;
+    }
+    
     m_metadata = m_editor.readMetadata(m_filePath);
     
     if (!m_editor.lastError().isEmpty()) {
-        // qDebug() << "[MetadataEditorDialog] ERROR:" << m_editor.lastError();
+        qDebug() << "[MetadataEditorDialog] ERROR:" << m_editor.lastError();
         QMessageBox::warning(this, "Error", 
             "Failed to read metadata: " + m_editor.lastError());
         return;
     }
-    // qDebug() << "[MetadataEditorDialog] Metadata read successfully";
+    qDebug() << "[MetadataEditorDialog] Metadata read successfully";
     
     // Populate fields
-    m_titleEdit->setText(m_metadata.title);
-    m_artistEdit->setText(m_metadata.artist);
-    m_albumEdit->setText(m_metadata.album);
-    m_albumArtistEdit->setText(m_metadata.albumArtist);
-    m_yearEdit->setText(m_metadata.year);
-    m_genreEdit->setText(m_metadata.genre);
-    m_trackNumberEdit->setText(m_metadata.trackNumber);
-    m_commentEdit->setPlainText(m_metadata.comment);
+    ui->titleEdit->setText(m_metadata.title);
+    ui->artistEdit->setText(m_metadata.artist);
+    ui->albumEdit->setText(m_metadata.album);
+    ui->albumArtistEdit->setText(m_metadata.albumArtist);
+    ui->yearEdit->setText(m_metadata.year);
+    ui->genreEdit->setText(m_metadata.genre);
+    ui->trackNumberEdit->setText(m_metadata.trackNumber);
+    ui->commentEdit->setPlainText(m_metadata.comment);
     
     // Update file info with technical details
     QString info = QString("<b>File:</b> %1<br>").arg(QFileInfo(m_filePath).fileName());
@@ -779,7 +691,7 @@ void MetadataEditorDialog::loadMetadata()
             .arg(m_metadata.bitsPerSample)
             .arg(m_metadata.channels);
     }
-    m_fileInfoLabel->setText(info);
+    ui->fileInfoLabel->setText(info);
     
     updateAlbumArtDisplay();
 }
@@ -789,26 +701,26 @@ void MetadataEditorDialog::updateAlbumArtDisplay()
     if (!m_metadata.albumArt.isNull()) {
         QPixmap pixmap = QPixmap::fromImage(m_metadata.albumArt);
         QPixmap scaled = pixmap.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        m_albumArtLabel->setPixmap(scaled);
-        m_removeArtButton->setEnabled(true);
+        ui->albumArtLabel->setPixmap(scaled);
+        ui->removeArtButton->setEnabled(true);
     } else {
-        m_albumArtLabel->clear();
-        m_albumArtLabel->setText("No album art");
-        m_removeArtButton->setEnabled(false);
+        ui->albumArtLabel->clear();
+        ui->albumArtLabel->setText("No album art");
+        ui->removeArtButton->setEnabled(false);
     }
 }
 
 void MetadataEditorDialog::onSaveClicked()
 {
     // Update metadata structure
-    m_metadata.title = m_titleEdit->text();
-    m_metadata.artist = m_artistEdit->text();
-    m_metadata.album = m_albumEdit->text();
-    m_metadata.albumArtist = m_albumArtistEdit->text();
-    m_metadata.year = m_yearEdit->text();
-    m_metadata.genre = m_genreEdit->text();
-    m_metadata.trackNumber = m_trackNumberEdit->text();
-    m_metadata.comment = m_commentEdit->toPlainText();
+    m_metadata.title = ui->titleEdit->text();
+    m_metadata.artist = ui->artistEdit->text();
+    m_metadata.album = ui->albumEdit->text();
+    m_metadata.albumArtist = ui->albumArtistEdit->text();
+    m_metadata.year = ui->yearEdit->text();
+    m_metadata.genre = ui->genreEdit->text();
+    m_metadata.trackNumber = ui->trackNumberEdit->text();
+    m_metadata.comment = ui->commentEdit->toPlainText();
     
     // Write to file
     if (m_editor.writeMetadata(m_filePath, m_metadata)) {

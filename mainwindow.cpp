@@ -1,7 +1,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "metadataeditor.h"
+#include "audiomanager.h"
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QFileDialog>
@@ -43,11 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
     MPlayer->setAudioOutput(audioOutput);
 
 
-    // Set button icons from resources (clear text to show icons only)
+    // Set button icons from resources 
     ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
     ui->playPause->setIconSize(QSize(40, 40));
-    ui->playPause->setText("");  // Clear button text
-    
+    ui->playPause->setText("");  
     ui->nextTrack->setIcon(QIcon(":/icons/assets/next.png"));
     ui->nextTrack->setIconSize(QSize(40, 40));
     ui->nextTrack->setText("");
@@ -59,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
     ui->Shuffle->setIconSize(QSize(40, 40));
     ui->Shuffle->setText("");
+    
+    ui->repeatToggle->setIcon(QIcon(":/icons/assets/stop-button.png"));
+    ui->repeatToggle->setIconSize(QSize(40, 40));
+    ui->repeatToggle->setText("");
     
     ui->trackQueue->setIcon(QIcon(":/icons/assets/playlist.png"));
     ui->trackQueue->setIconSize(QSize(40, 40));
@@ -155,6 +158,7 @@ void MainWindow::on_actionOpen_triggered()
  * Displays a modal dialog showing all tracks in the playlist with the current track highlighted.
  * Users can double-click a track to jump to it.
  */
+
 void MainWindow::on_trackQueue_clicked()
 {
     if (playlist.isEmpty()) {
@@ -230,7 +234,8 @@ void MainWindow::on_actionEditMetadata_triggered()
     }
     
     QString currentFile = playlist[currentTrackIndex];
-    // qDebug() << "[MainWindow] Current file:" << currentFile;
+    qDebug() << "[MainWindow] Current file:" << currentFile;
+    qDebug() << "[MainWindow] File exists:" << QFile::exists(currentFile);
     
     // Check if it's a FLAC file
     if (!currentFile.toLower().endsWith(".flac")) {
@@ -241,11 +246,11 @@ void MainWindow::on_actionEditMetadata_triggered()
     }
     
     // Open metadata editor dialog
-    // qDebug() << "[MainWindow] Creating MetadataEditorDialog...";
+    qDebug() << "[MainWindow] Creating MetadataEditorDialog...";
     MetadataEditorDialog dialog(currentFile, this);
-    // qDebug() << "[MainWindow] Dialog created, executing...";
+    qDebug() << "[MainWindow] Dialog created, executing...";
     if (dialog.exec() == QDialog::Accepted) {
-        // qDebug() << "[MainWindow] Dialog accepted, refreshing metadata...";
+        qDebug() << "[MainWindow] Dialog accepted, refreshing metadata...";
         // Reload metadata display after editing
         statusBar()->showMessage("Metadata updated - reloading track info...", 2000);
         
@@ -283,11 +288,28 @@ void MainWindow::loadTrack(int index)
 void MainWindow::updateNextTrackDisplay()
 {
     int nextIndex = currentTrackIndex + 1;
+    
+    // Check if there's a next track in the current queue
     if (nextIndex < playlist.size()) {
         QFileInfo nextFile(playlist[nextIndex]);
         ui->trackName_2->setText(QString("Next: %1").arg(nextFile.fileName()));
     } else {
-        ui->trackName_2->setText("No next track");
+        // At the end of playlist - check repeat mode
+        if (repeatMode == RepeatMode::One) {
+            // Repeating current track
+            if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+                QFileInfo currentFile(playlist[currentTrackIndex]);
+                ui->trackName_2->setText(QString("Repeating: %1").arg(currentFile.fileName()));
+            } else {
+                ui->trackName_2->setText("No next track");
+            }
+        } else if (repeatMode == RepeatMode::All && !playlist.isEmpty()) {
+            // Will repeat from start
+            QFileInfo nextFile(playlist[0]);
+            ui->trackName_2->setText(QString("Next: %1 (from start)").arg(nextFile.fileName()));
+        } else {
+            ui->trackName_2->setText("No next track");
+        }
     }
 }
 
@@ -551,18 +573,41 @@ void MainWindow::onDurationChanged(qint64 duration)
 void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
     if (status == QMediaPlayer::EndOfMedia) {
+        // Handle repeat one mode - replay current song
+        if (repeatMode == RepeatMode::One) {
+            MPlayer->setPosition(0);
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+            updateNextTrackDisplay();
+            statusBar()->showMessage("Repeating current track", 2000);
+            return;
+        }
+        
         // Current track ended, auto-play next track
         if (currentTrackIndex + 1 < playlist.size()) {
             loadTrack(currentTrackIndex + 1);
             MPlayer->play();
             isPlaying = true;
             ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+            updateNextTrackDisplay();
             statusBar()->showMessage("Playing next track", 2000);
         } else {
-            // End of playlist
-            isPlaying = false;
-            ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
-            statusBar()->showMessage("End of playlist", 2000);
+            // End of playlist - handle repeat all mode
+            if (repeatMode == RepeatMode::All && !playlist.isEmpty()) {
+                loadTrack(0);  // Start from beginning
+                MPlayer->play();
+                isPlaying = true;
+                ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+                updateNextTrackDisplay();
+                statusBar()->showMessage("Repeating playlist", 2000);
+            } else {
+                // No repeat - stop at end of playlist
+                isPlaying = false;
+                ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+                updateNextTrackDisplay();
+                statusBar()->showMessage("End of playlist", 2000);
+            }
         }
     }
 }
@@ -692,8 +737,28 @@ void MainWindow::paintEvent(QPaintEvent *event)
 }
 
 
-// void MainWindow::on_repeatToggle_clicked()
-// {
-
-// }
+void MainWindow::on_repeatToggle_clicked()
+{
+    // Cycle through repeat modes: Off -> All -> One -> Off
+    switch (repeatMode) {
+        case RepeatMode::Off:
+            repeatMode = RepeatMode::All;
+            ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat.png"));
+            statusBar()->showMessage("Repeat: All", 2000);
+            break;
+        case RepeatMode::All:
+            repeatMode = RepeatMode::One;
+            ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat-once.png"));
+            statusBar()->showMessage("Repeat: One", 2000);
+            break;
+        case RepeatMode::One:
+            repeatMode = RepeatMode::Off;
+            ui->repeatToggle->setIcon(QIcon(":/icons/assets/stop-button.png"));
+            statusBar()->showMessage("Repeat: Off", 2000);
+            break;
+    }
+    
+    // Update next track display to reflect new repeat mode
+    updateNextTrackDisplay();
+}
 
