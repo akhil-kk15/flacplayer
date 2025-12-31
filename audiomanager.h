@@ -38,13 +38,8 @@ struct FlacMetadata {
     FlacMetadata() = default;
 };
 
-/**
- * @class MetadataEditor
- * @brief Custom FLAC metadata reader/writer
- * 
- * Reads and writes FLAC metadata blocks directly without external libraries.
- * Supports Vorbis Comments and Picture blocks.
- */
+
+//custom FLAC metadata reader/writer with vorbis comment support
 class MetadataEditor
 {
 public:

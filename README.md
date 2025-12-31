@@ -4,33 +4,98 @@ A modern, cross-platform media player specifically designed for lossless audio f
 
 ##  Overview
 
-FLAC Player is a desktop application focused on providing the best playback experience for high-quality, lossless audio formats. The player aims to combine simplicity with powerful metadata management capabilities, making it perfect for audiophiles and music enthusiasts who value audio quality.
+FLAC Player is a desktop application focused on providing the best playback experience for high-quality, lossless audio formats. The player combines simplicity with powerful metadata management capabilities, making it perfect for audiophiles and music enthusiasts who value audio quality.
 
-##  Features (Planned & Current)
+##  Features
 
-### Current Features
--  Qt-based graphical user interface
--  Basic media player framework
--  Cross-platform support (Linux, Windows, macOS)
--  Modern C++17 codebase
+### ✅ Implemented Features
 
-### Planned Features
--  **Lossless Format Support**: FLAC, ALAC, WAV, APE, and other high-quality audio formats
--  **Metadata Management**: 
-  - Automatic metadata fetching from online databases
-  - Album art download and management
-  - Manual metadata and album art editing
--  **Library Management**: Organize and browse your music collection
--  **Playlist Support**: Create and manage custom playlists
--  **Audio Controls**: Play, pause, skip, volume, and seek controls
--  **Audio Visualization**: Real-time visualization of audio playback
+#### Audio Playback
+-  **Multi-format Support**: FLAC, WAV, MP3, and other audio formats via Qt Multimedia
+-  **Full Playback Controls**: Play, pause, skip (next/previous track)
+-  **Volume Control**: Adjustable volume with mute toggle functionality
+-  **Seek Control**: Progress bar with seek functionality
+-  **Position & Duration Display**: Real-time tracking of playback position
+
+#### Playlist Management
+-  **Queue System**: Add multiple tracks to playback queue
+-  **Shuffle Mode**: Randomize track order
+-  **Repeat Modes**: Support for Off, Repeat All, and Repeat One
+-  **Track Queue View**: Visual display of queued tracks
+-  **Drag & Drop**: Add files by dragging them to the player (planned)
+
+#### Metadata Management
+-  **Custom FLAC Metadata Editor**: Direct binary-level FLAC file manipulation
+-  **Read/Write Vorbis Comments**: Title, Artist, Album, Year, Genre, Track Number, etc.
+-  **Album Art Management**: 
+  - Extract embedded album artwork from FLAC files
+  - Add/update album art (PNG, JPEG, BMP formats)
+  - Remove album art
+-  **Technical Info Display**: Sample rate, channels, bits per sample
+-  **Metadata Editor Dialog**: User-friendly interface for editing track information
+
+#### User Interface
+-  **Qt-based Modern GUI**: Clean, intuitive interface
+-  **Dynamic Gradient Background**: Mouse-responsive gradient effect
+-  **Album Art Display**: Shows current track's album artwork
+-  **Now Playing Info**: Displays track title, artist, and album
+-  **Cross-platform Support**: Linux, Windows, macOS
+
+### 🚧 Planned Features
+-  **Library Management**: Database-driven music library organization
+-  **Advanced Playlist Features**: Save/load playlists, playlist editing
+-  **Audio Visualization**: Real-time frequency spectrum display
+-  **Equalizer**: Customizable audio equalization
+-  **Online Metadata**: Fetch metadata from MusicBrainz/Last.fm
+-  **Keyboard Shortcuts**: Global hotkeys for playback control
+-  **Themes**: Customizable UI themes
 
 ##  Technology Stack
 
 - **UI Framework**: Qt 5/6 (Widgets, Multimedia)
 - **Language**: C++17
 - **Build System**: CMake
-- **Planned Libraries**: Boost (for additional functionality)
+- **Audio Backend**: Qt Multimedia (QMediaPlayer, QAudioOutput)
+- **Metadata Handling**: Custom binary FLAC parser (no external dependencies)
+- **File I/O**: Qt Core (QFile, QByteArray)
+
+##  Architecture
+
+### Core Components
+
+1. **MainWindow** (`mainwindow.h/cpp`)
+   - Main application window and UI controller
+   - Handles user interactions and playback control
+   - Manages playlist queue and shuffle/repeat logic
+   - Implements dynamic gradient background effect
+
+2. **AudioManager** (`audiomanager.h/cpp`)
+   - **MetadataEditor**: Custom FLAC metadata reader/writer
+   - Binary-level FLAC file format manipulation
+   - Vorbis Comment and Picture block handling
+   - Album art extraction and embedding
+
+3. **MetadataEditorDialog** (`audiomanager.h/cpp`)
+   - Dialog interface for editing track metadata
+   - Form fields for all standard tags
+   - Album art preview and management
+   - Save/Cancel functionality
+
+### Key Features Implementation
+
+#### Custom FLAC Metadata System
+The application implements a custom FLAC metadata parser that:
+- Reads FLAC file structure (header, metadata blocks, audio frames)
+- Parses STREAMINFO, VORBIS_COMMENT, and PICTURE blocks
+- Writes updated metadata while preserving audio data
+- Handles big-endian/little-endian conversions
+- No dependency on TagLib or libflac
+
+#### Playlist & Queue Management
+- In-memory track queue (QStringList)
+- Shuffle using Qt's QRandomGenerator
+- Three repeat modes (Off, All, One)
+- Automatic next track on media end
 
 ##  Installation
 
@@ -75,25 +140,60 @@ FLAC Player is a desktop application focused on providing the best playback expe
 
 ##  Usage
 
-The application is currently in early development. Upon launching, you will see:
-- A main window with basic UI controls
-- Test buttons to verify the Qt framework setup
-- Debug information to help understand the application structure
+### Basic Operations
 
-For detailed Qt development information, see [QT_LEARNING_GUIDE.md](QT_LEARNING_GUIDE.md).
+1. **Opening Files**
+   - Click `File → Open` or press Ctrl+O
+   - Select one or more audio files (FLAC, WAV, MP3, etc.)
+   - Files are added to the playback queue
+
+2. **Playback Controls**
+   - **Play/Pause**: Click the play button or press Space
+   - **Next/Previous**: Navigate through tracks
+   - **Seek**: Drag the progress slider
+   - **Volume**: Adjust volume slider or click speaker icon to mute
+
+3. **Playlist Management**
+   - **Shuffle**: Click shuffle button to randomize track order
+   - **Repeat**: Cycle through Off → All → One modes
+   - **Queue**: Click "Track Queue" to view upcoming tracks
+
+4. **Metadata Editing**
+   - Click `File → Edit Metadata` while a track is playing
+   - Edit fields: Title, Artist, Album, Year, Genre, Track Number
+   - **Album Art**: 
+     - Click "Load Image" to add/update artwork
+     - Click "Remove" to delete embedded art
+   - Click "Save" to write changes to file
+
+### Keyboard Shortcuts
+- `Ctrl+O`: Open files
+- `Space`: Play/Pause (when implemented)
+- For detailed Qt development information, see [meta.md](meta.md) for metadata system details.
 
 ##  Project Structure
 
 ```
 flacplayer/
-├── CMakeLists.txt           # Build configuration
-├── main.cpp                 # Application entry point
-├── mainwindow.h/cpp         # Main window implementation
-├── mainwindow.ui            # Qt Designer UI file
-├── flacplayer_en_GB.ts      # Translation file
-├── QT_LEARNING_GUIDE.md     # Qt development guide
-└── README.md                # This file
+├── CMakeLists.txt              # Build configuration
+├── main.cpp                    # Application entry point
+├── mainwindow.h/cpp/ui         # Main window (UI, playback, queue)
+├── audiomanager.h/cpp          # Metadata editor & FLAC parser
+├── metadataeditor.ui           # Metadata editor dialog UI
+├── flacplayer_en_GB.ts         # Translation file
+├── resources.qrc               # Qt resources (icons, etc.)
+├── assets/                     # Application assets
+├── meta.md                     # Metadata implementation docs
+├── README.md                   # This file
+└── build/                      # Build output directory
 ```
+
+### File Descriptions
+
+- **mainwindow.***: Main application window with playback controls, queue management, and UI effects
+- **audiomanager.***: FLAC metadata reading/writing, binary format parsing, album art handling
+- **metadataeditor.ui**: Qt Designer form for metadata editing dialog
+- **meta.md**: Detailed documentation of FLAC metadata implementation
 
 ## 🔧 Development
 
@@ -116,13 +216,62 @@ flacplayer/
    ./flacplayer
    ```
 
+### Code Organization
+
+#### MainWindow Class
+**Responsibilities:**
+- UI event handling and user interactions
+- Playlist queue management (add, shuffle, next/prev)
+- Playback state management (play, pause, stop)
+- Repeat mode logic (Off, All, One)
+- Dynamic gradient rendering on mouse move
+- Track information display updates
+
+**Key Methods:**
+- `on_actionOpen_triggered()`: File dialog and queue population
+- `on_playPause_clicked()`: Toggle playback state
+- `on_nextTrack_clicked()`: Advance to next track with repeat logic
+- `updateTrackInfo()`: Update UI with current track metadata
+- `paintEvent()`: Render dynamic gradient background
+
+#### MetadataEditor Class
+**Responsibilities:**
+- Read/write FLAC file binary format
+- Parse metadata blocks (STREAMINFO, VORBIS_COMMENT, PICTURE)
+- Extract and embed album artwork
+- Handle big-endian/little-endian conversions
+
+**Key Methods:**
+- `readMetadata()`: Parse FLAC file and extract all metadata
+- `writeMetadata()`: Write updated metadata blocks to file
+- `updateField()`: Update a single metadata field
+- `updateAlbumArt()`: Add or replace embedded album art
+- `readMetadataBlock()`: Parse individual metadata blocks
+
+#### MetadataEditorDialog Class
+**Responsibilities:**
+- Provide UI for editing track metadata
+- Load current track information
+- Validate and save changes
+- Album art preview and management
+
+### Technical Details
+
+#### FLAC Metadata Format
+The custom parser handles:
+- **File Header**: 4-byte "fLaC" signature (0x664C6143)
+- **Metadata Blocks**: Variable-length blocks with headers
+- **Vorbis Comments**: Key=Value pairs (little-endian lengths)
+- **Picture Blocks**: Embedded images with MIME type (big-endian)
+
+See [meta.md](meta.md) for detailed binary format documentation.
+
 ### Debugging
 
 - The application outputs debug information to the terminal
 - Use `qDebug()` for logging in Qt applications
 - Qt Creator provides integrated debugging support
-
-See [QT_LEARNING_GUIDE.md](QT_LEARNING_GUIDE.md) for comprehensive Qt development tips.
+- Check `build/` directory for compilation artifacts
 
 ## Contributing
 
@@ -135,19 +284,46 @@ Contributions are welcome! Here's how you can help:
 5. Open a Pull Request
 
 ### Contribution Ideas
-- Implement FLAC file format support
-- Add metadata fetching from MusicBrainz or similar services
-- Create album art management features
-- Improve UI/UX design
-- Add playlist functionality
-- Write tests
-- Improve documentation
+- Add support for more audio formats (ALAC, APE, OGG)
+- Implement music library with scanning functionality
+- Add online metadata fetching (MusicBrainz API)
+- Create audio visualization (spectrum analyzer)
+- Improve UI/UX design and add themes
+- Add playlist import/export (M3U, PLS)
+- Implement global keyboard shortcuts
+- Add audio effects (equalizer, normalization)
+- Write unit tests for metadata parser
+- Improve error handling and logging
+- Add localization/translations
 
 ##  Project Status
 
-**Current Version**: 0.1 (Early Development)
+**Current Version**: 0.2 (Alpha)
 
-This project is in its **early development phase**. The current focus is on establishing the basic Qt framework and UI structure. Core audio playback and metadata features are planned for upcoming releases.
+**Status**: Active Development
+
+### What's Working
+✅ Audio playback with full controls (play, pause, next, previous)  
+✅ Volume and seek functionality  
+✅ Queue-based playlist system  
+✅ Shuffle and repeat modes  
+✅ FLAC metadata reading and writing  
+✅ Album art extraction and embedding  
+✅ Metadata editor dialog  
+✅ Track information display  
+
+### Known Issues
+⚠️ No playlist persistence (queue cleared on app close)  
+⚠️ Limited error handling for corrupted files  
+⚠️ UI could be more polished  
+
+### Upcoming Milestones
+- [ ] Persistent playlist storage
+- [ ] Music library with database
+- [ ] Search and filter functionality
+- [ ] Audio visualization
+- [ ] Global keyboard shortcuts
+- [ ] Settings and preferences
 
 ##  License
 

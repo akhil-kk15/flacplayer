@@ -18,6 +18,8 @@
 #include <QMediaMetaData>
 #include <QPixmap>
 #include <QImage>
+#include <algorithm>
+#include <random>
 #include <QRegularExpression>
 
 
@@ -482,11 +484,32 @@ void MainWindow::on_previousTrack_clicked()
     }
 }
 
-//this is for shuffle, currently a placeholder 
-//to-do try implement shuffle functionality using fisher-yates algorithm
+//shuffle the playlist using simple std::shuffle
 void MainWindow::on_Shuffle_clicked()
 {
-    // TODO: Implement shuffle functionality
+    if (playlist.isEmpty()) {
+        statusBar()->showMessage("Playlist is empty", 2000);
+        return;
+    }
+    
+    // Save the currently playing track
+    QString currentTrack;
+    if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+        currentTrack = playlist[currentTrackIndex];
+    }
+    
+    // Shuffle the playlist using std::shuffle
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(playlist.begin(), playlist.end(), rng);
+    
+    // Find and update the current track index after shuffle
+    if (!currentTrack.isEmpty()) {
+        currentTrackIndex = playlist.indexOf(currentTrack);
+    }
+    
+    updateNextTrackDisplay();
+    statusBar()->showMessage("Playlist shuffled", 2000);
 }
 
 //seek forward
@@ -748,7 +771,7 @@ void MainWindow::on_repeatToggle_clicked()
             break;
         case RepeatMode::All:
             repeatMode = RepeatMode::One;
-            ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat-once.png"));
+            ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat-one.png"));
             statusBar()->showMessage("Repeat: One", 2000);
             break;
         case RepeatMode::One:

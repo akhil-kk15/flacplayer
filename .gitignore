@@ -99,4 +99,26 @@ Backup_files/
 # Documentation and notes (keep README.md)
 *.md
 !README.md
+
+# Text files and documents
 *.txt
+*.doc
+*.docx
+*.pdf
+*.odt
+*.rtf
+
+# Test files and directories
+tests/
+test_*.cpp
+test_*.h
+*_test.cpp
+*_test.h
+*.test
+test_results/
+coverage/
+*.gcda
+*.gcno
+*.gcov
+
+.~lock.flacaudioprocessorSRS_updated.docx#

@@ -522,7 +522,6 @@ padding:0px;
      <string>Tools</string>
     </property>
     <addaction name="actionConvert"/>
-    <addaction name="actionMetadata_Editor"/>
     <addaction name="actionEditMetadata"/>
    </widget>
    <widget class="QMenu" name="menuhelp">

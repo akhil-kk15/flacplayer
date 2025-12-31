@@ -6,7 +6,7 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QElapsedTimer>
-#include <QStringList>
+#include "playlist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -74,7 +74,7 @@ private:
     QMediaPlayer *MPlayer;
     QAudioOutput *audioOutput; 
     // Playlist management
-    QStringList playlist;         
+    Playlist playlist;         
     int currentTrackIndex = -1;     ///< Index of currently playing track (-1 = none)
     
     // Playback state variables

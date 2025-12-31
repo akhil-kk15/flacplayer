@@ -169,6 +169,7 @@ bool MetadataEditor::writeMetadata(const QString &filePath, const FlacMetadata &
     }
     
     // Update or remove Picture block
+    
     bool hasPicture = false;
     for (int i = 0; i < blocks.size(); ++i) {
         if (blocks[i].blockType == BLOCK_TYPE_PICTURE) {
