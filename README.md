@@ -8,7 +8,7 @@ FLAC Player is a desktop application focused on providing the best playback expe
 
 ##  Features
 
-### ✅ Implemented Features
+###  Implemented Features
 
 #### Audio Playback
 -  **Multi-format Support**: FLAC, WAV, MP3, and other audio formats via Qt Multimedia
@@ -41,7 +41,7 @@ FLAC Player is a desktop application focused on providing the best playback expe
 -  **Now Playing Info**: Displays track title, artist, and album
 -  **Cross-platform Support**: Linux, Windows, macOS
 
-### 🚧 Planned Features
+###  Planned Features
 -  **Library Management**: Database-driven music library organization
 -  **Advanced Playlist Features**: Save/load playlists, playlist editing
 -  **Audio Visualization**: Real-time frequency spectrum display
@@ -195,7 +195,7 @@ flacplayer/
 - **metadataeditor.ui**: Qt Designer form for metadata editing dialog
 - **meta.md**: Detailed documentation of FLAC metadata implementation
 
-## 🔧 Development
+##  Development
 
 ### Development Environment Setup
 
@@ -303,19 +303,19 @@ Contributions are welcome! Here's how you can help:
 **Status**: Active Development
 
 ### What's Working
-✅ Audio playback with full controls (play, pause, next, previous)  
-✅ Volume and seek functionality  
-✅ Queue-based playlist system  
-✅ Shuffle and repeat modes  
-✅ FLAC metadata reading and writing  
-✅ Album art extraction and embedding  
-✅ Metadata editor dialog  
-✅ Track information display  
+ Audio playback with full controls (play, pause, next, previous)  
+ Volume and seek functionality  
+ Queue-based playlist system  
+ Shuffle and repeat modes  
+ FLAC metadata reading and writing  
+ Album art extraction and embedding  
+ Metadata editor dialog  
+ Track information display  
 
 ### Known Issues
-⚠️ No playlist persistence (queue cleared on app close)  
-⚠️ Limited error handling for corrupted files  
-⚠️ UI could be more polished  
+ No playlist persistence (queue cleared on app close)  
+ Limited error handling for corrupted files  
+ UI could be more polished  
 
 ### Upcoming Milestones
 - [ ] Persistent playlist storage
