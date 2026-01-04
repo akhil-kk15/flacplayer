@@ -4,6 +4,7 @@ output/
 
 # Qt creator and user files
 .vscode/
+.qtcreator/
 *.user
 *.user.*
 
@@ -14,6 +15,8 @@ cmake_install.cmake
 CMakeCache.txt
 Makefile
 compile_commands.json
+*.qm
+*.ts
 
 # macOS
 .DS_Store
@@ -96,29 +99,34 @@ CMakeLists.txt.user*
 backup_files/
 Backup_files/
 
-# Documentation and notes (keep README.md)
+# Documentation and notes - ignore all
 *.md
-!README.md
+README.md
+REPORT.md
+APPENDIX.md
+PLAYLIST_DATASTRUCTURE.md
 
-# Text files and documents
+# Text files and documents - ignore all
 *.txt
+code_review_*.txt
+flacaudioprocessor*.txt
+Assumptions_and_Dependencies.txt
+SRS_FlacPlayer_Complete.txt
+meta.md
 *.doc
 *.docx
 *.pdf
 *.odt
 *.rtf
+.~lock.*
 
-# Test files and directories
-tests/
-test_*.cpp
-test_*.h
-*_test.cpp
-*_test.h
-*.test
+# Git configuration - ignore
+.gitignore
+
+# Test artifacts (but keep test source files)
 test_results/
-coverage/
+test_output/
 *.gcda
 *.gcno
 *.gcov
 
-.~lock.flacaudioprocessorSRS_updated.docx#
