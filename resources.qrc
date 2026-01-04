@@ -9,8 +9,9 @@
         <file>assets/playlist.png</file>
         <file>assets/folder.png</file>
         <file>assets/information.png</file>
-        <file>assets/loop.png</file>
         <file>assets/repeat.png</file>
+        <file>assets/repeat-off.png</file>
+        <file>assets/repeat-one.png</file>
         <file>assets/conversion-settings.png</file>
         <file>assets/mute.png</file>
         <file>assets/unmuted.png</file>

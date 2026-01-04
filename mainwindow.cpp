@@ -61,9 +61,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Shuffle->setIconSize(QSize(40, 40));
     ui->Shuffle->setText("");
     
-    ui->repeatToggle->setIcon(QIcon(":/icons/assets/stop-button.png"));
+    ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat-off.png"));
     ui->repeatToggle->setIconSize(QSize(40, 40));
     ui->repeatToggle->setText("");
+    
+    ui->trackStop->setIcon(QIcon(":/icons/assets/stop-button.png"));
+    ui->trackStop->setIconSize(QSize(40, 40));
+    ui->trackStop->setText("");
     
     ui->trackQueue->setIcon(QIcon(":/icons/assets/playlist.png"));
     ui->trackQueue->setIconSize(QSize(40, 40));
@@ -92,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Set initial UI state
     ui->labelFileName->setText("Add files through the menu to begin playback");
-    ui->trackName_2->setText("No next track");
+    ui->nextinQueue->setText("No next track");
     ui->seekSlider->setEnabled(false);
     
     // Enable mouse tracking for gradient effect on all widgets
@@ -294,23 +298,23 @@ void MainWindow::updateNextTrackDisplay()
     // Check if there's a next track in the current queue
     if (nextIndex < playlist.size()) {
         QFileInfo nextFile(playlist[nextIndex]);
-        ui->trackName_2->setText(QString("Next: %1").arg(nextFile.fileName()));
+        ui->nextinQueue->setText(QString("Next: %1").arg(nextFile.fileName()));
     } else {
         // At the end of playlist - check repeat mode
         if (repeatMode == RepeatMode::One) {
             // Repeating current track
             if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
                 QFileInfo currentFile(playlist[currentTrackIndex]);
-                ui->trackName_2->setText(QString("Repeating: %1").arg(currentFile.fileName()));
+                ui->nextinQueue->setText(QString("Repeating: %1").arg(currentFile.fileName()));
             } else {
-                ui->trackName_2->setText("No next track");
+                ui->nextinQueue->setText("No next track");
             }
         } else if (repeatMode == RepeatMode::All && !playlist.isEmpty()) {
             // Will repeat from start
             QFileInfo nextFile(playlist[0]);
-            ui->trackName_2->setText(QString("Next: %1 (from start)").arg(nextFile.fileName()));
+            ui->nextinQueue->setText(QString("Next: %1 (from start)").arg(nextFile.fileName()));
         } else {
-            ui->trackName_2->setText("No next track");
+            ui->nextinQueue->setText("No next track");
         }
     }
 }
@@ -776,12 +780,23 @@ void MainWindow::on_repeatToggle_clicked()
             break;
         case RepeatMode::One:
             repeatMode = RepeatMode::Off;
-            ui->repeatToggle->setIcon(QIcon(":/icons/assets/stop-button.png"));
+            ui->repeatToggle->setIcon(QIcon(":/icons/assets/repeat-off.png"));
             statusBar()->showMessage("Repeat: Off", 2000);
             break;
     }
     
     // Update next track display to reflect new repeat mode
     updateNextTrackDisplay();
+}
+
+void MainWindow::on_trackStop_clicked()
+{
+    // Stop playback and reset to beginning
+    MPlayer->stop();
+    isPlaying = false;
+    ui->playPause->setIcon(QIcon(":/icons/assets/play-button.png"));
+    ui->seekSlider->setValue(0);
+    ui->timeStamp->setText("00:00:00");
+    statusBar()->showMessage("Playback stopped", 2000);
 }
 

@@ -52,6 +52,7 @@ private slots:
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status); 
 
     void on_repeatToggle_clicked();
+    void on_trackStop_clicked();
 
 protected:
     //event handlers for mouse tracking and button hold detection

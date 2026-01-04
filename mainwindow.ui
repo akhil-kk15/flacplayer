@@ -76,7 +76,7 @@ border: 2px solid white;
    <widget class="QPushButton" name="playPause">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>400</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -106,7 +106,7 @@ padding:0px;
    <widget class="QPushButton" name="nextTrack">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>550</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -136,7 +136,7 @@ padding:0px;
    <widget class="QPushButton" name="previousTrack">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>230</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -166,7 +166,7 @@ padding:0px;
    <widget class="QPushButton" name="Shuffle">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>70</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -196,7 +196,7 @@ padding:0px;
    <widget class="QPushButton" name="trackQueue">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>800</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -420,7 +420,7 @@ color: white;
      <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="trackName_2">
+   <widget class="QLabel" name="nextinQueue">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -473,7 +473,7 @@ background-color: rgb(35,34,47);
    <widget class="QPushButton" name="repeatToggle">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>680</x>
       <y>470</y>
       <width>75</width>
       <height>75</height>
@@ -498,6 +498,36 @@ padding:0px;
     </property>
     <property name="text">
      <string>repeatToggle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="trackStop">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>300</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border:none;
+border-radius:37px;
+background-color:rgb(255,255,255);
+color:rgb(51,52,64);
+
+min-width:75px;
+max-width:75px;
+
+min-height:75px;
+max-height:75px;
+
+padding:0px;
+
+}</string>
+    </property>
+    <property name="text">
+     <string>stop</string>
     </property>
    </widget>
   </widget>
