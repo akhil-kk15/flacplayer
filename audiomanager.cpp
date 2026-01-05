@@ -106,33 +106,59 @@ FlacMetadata MetadataEditor::readMetadata(const QString &filePath)
 bool MetadataEditor::writeMetadata(const QString &filePath, const FlacMetadata &metadata)
 {
     qDebug() << "[MetadataEditor] writeMetadata called for:" << filePath;
+    qDebug() << "[MetadataEditor] Metadata to write:";
+    qDebug() << "  Title:" << metadata.title;
+    qDebug() << "  Artist:" << metadata.artist;
+    qDebug() << "  Album:" << metadata.album;
+    qDebug() << "  AlbumArtist:" << metadata.albumArtist;
+    qDebug() << "  Year:" << metadata.year;
+    qDebug() << "  Genre:" << metadata.genre;
+    qDebug() << "  TrackNumber:" << metadata.trackNumber;
+    qDebug() << "  Comment:" << metadata.comment;
+    qDebug() << "  AlbumArt isNull:" << metadata.albumArt.isNull();
+    if (!metadata.albumArt.isNull()) {
+        qDebug() << "  AlbumArt size:" << metadata.albumArt.width() << "x" << metadata.albumArt.height();
+    }
+    
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         m_lastError = "Cannot open file for reading: " + filePath;
         qDebug() << "[MetadataEditor] ERROR: Cannot open file for writing";
         return false;
     }
+    qDebug() << "[MetadataEditor] File opened successfully for reading, size:" << file.size();
     
     // Verify FLAC header
     if (!readFlacHeader(file)) {
         m_lastError = "Invalid FLAC file format";
+        qDebug() << "[MetadataEditor] ERROR: Invalid FLAC header";
         file.close();
         return false;
     }
+    qDebug() << "[MetadataEditor] FLAC header verified successfully";
     
     // Read existing metadata and audio data
+    qDebug() << "[MetadataEditor] Reading existing metadata blocks...";
     QList<MetadataBlock> blocks = readMetadataBlocks(file);
+    qDebug() << "[MetadataEditor] Read" << blocks.size() << "metadata blocks";
+    
+    qint64 audioDataStartPos = file.pos();
     QByteArray audioData = file.readAll();
+    qDebug() << "[MetadataEditor] Read" << audioData.size() << "bytes of audio data starting at position" << audioDataStartPos;
     file.close();
     
     // Update or create Vorbis Comment block
     bool hasVorbisComment = false;
     QMap<QString, QString> extraFields;
     
+    qDebug() << "[MetadataEditor] Processing Vorbis Comment block...";
     for (int i = 0; i < blocks.size(); ++i) {
         if (blocks[i].blockType == BLOCK_TYPE_VORBIS_COMMENT) {
+            qDebug() << "[MetadataEditor] Found existing Vorbis Comment block at index" << i;
+            qDebug() << "[MetadataEditor] Existing block size:" << blocks[i].data.size();
             // Preserve extra fields not in our structure
             QMap<QString, QString> existing = parseVorbisComment(blocks[i].data);
+            qDebug() << "[MetadataEditor] Parsed" << existing.size() << "existing comments";
             for (auto it = existing.constBegin(); it != existing.constEnd(); ++it) {
                 QString key = it.key().toUpper();
                 if (key != "TITLE" && key != "ARTIST" && key != "ALBUM" && 
@@ -145,8 +171,10 @@ bool MetadataEditor::writeMetadata(const QString &filePath, const FlacMetadata &
             }
             
             // Replace with new data
+            qDebug() << "[MetadataEditor] Creating new Vorbis Comment block with" << extraFields.size() << "extra fields";
             blocks[i].data = createVorbisCommentBlock(metadata, extraFields);
             blocks[i].length = blocks[i].data.size();
+            qDebug() << "[MetadataEditor] New Vorbis Comment block size:" << blocks[i].length;
             hasVorbisComment = true;
             break;
         }
@@ -154,31 +182,40 @@ bool MetadataEditor::writeMetadata(const QString &filePath, const FlacMetadata &
     
     // Add Vorbis Comment if it doesn't exist
     if (!hasVorbisComment) {
+        qDebug() << "[MetadataEditor] No existing Vorbis Comment block, creating new one";
         MetadataBlock vorbisBlock;
         vorbisBlock.blockType = BLOCK_TYPE_VORBIS_COMMENT;
         vorbisBlock.isLast = false;
         vorbisBlock.data = createVorbisCommentBlock(metadata, extraFields);
         vorbisBlock.length = vorbisBlock.data.size();
+        qDebug() << "[MetadataEditor] New Vorbis Comment block created, size:" << vorbisBlock.length;
         
         // Insert after STREAMINFO (which should be first)
         if (!blocks.isEmpty()) {
+            qDebug() << "[MetadataEditor] Inserting Vorbis Comment block at position 1";
             blocks.insert(1, vorbisBlock);
         } else {
+            qDebug() << "[MetadataEditor] WARNING: No existing blocks, appending Vorbis Comment";
             blocks.append(vorbisBlock);
         }
     }
     
     // Update or remove Picture block
-    
+    qDebug() << "[MetadataEditor] Processing Picture block...";
     bool hasPicture = false;
     for (int i = 0; i < blocks.size(); ++i) {
         if (blocks[i].blockType == BLOCK_TYPE_PICTURE) {
+            qDebug() << "[MetadataEditor] Found existing Picture block at index" << i;
+            qDebug() << "[MetadataEditor] Existing picture block size:" << blocks[i].data.size();
             if (!metadata.albumArt.isNull()) {
                 // Replace with new image
+                qDebug() << "[MetadataEditor] Replacing with new album art";
                 blocks[i].data = createPictureBlock(metadata.albumArt);
                 blocks[i].length = blocks[i].data.size();
+                qDebug() << "[MetadataEditor] New picture block size:" << blocks[i].length;
             } else {
                 // Remove picture block
+                qDebug() << "[MetadataEditor] Removing picture block (no album art)";
                 blocks.removeAt(i);
                 --i;
             }
@@ -189,22 +226,29 @@ bool MetadataEditor::writeMetadata(const QString &filePath, const FlacMetadata &
     
     // Add Picture block if needed and doesn't exist
     if (!hasPicture && !metadata.albumArt.isNull()) {
+        qDebug() << "[MetadataEditor] No existing Picture block, creating new one";
         MetadataBlock pictureBlock;
         pictureBlock.blockType = BLOCK_TYPE_PICTURE;
         pictureBlock.isLast = false;
         pictureBlock.data = createPictureBlock(metadata.albumArt);
         pictureBlock.length = pictureBlock.data.size();
+        qDebug() << "[MetadataEditor] New picture block size:" << pictureBlock.length;
         blocks.append(pictureBlock);
     }
     
     // Mark last block
+    qDebug() << "[MetadataEditor] Marking last block flag...";
     if (!blocks.isEmpty()) {
         for (int i = 0; i < blocks.size(); ++i) {
             blocks[i].isLast = (i == blocks.size() - 1);
+            qDebug() << "[MetadataEditor] Block" << i << "- Type:" << blocks[i].blockType 
+                     << "Length:" << blocks[i].length << "IsLast:" << blocks[i].isLast;
         }
     }
     
     // Write updated file
+    qDebug() << "[MetadataEditor] Calling writeFlacFile with" << blocks.size() << "blocks and" 
+             << audioData.size() << "bytes of audio";
     return writeFlacFile(filePath, blocks, audioData);
 }
 
@@ -436,8 +480,11 @@ QImage MetadataEditor::parsePictureBlock(const QByteArray &data)
 bool MetadataEditor::writeFlacFile(const QString &filePath, const QList<MetadataBlock> &blocks, const QByteArray &audioData)
 {
     qDebug() << "[MetadataEditor] writeFlacFile: Writing" << blocks.size() << "blocks and" << audioData.size() << "bytes of audio";
+    qDebug() << "[MetadataEditor] Original file path:" << filePath;
+    
     // Create temporary file
     QString tempPath = filePath + ".tmp";
+    qDebug() << "[MetadataEditor] Creating temporary file:" << tempPath;
     QFile tempFile(tempPath);
     
     if (!tempFile.open(QIODevice::WriteOnly)) {
@@ -445,16 +492,28 @@ bool MetadataEditor::writeFlacFile(const QString &filePath, const QList<Metadata
         qDebug() << "[MetadataEditor] ERROR: Cannot create temp file";
         return false;
     }
+    qDebug() << "[MetadataEditor] Temp file opened successfully";
     
     // Write FLAC header
-    tempFile.write("fLaC", 4);
+    qDebug() << "[MetadataEditor] Writing FLAC header (fLaC)";
+    qint64 headerWritten = tempFile.write("fLaC", 4);
+    qDebug() << "[MetadataEditor] Header bytes written:" << headerWritten;
     
     // Write metadata blocks
-    for (const MetadataBlock &block : blocks) {
-        qDebug() << "[MetadataEditor] Writing block - Type:" << block.blockType 
+    qDebug() << "[MetadataEditor] Writing" << blocks.size() << "metadata blocks...";
+    qint64 totalMetadataWritten = 4; // header
+    for (int idx = 0; idx < blocks.size(); ++idx) {
+        const MetadataBlock &block = blocks[idx];
+        qDebug() << "[MetadataEditor] Writing block" << idx << "- Type:" << block.blockType 
                  << "Length:" << block.length 
                  << "IsLast:" << block.isLast
                  << "Data size:" << block.data.size();
+        
+        // Validate block data
+        if (block.data.size() != static_cast<int>(block.length)) {
+            qDebug() << "[MetadataEditor] WARNING: Block data size mismatch! Data size:" 
+                     << block.data.size() << "but length field says:" << block.length;
+        }
         
         // Block header (4 bytes)
         QByteArray header(4, 0);
@@ -467,36 +526,78 @@ bool MetadataEditor::writeFlacFile(const QString &filePath, const QList<Metadata
         header[2] = static_cast<char>((block.length >> 8) & 0xFF);
         header[3] = static_cast<char>(block.length & 0xFF);
         
-        tempFile.write(header);
-        tempFile.write(block.data);
+        qDebug() << "[MetadataEditor] Block header bytes:" 
+                 << "[0]=" << QString::number(static_cast<quint8>(header[0]), 16)
+                 << "[1]=" << QString::number(static_cast<quint8>(header[1]), 16)
+                 << "[2]=" << QString::number(static_cast<quint8>(header[2]), 16)
+                 << "[3]=" << QString::number(static_cast<quint8>(header[3]), 16);
+        
+        qint64 headerBytesWritten = tempFile.write(header);
+        qint64 dataBytesWritten = tempFile.write(block.data);
+        qDebug() << "[MetadataEditor] Block" << idx << "written - Header:" << headerBytesWritten 
+                 << "bytes, Data:" << dataBytesWritten << "bytes";
+        totalMetadataWritten += headerBytesWritten + dataBytesWritten;
     }
+    qDebug() << "[MetadataEditor] Total metadata written:" << totalMetadataWritten << "bytes";
     
     // Write audio data
-    tempFile.write(audioData);
+    qDebug() << "[MetadataEditor] Writing audio data (" << audioData.size() << "bytes)...";
+    qint64 audioBytesWritten = tempFile.write(audioData);
+    qDebug() << "[MetadataEditor] Audio bytes written:" << audioBytesWritten;
+    
+    qint64 totalFileSize = tempFile.size();
     tempFile.close();
+    qDebug() << "[MetadataEditor] Temp file closed, total size:" << totalFileSize;
+    
+    // Verify temp file before replacing
+    QFile verifyFile(tempPath);
+    if (verifyFile.open(QIODevice::ReadOnly)) {
+        qint64 verifySize = verifyFile.size();
+        qDebug() << "[MetadataEditor] Temp file verification - Size:" << verifySize;
+        verifyFile.close();
+    } else {
+        qDebug() << "[MetadataEditor] WARNING: Could not verify temp file";
+    }
     
     // Replace original file with temporary file
-    QFile::remove(filePath);
+    qDebug() << "[MetadataEditor] Removing original file:" << filePath;
+    if (!QFile::remove(filePath)) {
+        qDebug() << "[MetadataEditor] WARNING: Could not remove original file (may not exist)";
+    }
+    
+    qDebug() << "[MetadataEditor] Renaming temp file to original...";
     if (!QFile::rename(tempPath, filePath)) {
         m_lastError = "Failed to replace original file";
-        qDebug() << "[MetadataEditor] ERROR: Failed to replace original file";
+        qDebug() << "[MetadataEditor] ERROR: Failed to rename temp file to original";
         QFile::remove(tempPath);
         return false;
     }
     
     qDebug() << "[MetadataEditor] Successfully wrote FLAC file";
+    qDebug() << "[MetadataEditor] Final file path:" << filePath;
+    
+    // Verify final file
+    QFile finalFile(filePath);
+    if (finalFile.open(QIODevice::ReadOnly)) {
+        qint64 finalSize = finalFile.size();
+        qDebug() << "[MetadataEditor] Final file size:" << finalSize;
+        finalFile.close();
+    }
+    
     m_lastError.clear();
     return true;
 }
 
 QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata, const QMap<QString, QString> &extraFields)
 {
+    qDebug() << "[MetadataEditor] createVorbisCommentBlock called";
     QByteArray block;
     
     // Vendor string
     QString vendor = "Flac Player v2.0";
     QByteArray vendorUtf8 = vendor.toUtf8();
     quint32 vendorLength = vendorUtf8.size();
+    qDebug() << "[MetadataEditor] Vendor string:" << vendor << "length:" << vendorLength;
     
     // Write vendor length (little-endian)
     block.append(static_cast<char>(vendorLength & 0xFF));
@@ -526,6 +627,7 @@ QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata
     
     // Write comment count (little-endian)
     quint32 commentCount = comments.size();
+    qDebug() << "[MetadataEditor] Total comments to write:" << commentCount;
     block.append(static_cast<char>(commentCount & 0xFF));
     block.append(static_cast<char>((commentCount >> 8) & 0xFF));
     block.append(static_cast<char>((commentCount >> 16) & 0xFF));
@@ -533,6 +635,7 @@ QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata
     
     // Write each comment
     for (const auto &comment : comments) {
+        qDebug() << "[MetadataEditor] Writing comment:" << comment.first << "=" << comment.second;
         QString commentStr = comment.first + "=" + comment.second;
         QByteArray commentUtf8 = commentStr.toUtf8();
         quint32 commentLength = commentUtf8.size();
@@ -547,19 +650,24 @@ QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata
         block.append(commentUtf8);
     }
     
+    qDebug() << "[MetadataEditor] Vorbis Comment block created, total size:" << block.size();
     return block;
 }
 
 QByteArray MetadataEditor::createPictureBlock(const QImage &image)
 {
+    qDebug() << "[MetadataEditor] createPictureBlock called";
+    qDebug() << "[MetadataEditor] Image size:" << image.width() << "x" << image.height();
     QByteArray block;
     
     // Convert image to PNG
     QByteArray imageData;
     QBuffer buffer(&imageData);
     buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG");
+    bool saveSuccess = image.save(&buffer, "PNG");
     buffer.close();
+    qDebug() << "[MetadataEditor] Image converted to PNG, success:" << saveSuccess 
+             << "size:" << imageData.size() << "bytes";
     
     // Picture type (3 = front cover, big-endian 32-bit)
     writeBigEndian32(block, 3);
@@ -590,15 +698,16 @@ QByteArray MetadataEditor::createPictureBlock(const QImage &image)
     // Picture data
     block.append(imageData);
     
+    qDebug() << "[MetadataEditor] Picture block created, total size:" << block.size();
     return block;
 }
 
 
 quint32 MetadataEditor::readBigEndian24(const QByteArray &data, int offset)
 {
-    return (static_cast<quint8>(data[offset + 1]) << 16) |
-           (static_cast<quint8>(data[offset + 2]) << 8) |
-           static_cast<quint8>(data[offset + 3]);
+    return (static_cast<quint8>(data[offset]) << 16) |
+           (static_cast<quint8>(data[offset + 1]) << 8) |
+           static_cast<quint8>(data[offset + 2]);
 }
 
 quint32 MetadataEditor::readBigEndian32(const QByteArray &data, int offset)

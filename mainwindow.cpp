@@ -15,6 +15,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
+#include <QEventLoop>
 #include <QMediaMetaData>
 #include <QPixmap>
 #include <QImage>
@@ -260,10 +261,20 @@ void MainWindow::on_actionEditMetadata_triggered()
         // Reload metadata display after editing
         statusBar()->showMessage("Metadata updated - reloading track info...", 2000);
         
-        // Force metadata refresh by reloading the track
+        // Force metadata refresh by fully reloading the track
         qint64 currentPosition = MPlayer->position();
         bool wasPlaying = isPlaying;
         
+        // Stop playback and clear the current source to force cache invalidation
+        MPlayer->stop();
+        MPlayer->setSource(QUrl());
+        
+        // Small delay to ensure the player releases the file
+        QEventLoop loop;
+        QTimer::singleShot(100, &loop, &QEventLoop::quit);
+        loop.exec();
+        
+        // Reload the track with fresh metadata
         loadTrack(currentTrackIndex);
         MPlayer->setPosition(currentPosition);
         
