@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->previousTrack->setIconSize(QSize(40, 40));
     ui->previousTrack->setText("");
     
-    ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
+    ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle-off.png"));
     ui->Shuffle->setIconSize(QSize(40, 40));
     ui->Shuffle->setText("");
     
@@ -297,6 +297,32 @@ void MainWindow::loadTrack(int index)
         ui->seekSlider->setEnabled(true);
         ui->seekSlider->setValue(0);
         
+        // Immediately load and display metadata from FLAC file if available
+        if (fileName.toLower().endsWith(".flac")) {
+            MetadataEditor editor;
+            FlacMetadata flacMeta = editor.readMetadata(fileName);
+            
+            // Update UI with FLAC metadata immediately
+            ui->trackName->setText(flacMeta.title.isEmpty() ? fileinfo.completeBaseName() : flacMeta.title);
+            ui->albumArtist->setText(flacMeta.albumArtist.isEmpty() ? 
+                (flacMeta.artist.isEmpty() ? "Unknown Artist" : flacMeta.artist) : flacMeta.albumArtist);
+            ui->albumName->setText(flacMeta.album.isEmpty() ? "Unknown Album" : flacMeta.album);
+            ui->albumYear->setText(flacMeta.year.isEmpty() ? "----" : flacMeta.year);
+            
+            // Display album art if available
+            if (!flacMeta.albumArt.isNull()) {
+                QPixmap coverPixmap = QPixmap::fromImage(flacMeta.albumArt);
+                QSize labelSize = ui->albumArtLabel->size();
+                QPixmap scaledPixmap = coverPixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                ui->albumArtLabel->setPixmap(scaledPixmap);
+                ui->albumArtLabel->setAlignment(Qt::AlignCenter);
+            } else {
+                ui->albumArtLabel->clear();
+                ui->albumArtLabel->setText("No Album Art");
+                ui->albumArtLabel->setAlignment(Qt::AlignCenter);
+            }
+        }
+        
         updateNextTrackDisplay();
     }
 }
@@ -335,7 +361,40 @@ void MainWindow::updateNextTrackDisplay()
 //metadata extraction and display using QMediaMetaData
 void MainWindow::displayMetadata()
 {
-    // Get metadata from the media player
+    // For FLAC files, read metadata directly to ensure accuracy
+    if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+        QString currentFile = playlist[currentTrackIndex];
+        
+        if (currentFile.toLower().endsWith(".flac")) {
+            // Use MetadataEditor for FLAC files to get accurate metadata
+            MetadataEditor editor;
+            FlacMetadata flacMeta = editor.readMetadata(currentFile);
+            QFileInfo fileInfo(currentFile);
+            
+            // Update all metadata fields from FLAC
+            ui->trackName->setText(flacMeta.title.isEmpty() ? fileInfo.completeBaseName() : flacMeta.title);
+            ui->albumArtist->setText(flacMeta.albumArtist.isEmpty() ? 
+                (flacMeta.artist.isEmpty() ? "Unknown Artist" : flacMeta.artist) : flacMeta.albumArtist);
+            ui->albumName->setText(flacMeta.album.isEmpty() ? "Unknown Album" : flacMeta.album);
+            ui->albumYear->setText(flacMeta.year.isEmpty() ? "----" : flacMeta.year);
+            
+            // Display album art if available
+            if (!flacMeta.albumArt.isNull()) {
+                QPixmap coverPixmap = QPixmap::fromImage(flacMeta.albumArt);
+                QSize labelSize = ui->albumArtLabel->size();
+                QPixmap scaledPixmap = coverPixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                ui->albumArtLabel->setPixmap(scaledPixmap);
+                ui->albumArtLabel->setAlignment(Qt::AlignCenter);
+            } else {
+                ui->albumArtLabel->clear();
+                ui->albumArtLabel->setText("No Album Art");
+                ui->albumArtLabel->setAlignment(Qt::AlignCenter);
+            }
+            return; // Exit early since we've handled everything
+        }
+    }
+    
+    // Fallback to QMediaMetaData for non-FLAC files
     QMediaMetaData metadata = MPlayer->metaData();
     
     // Extract and display track title
@@ -343,7 +402,6 @@ void MainWindow::displayMetadata()
     if (metadata.value(QMediaMetaData::Title).isValid()) {
         trackTitle = metadata.stringValue(QMediaMetaData::Title);
     } else if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
-        // Fallback to filename without extension
         QFileInfo fileInfo(playlist[currentTrackIndex]);
         trackTitle = fileInfo.completeBaseName();
     }
@@ -369,14 +427,12 @@ void MainWindow::displayMetadata()
     QString year = "----";
     if (metadata.value(QMediaMetaData::Date).isValid()) {
         QVariant dateVariant = metadata.value(QMediaMetaData::Date);
-        // Try to convert to year
         if (dateVariant.typeId() == QMetaType::QDate) {
             year = QString::number(dateVariant.toDate().year());
         } else if (dateVariant.typeId() == QMetaType::QDateTime) {
             year = QString::number(dateVariant.toDateTime().date().year());
         } else {
             QString dateStr = dateVariant.toString();
-            // Try to extract year from string (first 4 digits)
             QRegularExpression yearRegex("(\\d{4})");
             QRegularExpressionMatch match = yearRegex.match(dateStr);
             if (match.hasMatch()) {
@@ -386,24 +442,21 @@ void MainWindow::displayMetadata()
     }
     ui->albumYear->setText(year);
     
-    // Extract and display album art
+    // Extract and display album art for non-FLAC files
     if (metadata.value(QMediaMetaData::ThumbnailImage).isValid()) {
         QImage coverImage = metadata.value(QMediaMetaData::ThumbnailImage).value<QImage>();
         if (!coverImage.isNull()) {
-            // Scale image to fit the label while maintaining aspect ratio
             QPixmap coverPixmap = QPixmap::fromImage(coverImage);
-            QSize labelSize = ui->albumArtLabel->size();  // Assuming label_2 is for album art
+            QSize labelSize = ui->albumArtLabel->size();
             QPixmap scaledPixmap = coverPixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->albumArtLabel->setPixmap(scaledPixmap);
             ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         } else {
-            // No album art available - show placeholder text
             ui->albumArtLabel->clear();
             ui->albumArtLabel->setText("No Album Art");
             ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         }
     } else if (metadata.value(QMediaMetaData::CoverArtImage).isValid()) {
-        // Try alternative metadata key for cover art
         QImage coverImage = metadata.value(QMediaMetaData::CoverArtImage).value<QImage>();
         if (!coverImage.isNull()) {
             QPixmap coverPixmap = QPixmap::fromImage(coverImage);
@@ -417,18 +470,13 @@ void MainWindow::displayMetadata()
             ui->albumArtLabel->setAlignment(Qt::AlignCenter);
         }
     } else {
-        // No album art available
         ui->albumArtLabel->clear();
         ui->albumArtLabel->setText("No Album Art");
         ui->albumArtLabel->setAlignment(Qt::AlignCenter);
     }
     
-    // Update status bar with additional info
+    // Update status bar
     QString statusInfo = QString("Loaded: %1").arg(trackTitle);
-    if (metadata.value(QMediaMetaData::AudioBitRate).isValid()) {
-        int bitrate = metadata.value(QMediaMetaData::AudioBitRate).toInt();
-        statusInfo += QString(" | %1 kbps").arg(bitrate / 1000);
-    }
     statusBar()->showMessage(statusInfo, 3000);
 }
 
@@ -499,7 +547,7 @@ void MainWindow::on_previousTrack_clicked()
     }
 }
 
-//shuffle the playlist using simple std::shuffle
+//shuffle toggle - turns shuffle mode on/off
 void MainWindow::on_Shuffle_clicked()
 {
     if (playlist.isEmpty()) {
@@ -507,24 +555,36 @@ void MainWindow::on_Shuffle_clicked()
         return;
     }
     
-    // Save the currently playing track
-    QString currentTrack;
-    if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
-        currentTrack = playlist[currentTrackIndex];
+    // Toggle shuffle state
+    isShuffleOn = !isShuffleOn;
+    
+    if (isShuffleOn) {
+        // Turn shuffle on - shuffle the playlist
+        ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
+        
+        // Save the currently playing track
+        QString currentTrack;
+        if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+            currentTrack = playlist[currentTrackIndex];
+        }
+        
+        // Shuffle the playlist using std::shuffle
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::shuffle(playlist.begin(), playlist.end(), rng);
+        
+        // Find and update the current track index after shuffle
+        if (!currentTrack.isEmpty()) {
+            currentTrackIndex = playlist.indexOf(currentTrack);
+        }
+        
+        updateNextTrackDisplay();
+        statusBar()->showMessage("Shuffle: On", 2000);
+    } else {
+        // Turn shuffle off - no need to unshuffle, just disable the mode
+        ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle-off.png"));
+        statusBar()->showMessage("Shuffle: Off", 2000);
     }
-    
-    // Shuffle the playlist using std::shuffle
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::shuffle(playlist.begin(), playlist.end(), rng);
-    
-    // Find and update the current track index after shuffle
-    if (!currentTrack.isEmpty()) {
-        currentTrackIndex = playlist.indexOf(currentTrack);
-    }
-    
-    updateNextTrackDisplay();
-    statusBar()->showMessage("Playlist shuffled", 2000);
 }
 
 //seek forward

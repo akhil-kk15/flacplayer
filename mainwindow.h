@@ -84,6 +84,7 @@ private:
     bool isSeeking = false;      
     qint64 mediaDuration = 0;
     RepeatMode repeatMode = RepeatMode::Off;       ///< Total duration of current track in milliseconds
+    bool isShuffleOn = false;      ///< Shuffle state (off by default)
     
     // Button press vs hold detection
     QElapsedTimer buttonPressTimer;
