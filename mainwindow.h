@@ -76,6 +76,7 @@ private:
     QAudioOutput *audioOutput; 
     // Playlist management
     Playlist playlist;         
+    Playlist originalPlaylist;      ///< Store original playlist order before shuffling
     int currentTrackIndex = -1;     ///< Index of currently playing track (-1 = none)
     
     // Playback state variables

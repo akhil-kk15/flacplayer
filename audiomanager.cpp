@@ -52,6 +52,7 @@ FlacMetadata MetadataEditor::readMetadata(const QString &filePath)
         m_lastError = "Invalid FLAC file format";
         qDebug() << "[MetadataEditor] ERROR: Invalid FLAC header";
         return metadata;
+
     }
     qDebug() << "[MetadataEditor] FLAC header verified";
     

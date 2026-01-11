@@ -131,3 +131,5 @@ test_output/
 *.gcov
 
 .cache/
+
+compile_commands.json

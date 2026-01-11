@@ -23,9 +23,8 @@ public:
         }
     }
     
-    /**
-     * @brief Copy assignment operator
-     */
+    // Copy assignment operator
+   
     Playlist& operator=(const Playlist& other) {
         if (this != &other) {
             delete[] m_data;
@@ -44,10 +43,7 @@ public:
         return *this;
     }
     
-    /**
-     * @brief Add a file path to the end of the playlist
-     * @param path File path to add
-     */
+  // add a new file path to the playlist
     void append(const QString& path) {
         if (m_size >= m_capacity) {
             // Double capacity (or start with 4 if empty)

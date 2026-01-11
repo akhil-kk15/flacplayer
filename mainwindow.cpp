@@ -1,16 +1,15 @@
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "audiomanager.h"
 #include <QMessageBox>
 #include <QStatusBar>
-#include <QFileDialog>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QRadialGradient>
-#include <QElapsedTimer>
-#include <QDialog>
-#include <QVBoxLayout>
+#include <QFileDialog> //for file manager window
+#include <QMouseEvent> //mouse events 
+#include <QPainter> //for drawring custom gradient
+#include <QRadialGradient> //for radial gradient
+#include <QElapsedTimer> ///for frame timing
+#include <QDialog> //for track queue dialog 
+#include <QVBoxLayout> 
 #include <QListWidget>
 #include <QLabel>
 #include <QPushButton>
@@ -21,7 +20,7 @@
 #include <QImage>
 #include <algorithm>
 #include <random>
-#include <QRegularExpression>
+#include <QRegularExpression> //for sanitizing metadata
 
 
 // * Initializes the UI, sets up button icons, configures media playback components,
@@ -85,19 +84,18 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect media player signals for position and duration changes
     connect(MPlayer, &QMediaPlayer::positionChanged, this, &MainWindow::onPositionChanged);
     connect(MPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::onDurationChanged);
-    connect(MPlayer, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::onMediaStatusChanged);
+    connect(MPlayer, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::onMediaStatusChanged); 
     connect(MPlayer, &QMediaPlayer::metaDataChanged, this, &MainWindow::displayMetadata);
 
     // Install event filter on next/previous buttons to detect hold vs click
     ui->nextTrack->installEventFilter(this);
     ui->previousTrack->installEventFilter(this);
 
-    // Connect button signals
+    // Connect button signals to slots for mute toggle
     connect(ui->muteButton, &QPushButton::clicked, this, &MainWindow::onMuteToggle);
 
     // Set initial UI state
-    ui->labelFileName->setText("Add files through the menu to begin playback");
-    ui->nextinQueue->setText("No next track");
+    ui->labelFileName->setText("Add files through the menu to begin playback"); 
     ui->seekSlider->setEnabled(false);
     
     // Enable mouse tracking for gradient effect on all widgets
@@ -117,9 +115,9 @@ MainWindow::MainWindow(QWidget *parent)
     }
     
     // Initialize frame timer for performance tracking
+    //only applicable for mouse gradient effect
     frameTimer.start();
     lastUpdateTime = 0;
-    
     statusBar()->showMessage("Ready - Click buttons to test UI", 3000);
 }
 
@@ -135,7 +133,8 @@ void MainWindow::on_actionOpen_triggered()
         this, 
         tr("Open Audio Files"), 
         "", 
-        tr("FLAC Files (*.flac);;All Audio Files (*.flac *.m4a *.wav);;All Files (*)")
+        //mpodified for flac, m4a, wav support date:07.01.2026
+        tr("FLAC Files (*.flac,*.m4a,*.wav);;All Audio Files (*.flac *.m4a *.wav);;All Files (*)")
     );
 
     if (fileNames.isEmpty()) {
@@ -159,13 +158,7 @@ void MainWindow::on_actionOpen_triggered()
 }
 
 
-/**
- * @brief Show track queue dialog with list of all tracks
- * 
- * Displays a modal dialog showing all tracks in the playlist with the current track highlighted.
- * Users can double-click a track to jump to it.
- */
-
+//shows track queue, if user double clicks a track it will load and play that track
 void MainWindow::on_trackQueue_clicked()
 {
     if (playlist.isEmpty()) {
@@ -225,7 +218,7 @@ void MainWindow::on_trackQueue_clicked()
 }
 
 /**
- * @brief Open metadata editor for current track
+ *  Open metadata editor for current track
  * 
  * Opens a dialog that allows editing of the current track's metadata
  * including title, artist, album, year, and album art.
@@ -244,7 +237,7 @@ void MainWindow::on_actionEditMetadata_triggered()
     qDebug() << "[MainWindow] Current file:" << currentFile;
     qDebug() << "[MainWindow] File exists:" << QFile::exists(currentFile);
     
-    // Check if it's a FLAC file
+    // Check if it's a FLAC file to edit metadata 
     if (!currentFile.toLower().endsWith(".flac")) {
         QMessageBox::warning(this, "Edit Metadata", 
             "Metadata editing is currently only supported for FLAC files.\n\nCurrent file: " + 
@@ -261,7 +254,8 @@ void MainWindow::on_actionEditMetadata_triggered()
         // Reload metadata display after editing
         statusBar()->showMessage("Metadata updated - reloading track info...", 2000);
         
-        // Force metadata refresh by fully reloading the track
+        // Force metadata refresh by fully reloading the track 
+        //necessary due to QMediaPlayer caching issues
         qint64 currentPosition = MPlayer->position();
         bool wasPlaying = isPlaying;
         
@@ -559,8 +553,11 @@ void MainWindow::on_Shuffle_clicked()
     isShuffleOn = !isShuffleOn;
     
     if (isShuffleOn) {
-        // Turn shuffle on - shuffle the playlist
+        // Turn shuffle on - save original order and shuffle the playlist
         ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
+        
+        // saving the original playlist order before shuffling, it messes up the current track index otherwise
+        originalPlaylist = playlist;
         
         // Save the currently playing track
         QString currentTrack;
@@ -568,9 +565,9 @@ void MainWindow::on_Shuffle_clicked()
             currentTrack = playlist[currentTrackIndex];
         }
         
-        // Shuffle the playlist using std::shuffle
-        std::random_device rd;
-        std::mt19937 rng(rd());
+        // Shuffle the playlist using std::shuffle (mersenne twister for better randomness)
+        std::random_device rd; //seeding for randomness on rd
+        std::mt19937 rng(rd()); //rd sees rng by mt19937
         std::shuffle(playlist.begin(), playlist.end(), rng);
         
         // Find and update the current track index after shuffle
@@ -581,13 +578,34 @@ void MainWindow::on_Shuffle_clicked()
         updateNextTrackDisplay();
         statusBar()->showMessage("Shuffle: On", 2000);
     } else {
-        // Turn shuffle off - no need to unshuffle, just disable the mode
+        // Turn shuffle off - restore original playlist order
         ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle-off.png"));
+        
+        // Restore the original playlist order
+        if (!originalPlaylist.isEmpty()) {
+            // Save the currently playing track
+            QString currentTrack;
+            if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+                currentTrack = playlist[currentTrackIndex];
+            }
+            
+            // Restore original order
+            playlist = originalPlaylist;
+            originalPlaylist.clear();
+            
+            // Find and update the current track index in restored playlist
+            if (!currentTrack.isEmpty()) {
+                currentTrackIndex = playlist.indexOf(currentTrack);
+            }
+            
+            updateNextTrackDisplay();
+        }
+        
         statusBar()->showMessage("Shuffle: Off", 2000);
     }
 }
 
-//seek forward
+//seek forward 
 void MainWindow::seekForward()
 {
     qint64 currentPos = MPlayer->position();
@@ -714,7 +732,6 @@ void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 
  //Tracks mouse position and triggers partial repaints for gradient rendering.
  // Optimized for 60fps with frame throttling and minimal repaint regions.
- 
  // DO NOT MODIFY unless necessary - already optimized for performance.
  
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
@@ -744,8 +761,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     if (!lastMousePos.isNull()) {
         QPoint globalMousePos = centralWidget() ? centralWidget()->mapTo(this, mousePos) : mousePos;
         QPoint globalLastPos = centralWidget() ? centralWidget()->mapTo(this, lastMousePos) : lastMousePos;
-        
-        // Update both old and new gradient areas (with some margin)
+ // Update both old and new gradient areas (with some margin)
         int radius = 110; // Slightly larger than gradient radius for smooth transition
         update(QRect(globalLastPos.x() - radius, globalLastPos.y() - radius, radius * 2, radius * 2));
         update(QRect(globalMousePos.x() - radius, globalMousePos.y() - radius, radius * 2, radius * 2));
@@ -757,7 +773,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-//mouse move event routing and button hold detection, gradient effect handling. click vs hold for next/previous buttons
+//mouse move event routing and button hold detection, gradient effect handling.
+// click vs hold for next/previous buttons
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -870,4 +887,3 @@ void MainWindow::on_trackStop_clicked()
     ui->timeStamp->setText("00:00:00");
     statusBar()->showMessage("Playback stopped", 2000);
 }
-
