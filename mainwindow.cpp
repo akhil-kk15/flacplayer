@@ -97,7 +97,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Set initial UI state
     ui->labelFileName->setText("Add files through the menu to begin playback"); 
     ui->seekSlider->setEnabled(false);
-    
+    ui->nextinQueue->setText("No next track"); //initial text for next track display , it doesnt matter if removed, one of the test cases will fail. 
+
     // Enable mouse tracking for gradient effect on all widgets
     setMouseTracking(true);
     setAttribute(Qt::WA_OpaquePaintEvent, false);
@@ -548,7 +549,7 @@ void MainWindow::on_Shuffle_clicked()
         statusBar()->showMessage("Playlist is empty", 2000);
         return;
     }
-    
+
     // Toggle shuffle state
     isShuffleOn = !isShuffleOn;
     
@@ -556,7 +557,7 @@ void MainWindow::on_Shuffle_clicked()
         // Turn shuffle on - save original order and shuffle the playlist
         ui->Shuffle->setIcon(QIcon(":/icons/assets/shuffle.png"));
         
-        // saving the original playlist order before shuffling, it messes up the current track index otherwise
+        // saving the original playlist order before shuffling, it messes up the 
         originalPlaylist = playlist;
         
         // Save the currently playing track
@@ -566,7 +567,7 @@ void MainWindow::on_Shuffle_clicked()
         }
         
         // Shuffle the playlist using std::shuffle (mersenne twister for better randomness)
-        std::random_device rd; //seeding for randomness on rd
+        std::random_device rd; //seeding for randomness on rd 
         std::mt19937 rng(rd()); //rd sees rng by mt19937
         std::shuffle(playlist.begin(), playlist.end(), rng);
         
@@ -882,7 +883,7 @@ void MainWindow::on_trackStop_clicked()
     // Stop playback and reset to beginning
     MPlayer->stop();
     isPlaying = false;
-    ui->playPause->setIcon(QIcon(":/icons/assets/play-button.png"));
+    ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
     ui->seekSlider->setValue(0);
     ui->timeStamp->setText("00:00:00");
     statusBar()->showMessage("Playback stopped", 2000);
