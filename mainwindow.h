@@ -49,7 +49,8 @@ private slots:
     //Mplayer signal handlers
     void onPositionChanged(qint64 position);       
     void onDurationChanged(qint64 duration);      
-    void onMediaStatusChanged(QMediaPlayer::MediaStatus status); 
+    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
+    void onMediaPlayerError(QMediaPlayer::Error error, const QString &errorString); 
 
     void on_repeatToggle_clicked();
     void on_trackStop_clicked();

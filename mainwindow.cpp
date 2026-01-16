@@ -86,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(MPlayer, &QMediaPlayer::durationChanged, this, &MainWindow::onDurationChanged);
     connect(MPlayer, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::onMediaStatusChanged); 
     connect(MPlayer, &QMediaPlayer::metaDataChanged, this, &MainWindow::displayMetadata);
+    connect(MPlayer, &QMediaPlayer::errorOccurred, this, &MainWindow::onMediaPlayerError);
 
     // Install event filter on next/previous buttons to detect hold vs click
     ui->nextTrack->installEventFilter(this);
@@ -726,6 +727,59 @@ void MainWindow::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
                 statusBar()->showMessage("End of playlist", 2000);
             }
         }
+    }
+}
+
+// Handle media player errors (corrupted files, unsupported formats, decoder failures)
+void MainWindow::onMediaPlayerError(QMediaPlayer::Error error, const QString &errorString)
+{
+    qDebug() << "[MainWindow] Media player error occurred:" << error << errorString;
+    
+    // Stop playback safely
+    MPlayer->stop();
+    isPlaying = false;
+    ui->playPause->setIcon(QIcon(":/icons/assets/play.png"));
+    
+    // Get current track name for error message
+    QString trackName = "Unknown track";
+    if (currentTrackIndex >= 0 && currentTrackIndex < playlist.size()) {
+        trackName = QFileInfo(playlist[currentTrackIndex]).fileName();
+    }
+    
+    // Show error message to user
+    QString userMessage;
+    switch (error) {
+        case QMediaPlayer::ResourceError:
+            userMessage = QString("Cannot play '%1': File is corrupted or in an unsupported format.").arg(trackName);
+            break;
+        case QMediaPlayer::FormatError:
+            userMessage = QString("Cannot play '%1': Invalid or unsupported audio format.").arg(trackName);
+            break;
+            //for future network supported stuff, ignore for now. 
+        case QMediaPlayer::NetworkError:
+            userMessage = QString("Cannot play '%1': Network error.").arg(trackName);
+            break;
+        case QMediaPlayer::AccessDeniedError:
+            userMessage = QString("Cannot play '%1': Access denied.").arg(trackName);
+            break;
+        default:
+            userMessage = QString("Cannot play '%1': %2").arg(trackName, errorString);
+            break;
+    }
+    
+    QMessageBox::warning(this, "Playback Error", userMessage);
+    statusBar()->showMessage("Playback error occurred", 3000);
+    
+    // Try to play next track if available
+    if (currentTrackIndex + 1 < playlist.size()) {
+        QTimer::singleShot(500, this, [this]() {
+            loadTrack(currentTrackIndex + 1);
+            MPlayer->play();
+            isPlaying = true;
+            ui->playPause->setIcon(QIcon(":/icons/assets/pause.png"));
+            updateNextTrackDisplay();
+            statusBar()->showMessage("Skipped to next track", 2000);
+        });
     }
 }
 
