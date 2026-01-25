@@ -13,6 +13,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Core Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Core Multimedia)
 
+# Find FFmpeg libraries
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
+    libavformat
+    libavcodec
+    libavutil
+    libswresample
+)
+
 set(TS_FILES flacplayer_en_GB.ts)
 
 set(PROJECT_SOURCES
@@ -22,6 +31,10 @@ set(PROJECT_SOURCES
         mainwindow.ui
         audiomanager.cpp
         audiomanager.h
+        audioconverter.cpp
+        audioconverter.h
+        conversiondialog.cpp
+        conversiondialog.h
         metadataeditor.ui
         resources.qrc
         ${TS_FILES}
@@ -58,6 +71,7 @@ target_link_libraries(flacplayer PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets 
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Multimedia
+    PkgConfig::LIBAV
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -115,6 +129,10 @@ if(BUILD_TESTS)
         mainwindow.h
         audiomanager.cpp
         audiomanager.h
+        audioconverter.cpp
+        audioconverter.h
+        conversiondialog.cpp
+        conversiondialog.h
     )
     
     target_link_libraries(flacplayer_tests PRIVATE
@@ -124,6 +142,7 @@ if(BUILD_TESTS)
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Multimedia
         Qt${QT_VERSION_MAJOR}::Test
+        PkgConfig::LIBAV
     )
     
     # Set necessary properties for Qt

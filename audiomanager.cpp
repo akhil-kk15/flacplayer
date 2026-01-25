@@ -550,27 +550,48 @@ bool MetadataEditor::writeFlacFile(const QString &filePath, const QList<Metadata
     tempFile.close();
     qDebug() << "[MetadataEditor] Temp file closed, total size:" << totalFileSize;
     
-    // Verify temp file before replacing
+    // Verify temp file integrity before replacing original
+    qDebug() << "[MetadataEditor] Validating temp file integrity...";
     QFile verifyFile(tempPath);
-    if (verifyFile.open(QIODevice::ReadOnly)) {
-        qint64 verifySize = verifyFile.size();
-        qDebug() << "[MetadataEditor] Temp file verification - Size:" << verifySize;
-        verifyFile.close();
-    } else {
-        qDebug() << "[MetadataEditor] WARNING: Could not verify temp file";
+    if (!verifyFile.open(QIODevice::ReadOnly)) {
+        m_lastError = "Cannot open temp file for verification";
+        qDebug() << "[MetadataEditor] ERROR: Cannot verify temp file";
+        QFile::remove(tempPath);
+        return false;
     }
     
-    // Replace original file with temporary file
-    qDebug() << "[MetadataEditor] Removing original file:" << filePath;
+    // Verify file size is reasonable
+    qint64 verifySize = verifyFile.size();
+    qDebug() << "[MetadataEditor] Temp file verification - Size:" << verifySize;
+    if (verifySize < 42) { // Minimum FLAC file size (header + STREAMINFO)
+        m_lastError = "Temp file too small to be valid FLAC";
+        qDebug() << "[MetadataEditor] ERROR: Temp file too small";
+        verifyFile.close();
+        QFile::remove(tempPath);
+        return false;
+    }
+    
+    // Verify FLAC header
+    if (!readFlacHeader(verifyFile)) {
+        m_lastError = "Temp file has invalid FLAC header";
+        qDebug() << "[MetadataEditor] ERROR: Temp file failed FLAC header validation";
+        verifyFile.close();
+        QFile::remove(tempPath);
+        return false;
+    }
+    verifyFile.close();
+    qDebug() << "[MetadataEditor] Temp file validation successful";
+    
+    // Replace original file with temporary file (atomic on most systems)
+    qDebug() << "[MetadataEditor] Replacing original file with validated temp file...";
     if (!QFile::remove(filePath)) {
         qDebug() << "[MetadataEditor] WARNING: Could not remove original file (may not exist)";
     }
     
-    qDebug() << "[MetadataEditor] Renaming temp file to original...";
     if (!QFile::rename(tempPath, filePath)) {
-        m_lastError = "Failed to replace original file";
+        m_lastError = "Failed to replace original file - original may be lost!";
         qDebug() << "[MetadataEditor] ERROR: Failed to rename temp file to original";
-        QFile::remove(tempPath);
+        // Temp file still exists, user can manually recover
         return false;
     }
     

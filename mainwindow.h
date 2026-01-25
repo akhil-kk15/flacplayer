@@ -36,6 +36,7 @@ private slots:
     void on_actionOpen_triggered();       
     void on_trackQueue_clicked();         
     void on_actionEditMetadata_triggered();
+    void on_actionConvertToMP3_triggered();
     
     //playback control slots
     void on_playPause_clicked();        

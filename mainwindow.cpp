@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "audiomanager.h"
+#include "conversiondialog.h"
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QFileDialog> //for file manager window
@@ -278,6 +279,35 @@ void MainWindow::on_actionEditMetadata_triggered()
             MPlayer->play();
         }
     }
+}
+
+/**
+ * Convert current track to MP3
+ * 
+ * Opens a dialog that allows converting the current FLAC file to MP3 format
+ * with configurable bitrate settings.
+ */
+void MainWindow::on_actionConvertToMP3_triggered()
+{
+    if (currentTrackIndex < 0 || currentTrackIndex >= playlist.size()) {
+        QMessageBox::information(this, "Convert to MP3", 
+            "No track currently loaded.\n\nLoad a track first, then use Tools > Convert to MP3.");
+        return;
+    }
+    
+    QString currentFile = playlist[currentTrackIndex];
+    
+    // Check if it's a FLAC file
+    if (!currentFile.toLower().endsWith(".flac")) {
+        QMessageBox::warning(this, "Convert to MP3", 
+            "Conversion is currently only supported for FLAC files.\n\nCurrent file: " + 
+            QFileInfo(currentFile).fileName());
+        return;
+    }
+    
+    // Open conversion dialog
+    ConversionDialog dialog(currentFile, this);
+    dialog.exec();
 }
 
 //song loading and metadata display

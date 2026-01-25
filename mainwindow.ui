@@ -551,7 +551,7 @@ padding:0px;
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionConvert"/>
+    <addaction name="actionConvertToMP3"/>
     <addaction name="actionEditMetadata"/>
    </widget>
    <widget class="QMenu" name="menuhelp">
@@ -574,9 +574,9 @@ padding:0px;
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionConvert">
+  <action name="actionConvertToMP3">
    <property name="text">
-    <string>Convert</string>
+    <string>Convert to MP3</string>
    </property>
   </action>
   <action name="actionMetadata_Editor">
