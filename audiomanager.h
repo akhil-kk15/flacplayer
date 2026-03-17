@@ -16,7 +16,7 @@ QT_END_NAMESPACE
 
 /**
  * @struct FlacMetadata
- * @brief Container for FLAC file metadata
+ * @brief o the comContainer for FLAC file metadata
  */
 struct FlacMetadata {
     QString title;

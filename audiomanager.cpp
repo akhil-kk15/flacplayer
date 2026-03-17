@@ -630,6 +630,10 @@ QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata
     // Write vendor string
     block.append(vendorUtf8);
     
+    
+  
+    
+
     // Build comment list
     QList<QPair<QString, QString>> comments;
     
@@ -675,6 +679,7 @@ QByteArray MetadataEditor::createVorbisCommentBlock(const FlacMetadata &metadata
     qDebug() << "[MetadataEditor] Vorbis Comment block created, total size:" << block.size();
     return block;
 }
+
 
 QByteArray MetadataEditor::createPictureBlock(const QImage &image)
 {
